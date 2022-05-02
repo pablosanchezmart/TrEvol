@@ -5,10 +5,12 @@ Authors@R:
     person("Pablo", "Sanchez-Martinez", , "p.sanchez@creaf.uab.cat", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0157-7800"))
 Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 URL: https://github.com/pablosanchezmart/TrEvol
 BugReports: https://github.com/pablosanchezmart/TrEvol/issues
+Imports: 
+    dplyr,
+    magrittr
