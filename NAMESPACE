@@ -3,6 +3,7 @@
 export("%>%")
 export(completePhyloData)
 export(meanOrMode)
+export(simulateDataSet)
 export(testFun)
 importFrom(magrittr,"%>%")
 importFrom(rlang,.data)
