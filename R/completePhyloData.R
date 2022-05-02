@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-completePhyloFun <- function(phylogeny, dataset, traits) {
+completePhyloData <- function(phylogeny, dataset, traits) {
   phyData <- list()
   completeVec <- stats::complete.cases(dataset[, traits])
   completeData <- dataset[completeVec, ]
