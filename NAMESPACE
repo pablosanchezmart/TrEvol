@@ -2,6 +2,7 @@
 
 export("%>%")
 export(completePhyloData)
+export(diagnoseModels)
 export(meanOrMode)
 export(simulateDataSet)
 export(testFun)
