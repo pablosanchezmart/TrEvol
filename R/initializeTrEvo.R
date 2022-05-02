@@ -1,3 +1,11 @@
+#' Initialize package and set outputs and results directories.
+#'
+#' @param folderName (Charaacter) name of the folder where results and outputs will be stored.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 initializeTrEvo <- function(folderName = "simulations"){
 
   print("loading workspace ...")
