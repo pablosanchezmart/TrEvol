@@ -11,7 +11,6 @@ initializeTrEvo <- function(folderName = "simulations"){
   print("loading workspace ...")
   options(scipen = 999, digits = 3)
   wd <- getwd()
-
   outputs.dir <- paste0(wd, "/outputs/outputs_", folderName)
   results.dir <- paste0(wd, "/results/results_", folderName)
   dir.create("outputs")
@@ -28,6 +27,8 @@ initializeTrEvo <- function(folderName = "simulations"){
   dir.create(paste0(results.dir, "/figures/example/"))
   dir.create(paste0(results.dir, "/figures/predictions/"))
   dir.create(paste0(results.dir, "/tables"))
-  envList <- list(outputs.dir, results.dir)
-  list2env(envList, envir = .GlobalEnv)
+  envList <- list("outputs.dir", "results.dir")
+
+  assign("outputs.dir", outputs.dir, envir = .GlobalEnv)
+  assign("results.dir", results.dir, envir = .GlobalEnv)
 }
