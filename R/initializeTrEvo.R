@@ -1,4 +1,4 @@
-initializeTrEvo <- function(folderName = "simulations", traits, predictors){
+initializeTrEvo <- function(folderName = "simulations"){
 
   print("loading workspace ...")
 
