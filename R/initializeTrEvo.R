@@ -1,6 +1,6 @@
-#' Initialize package and set outputs and results directories.
+#' Create and define results and outputs folders structure.
 #'
-#' @param folderName (Charaacter) name of the folder where results and outputs will be stored.
+#' @param folderName (character) Folder name.
 #'
 #' @return
 #' @export
@@ -38,5 +38,3 @@ initializeTrEvo <- function(folderName = "simulations"){
 
   dir.create(paste0(results.dir, "/tables"))
 }
-
-
