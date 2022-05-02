@@ -16,11 +16,11 @@ defineModelsSpecifications <- function(n_itterations = 100, burning = 10, thinni
                                             R = list(V = 1, nu = 0.002),
                                             G = list(G1 = list(V = 1, nu = 0.002))
                                           ),
-                                          # Two response variables, phylogeny and residuals
-                                          multiresponse_prior = list(
-                                            R=list(V=diag(2)/2,nu=2),
-                                            G=list(G1=list(V=diag(2)/2,nu=2))
-                                          )
+                                       # Two response variables, phylogeny and residuals
+                                       multiresponse_prior = list(
+                                         R=list(V=diag(2)/2,nu=2),
+                                         G=list(G1=list(V=diag(2)/2,nu=2))
+                                       )
 ) {
 
   models.specifications.list <- list("number_interations" = n_itterations,

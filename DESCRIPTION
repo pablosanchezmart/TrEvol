@@ -18,5 +18,7 @@ Imports:
     dplyr,
     faux,
     magrittr,
+    MCMCglmm,
     phytools,
-    rlang
+    rlang,
+    stringr
