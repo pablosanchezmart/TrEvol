@@ -9,24 +9,16 @@
 initializeTrEvo <- function(folderName = "simulations"){
 
   print("loading workspace ...")
-
-  ### GENERAL SPECIFICATIONS ----------------------------------------------------- ####
-
   options(scipen = 999, digits = 3)
+  wd <- getwd()
 
-  # set the different paths for results using a subset of the data depending on the grouping variable
-  folderName <- paste0(getwd(), "/", folderName)
-  print(paste0("Outputs and results will be stored in: ", folderName))
-
-  outputs.dir <- paste0("outputs/outputs_", folderName)
-  results.dir <- paste0("results/results_", folderName)
-
+  outputs.dir <- paste0(wd, "/outputs/outputs_", folderName)
+  results.dir <- paste0(wd, "/results/results_", folderName)
   dir.create("outputs")
   dir.create(outputs.dir)
   dir.create(paste0(outputs.dir, "/models_outputs"))
   dir.create(paste0(outputs.dir, "/phylogenetic_variance_covariance"))
   dir.create(paste0(outputs.dir, "/predictions"))
-
   dir.create("results")
   dir.create(results.dir)
   dir.create(paste0(results.dir, "/figures"))
@@ -35,6 +27,7 @@ initializeTrEvo <- function(folderName = "simulations"){
   dir.create(paste0(results.dir, "/figures/conditional_VCV_networks/"))
   dir.create(paste0(results.dir, "/figures/example/"))
   dir.create(paste0(results.dir, "/figures/predictions/"))
-
   dir.create(paste0(results.dir, "/tables"))
+  envList <- list(outputs.dir, results.dir)
+  list2env(envList, envir = .GlobalEnv)
 }
