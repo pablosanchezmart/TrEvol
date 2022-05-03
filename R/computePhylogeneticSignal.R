@@ -8,14 +8,13 @@
 #'
 #' @return List containing univariate model results, diagnostics and phylogenetic signal results summary. Phlogenetic signal using Blomberg's K and Pagel's lambda are also reported (using phytools phylosig() fun)
 #' @export
-#' @importFrom rlang .data
 computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specifications = NULL,
                                        forceRun = T)
 {
   modellingData <- completePhyloData(phylogeny = phylogeny,
                                      dataset = dataset, traits = variable)
   fix.frml <- paste0(variable, " ~ 1")
-  if (!file.exists(paste0(.data$outputs.dir, "/models_outputs/phylo_signal.RData")) |
+  if (!file.exists(paste0(outputs.dir, "/models_outputs/phylo_signal.RData")) |
       forceRun) {
     if (is.null(model.specifications)) {
       print("Using default model specificatios. Use defineModelsSpecifications() output on model.specifications argument to set them manually.")
@@ -31,7 +30,7 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
   }
   else {
     print("loanding previous results")
-    load(file = paste0(.data$outputs.dir, "/models_outputs/phylo_signal.RData"),
+    load(file = paste0(outputs.dir, "/models_outputs/phylo_signal.RData"),
          envir = .GlobalEnv)
     if(length(phylo.signal.results$phyloSignal[,1])){
       mdl <- phylo.signal.results$model
@@ -61,8 +60,8 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
                                                  Non_Phylogenetic_variance = residualVariance)
   phylo.signal.results$model.diagnostics <- model.diagnostics
 
-  save(phylo.signal.results, file = paste0(.data$outputs.dir, "/models_outputs/phylo_signal.RData"))
-  print(paste0(.data$outputs.dir, "/models_outputs/phylo_signal.RData"))
+  save(phylo.signal.results, file = paste0(outputs.dir, "/models_outputs/phylo_signal.RData"))
+  print(paste0(outputs.dir, "/models_outputs/phylo_signal.RData"))
 
   return(phylo.signal.results)
 }
