@@ -2,7 +2,7 @@
 % Please edit documentation in R/computePhylogeneticSignal.R
 \name{computePhylogeneticSignal}
 \alias{computePhylogeneticSignal}
-\title{Compute phylogenetic signal using univariate phylogenetic mixed models.}
+\title{Compute phylogenetic signal using univariate phylogenetic mixed models for a given variable.}
 \usage{
 computePhylogeneticSignal(
   variable,
@@ -19,7 +19,7 @@ computePhylogeneticSignal(
 
 \item{phylogeny}{(phylo) Phylogeny with tip labels contained in dataset$animal}
 
-\item{model.specifications}{Mcmcglmm models specifications. See defineModelsSpecification.}
+\item{model.specifications}{(list) Mcmcglmm models specifications. See defineModelsSpecification.}
 
 \item{forceRun}{(logical) If false, models already run are not runned again.}
 }
@@ -27,5 +27,5 @@ computePhylogeneticSignal(
 List containing univariate model results, diagnostics and phylogenetic signal results summary. Phlogenetic signal using Blomberg's K and Pagel's lambda are also reported (using phytools phylosig() fun)
 }
 \description{
-Compute phylogenetic signal using univariate phylogenetic mixed models.
+Compute phylogenetic signal using univariate phylogenetic mixed models for a given variable.
 }

@@ -1,9 +1,9 @@
-#' Compute phylogenetic signal using univariate phylogenetic mixed models.
+#' Compute phylogenetic signal using univariate phylogenetic mixed models for a given variable.
 #'
 #' @param variable (character) Name of the variable. It must be contained in datset.
 #' @param dataset (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
-#' @param model.specifications Mcmcglmm models specifications. See defineModelsSpecification.
+#' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
 #' @param forceRun (logical) If false, models already run are not runned again.
 #'
 #' @return List containing univariate model results, diagnostics and phylogenetic signal results summary. Phlogenetic signal using Blomberg's K and Pagel's lambda are also reported (using phytools phylosig() fun)
@@ -32,11 +32,11 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
     print("loanding previous results")
     load(file = paste0(outputs.dir, "/models_outputs/phylo_signal.RData"),
          envir = .GlobalEnv)
-    if(length(phylo.signal.results$phyloSignal[,1])){
-      mdl <- phylo.signal.results$model
-    } else{
+    if(length(phylo.signal.results$phyloSignal[, 1]) > 1){
       mdl <- phylo.signal.results$individual.models.results[[which(!is.na(stringr::str_extract(names(phylo.signal.results$individual.models.results),
                                                                                                variable)))]]$model
+    } else{
+      mdl <- phylo.signal.results$model
     }
 
   }
@@ -55,8 +55,12 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
   phylo.signal.results$resVar.distr <- mdl$VCV[, "units"]/(mdl$VCV[,
                                                                    "animal"] + mdl$VCV[, "units"])
   residualVariance <- mean(phylo.signal.results$resVar.distr)
-  phylo.signal.results$phyloSignal <- data.frame(Variable = variable, N = length(modellingData$dta$animal),
-                                                 Model = fix.frml, K = k, Lambda = lambda, Wlambda = wlambda,
+  phylo.signal.results$phyloSignal <- data.frame(Variable = variable,
+                                                 N = length(modellingData$dta$animal),
+                                                 Model = fix.frml,
+                                                 K = k,
+                                                 Lambda = lambda,
+                                                 Wlambda = wlambda,
                                                  Non_Phylogenetic_variance = residualVariance)
   phylo.signal.results$model.diagnostics <- model.diagnostics
 
