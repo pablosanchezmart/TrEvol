@@ -24,7 +24,8 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
                          threshold = 0, labelSize = 0.8, nodeLab = NULL)
 {
   if (onlySignificant) {
-    correlations[which(correlations[, paste0("Pvalue_", correlation.type)] > 0.05), correlation.type] <- 0
+    correlations[which(correlations[, paste0("Pvalue_", correlation.type)] >
+                         0.05), correlation.type] <- 0
   }
   correlations <- correlations[, c("Variable1", "Variable2",
                                    correlation.type)]
@@ -46,7 +47,7 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
     correlation.matrix <- correlation.matrix[vars, vars]
   }
   if (!is.null(gr_vars)) {
-    gr_vars <- gr_vars %>% filter(variable %in% vars)
+    gr_vars <- gr_vars[which(gr_vars[,1] %in% vars), ]
     correlation.matrix <- correlation.matrix[gr_vars[, 1],
                                              gr_vars[, 1]]
     vars <- gr_vars[, 1]
@@ -57,7 +58,8 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
   }
   corGraph <- igraph::graph.adjacency(abs(as.matrix(correlation.matrix)),
                                       mode = "lower", weighted = T)
-  diameter <- round(igraph::diameter(corGraph, directed = F), 3)
+  diameter <- round(igraph::diameter(corGraph, directed = F),
+                    3)
   beta_connectivity <- round(igraph::ecount(corGraph)/igraph::vcount(corGraph),
                              3)
   transitivity <- round(igraph::transitivity(corGraph, isolates = "zero",
@@ -73,7 +75,7 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
                       vsize = 5, vsize2 = 1, esize = 10 * max(correlation.matrix),
                       palette = "pastel", negDashed = T, borders = T, legend = F,
                       vTrans = 180, fade = T, aspect = T, legend.cex = 0.25,
-                      edge.labels = edgeLab, edge.label.cex = 2 * length(nodeLab)/length(nodeLab),
+                      edge.labels = edgeLab, edge.label.cex = 2 * length(vars)/length(vars),
                       labels = nodeLab, label.cex = labelSize, label.scale = F,
                       node.label.offset = c(0.5, -2), pie = ps.vars, pieBorder = 1,
                       DoNotPlot = F, threshold = threshold, groups = gr_vars[,
