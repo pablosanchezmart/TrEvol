@@ -17,7 +17,7 @@ plotNetwork(
   notShowCors = NA,
   threshold = 0,
   labelSize = 0.8,
-  nodeLab
+  nodeLab = NULL
 )
 }
 \arguments{
