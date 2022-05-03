@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-simulateDataSet <- function(phylogeny = NA, nObs = 100, traitNames = c("HC_1", "HC_2", "HC_predictor", "LC_1",  "LC_2",   "LC_predictor"),
+simulateDataSet <- function(phylogeny = NULL, nObs = 100, traitNames = c("HC_1", "HC_2", "HC_predictor", "LC_1",  "LC_2",   "LC_predictor"),
                                                                vcvMatrix = matrix(c(1, 0.9, 0.8, 0, 0.1, 0.2,
                                                                                     0.9, 1, 0.8, 0, 0.1, 0.2,
                                                                                     0.8, 0.8, 1, 0, 0.1, 0.2,
@@ -17,7 +17,7 @@ simulateDataSet <- function(phylogeny = NA, nObs = 100, traitNames = c("HC_1", "
                                                                                     0.1, 0.1, 0.1, 0.9, 1, 0.8,
                                                                                     0.2, 0.2, 0.2, 0.8, 0.8, 1), ncol = 6))  {
   # simulate phylogeny if it is not provided
-  if(is.na(phylogeny)){
+  if(is.null(phylogeny)){
     phylogeny <- phytools::pbtree(n = nObs)
   }
 
