@@ -65,5 +65,5 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
   save(phylo.signal.results, file = paste0(outputs.dir, "/models_outputs/phylo_signal.RData"))
   print(paste0(outputs.dir, "/models_outputs/phylo_signal.RData"))
 
-  return(rslts)
+  return(phylo.signal.results)
 }
