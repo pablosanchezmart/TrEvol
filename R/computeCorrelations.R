@@ -121,7 +121,7 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model
   resCor.t1.t2_pval <- 2*(1 - pd)
 
   ## Results gathering
-  rslts <- list()
+  correlations.results <- list()
 
   t1.t2.cor.results <- data.frame("Variable1" = variable1,
                                   "Variable2" = variable2,
@@ -156,5 +156,5 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model
   correlations.results$corrrelationsSummary <- t1.t2.cor.results
   # Model diagnostics
   correlations.results$model.diagnostics <- model.diagnostics
-  return(rslts)
+  return(correlations.results)
 }
