@@ -63,8 +63,7 @@ correlationsTraits <- function (VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATI
     # avoid running models already present in results
     if (!model %in% names(correlationsResults$individual.models.results) | FORCERUN) {
       print(paste0("Running correlations model: ", model))
-      model.descr <- multi_mdls.str %>% dplyr::filter(type ==
-                                                        model)
+      model.descr <- multi_mdls.str %>% dplyr::filter(type == model)
       mdl.rslts <- computeCorrelations(variable1 = model.descr$resp_var1,
                                        variable2 = model.descr$resp_var2, dataset = DATASET,
                                        phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
