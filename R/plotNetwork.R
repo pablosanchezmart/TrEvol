@@ -1,3 +1,23 @@
+#' Plot variance-covariance networks
+#'
+#' @param correlations (data frame) correlations output of correlationsTraits$correlations.rslts
+#' @param phylogenetic.signal (data frame() phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts
+#' @param phyloSignal.name (character) variable name of the phylogenetic signal as reported in phylogenetic.signal
+#' @param correlation.type (character) variable name of the correlation as reported iun correlations
+#' @param gr_vars (data frame) character vector as long as the number of variables indicating the variable name in the first column and the group of the variable in the second.
+#' @param order_vars (character) order of the variables to plot
+#' @param edgeLab (logical) if TRUE, edge labels show correlation coefficients
+#' @param layout "spring" or "circular"
+#' @param onlySignificant (logical) if TRUE, only significant correlations are plotted
+#' @param notShowCors (character) vector of variables present in correlations data but exclued from the plot
+#' @param threshold (numeric) correlations to be shown (e.g., those with a absolute value higher than 0.1)
+#' @param labelSize (numeric) size of the node labels
+#' @param nodeLab (data frame) character vector as long as the number of variables indicating the variable name in the first column and the new name, which will be shown in the plot.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plotNetwork <- function(correlations,
                                      phylogenetic.signal = NULL,
                                      phyloSignal.name = NULL,
