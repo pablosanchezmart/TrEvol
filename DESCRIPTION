@@ -18,8 +18,10 @@ Imports:
     coda,
     dplyr,
     faux,
+    igraph,
     magrittr,
     MCMCglmm,
     phytools,
+    qgraph,
     rlang,
     stringr
