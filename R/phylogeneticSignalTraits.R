@@ -20,28 +20,38 @@ phylogeneticSignalTraits <- function(VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIF
   uni_mdls.str$fix.frml <- paste0(uni_mdls.str$resp_var, " ~ 1")
   uni_mdls.str$ran.frml <- "~ animal"
 
-  individual.rslts <- list()
-  allPhyloSig.rslts <- data.frame()
-  allModelDiagnostics <- data.frame()
-  phylogeneticSignalResults <- list()
+  phylogeneticSignalResults$phylogenetic.signal.results <- data.frame("variable" = variables)
+  phylogeneticSignalResults$models.diagnostics <- data.frame("variable" = variables)
+  phylogeneticSignalResults$individual.models.results <- list()
+
+  # load previous results if exist
+
+  if (file.exists(paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData")) | !FORCERUN) {
+    print("loanding previous results")
+    load(file = paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"), envir = .GlobalEnv)
+}
+
   for(model in uni_mdls.str$type){
+
+    if(model %in% names(phylogeneticSignalResults$individual.models.results)){
+      next()
+    }
+
     print(paste0("Running phylo. signal model: ", model))
 
     model.descr <- uni_mdls.str %>% dplyr::filter(type == model)
 
-    mdl.rslts <- phyloSigFun(variable = model.descr$resp_var, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS, forceRun = FORCERUN)
-    individual.rslts[[model]] <- mdl.rslts
-    allPhyloSig.rslts <- rbind(allPhyloSig.rslts, mdl.rslts$phyloSignal)
-    allModelDiagnostics <- rbind(allModelDiagnostics, mdl.rslts$model.diagnostics)
+    mdl.rslts <- phyloSigFun(variable = model.descr$resp_var, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
+
+    phylogeneticSignalResults$phylogenetic.signal.results <- rbind(allPhyloSig.rslts, mdl.rslts$phyloSignal)
+    phylogeneticSignalResults$models.diagnostics <- rbind(allModelDiagnostics, mdl.rslts$model.diagnostics)
+    phylogeneticSignalResults$individual.models.results[[model]] <- mdl.rslts
   }
 
-  phylogeneticSignalResults$individual.models.results <- individual.rslts
-  phylogeneticSignalResults$models.diagnostics <- allModelDiagnostics
-  phylogeneticSignalResults$phylogenetic.signal.results <- allPhyloSig.rslts
   print("Model structure used:")
   print(uni_mdls.str)
   print("Phylogenetic signal results:")
-  print(allPhyloSig.rslts)
+  print(phylogeneticSignalResults$phylogenetic.signal.results)
 
   save(phylogeneticSignalResults, file = paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"))
   print(paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"))

@@ -8,8 +8,7 @@ computePhylogeneticSignal(
   variable,
   dataset,
   phylogeny,
-  model.specifications = NULL,
-  forceRun = T
+  model.specifications = NULL
 )
 }
 \arguments{
@@ -20,8 +19,6 @@ computePhylogeneticSignal(
 \item{phylogeny}{(phylo) Phylogeny with tip labels contained in dataset$animal}
 
 \item{model.specifications}{(list) Mcmcglmm models specifications. See defineModelsSpecification.}
-
-\item{forceRun}{(logical) If false, models already run are not runned again.}
 }
 \value{
 List containing univariate model results, diagnostics and phylogenetic signal results summary. Phlogenetic signal using Blomberg's K and Pagel's lambda are also reported (using phytools phylosig() fun)

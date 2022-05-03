@@ -1,3 +1,15 @@
+#' Retrieve correlations for each one of the combinations among traits contained in a vector
+#'
+#' @param VARIABLES (character) Names of the variables. They must be contained in dataset.
+#' @param PHYLOGENY (phylo) Phylogeny with tip labels contained in dataset$animal
+#' @param DATASET (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
+#' @param MODEL.SPECIFICATIONS (list) Mcmcglmm models specifications. See defineModelsSpecification.
+#' @param FORCERUN (logical) If false, models already run are not runned again.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 correlationsTraits <- function(VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL, FORCERUN = F){
 
   allCorrelation.rslts <- data.frame()
@@ -41,7 +53,7 @@ correlationsTraits <- function(VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATIO
   for(model in multi_mdls.str$type){
     print(paste0("Running correlations model: ", model))
 
-    model.descr <- multi_mdls.str %>% filter(type == model)
+    model.descr <- multi_mdls.str %>% dplyr::filter(type == model)
 
     mdl.rslts <- correlationFun(variable1 = model.descr$resp_var1, variable2 = model.descr$resp_var2, dta = DTA, tree = TREE,  model.specifications = MODEL.SPECIFICATIONS, forceRun = FORCERUN)
     individual.rslts[[model]] <-  mdl.rslts
