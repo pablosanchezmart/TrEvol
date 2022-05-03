@@ -37,7 +37,7 @@ simulateDataSet <- function(phylogeny = NA, nObs = 100, traitNames = c("HC_1", "
   nonBM.df <- faux::rnorm_multi(n = length(phylogeny$tip.label),
                           mu = c(0, 0, 0, 0, 0, 0),
                           sd = c(1, 1, 1, 1, 1, 1),
-                          r = diffMat,
+                          r = vcvMatrix,
                           varnames = nonBM_traitNames,
                           empirical = FALSE)
 
