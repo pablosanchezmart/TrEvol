@@ -42,12 +42,12 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model
 
   } else {
     print("loanding previous results")
-    load(file = paste0(outputs.dir, "/models_outputs/correlationResults.RData"))
+    load(file = paste0(outputs.dir, "/models_outputs/correlationsResults.RData"))
 
-    if(length(correlations.results$corrrelationsSummary[, 1]) > 1){
-    mdl <- correlations.results$individual.models.results[[which(!is.na(stringr::str_extract(names(correlations.results$individual.models.results), variable1)) & !is.na(stringr::str_extract(names(correlations.results$individual.models.results), variable2)))]]$model
+    if(length(correlationsResults$corrrelationsSummary[, 1]) > 1){
+    mdl <- correlationsResults$individual.models.results[[which(!is.na(stringr::str_extract(names(correlationsResults$individual.models.results), variable1)) & !is.na(stringr::str_extract(names(correlationsResults$individual.models.results), variable2)))]]$model
     } else{
-      mdl <- correlations.results$model
+      mdl <- correlationsResults$model
     }
 
 }
@@ -121,7 +121,7 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model
   resCor.t1.t2_pval <- 2*(1 - pd)
 
   ## Results gathering
-  correlations.results <- list()
+  correlationsResults <- list()
 
   t1.t2.cor.results <- data.frame("Variable1" = variable1,
                                   "Variable2" = variable2,
@@ -150,11 +150,11 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model
   ## Results gathering
 
   # Model
-  correlations.results$model <- mdl
+  correlationsResults$model <- mdl
   # Correlations
-  correlations.results$correlations.distr <- correlationsChains
-  correlations.results$corrrelationsSummary <- t1.t2.cor.results
+  correlationsResults$correlations.distr <- correlationsChains
+  correlationsResults$corrrelationsSummary <- t1.t2.cor.results
   # Model diagnostics
-  correlations.results$model.diagnostics <- model.diagnostics
-  return(correlations.results)
+  correlationsResults$model.diagnostics <- model.diagnostics
+  return(correlationsResults)
 }

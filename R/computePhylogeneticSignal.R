@@ -1,6 +1,6 @@
 #' Compute phylogenetic signal using univariate phylogenetic mixed models for a given variable.
 #'
-#' @param variable (character) Name of the variable. It must be contained in datset.
+#' @param variable (character) Name of the variable. It must be contained in dataset.
 #' @param dataset (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
 #' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
@@ -14,7 +14,7 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
   modellingData <- completePhyloData(phylogeny = phylogeny,
                                      dataset = dataset, traits = variable)
   fix.frml <- paste0(variable, " ~ 1")
-  if (!file.exists(paste0(outputs.dir, "/models_outputs/phylo_signal.RData")) |
+  if (!file.exists(paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData")) |
       forceRun) {
     if (is.null(model.specifications)) {
       print("Using default model specificatios. Use defineModelsSpecifications() output on model.specifications argument to set them manually.")
@@ -30,13 +30,13 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
   }
   else {
     print("loanding previous results")
-    load(file = paste0(outputs.dir, "/models_outputs/phylo_signal.RData"),
+    load(file = paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"),
          envir = .GlobalEnv)
-    if(length(phylo.signal.results$phyloSignal[, 1]) > 1){
-      mdl <- phylo.signal.results$individual.models.results[[which(!is.na(stringr::str_extract(names(phylo.signal.results$individual.models.results),
+    if(length(phylogeneticSignalResults$phyloSignal[, 1]) > 1){
+      mdl <- phylogeneticSignalResults$individual.models.results[[which(!is.na(stringr::str_extract(names(phylogeneticSignalResults$individual.models.results),
                                                                                                variable)))]]$model
     } else{
-      mdl <- phylo.signal.results$model
+      mdl <- phylogeneticSignalResults$model
     }
 
   }
@@ -47,25 +47,22 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
                                      method = "K"))
   lambda <- as.numeric(phytools::phylosig(modellingData$phylo,
                                           var.df, method = "lambda")[1])
-  phylo.signal.results <- list()
-  phylo.signal.results$model <- mdl
-  phylo.signal.results$wlambda.distr <- mdl$VCV[, "animal"]/(mdl$VCV[,
+  phylogeneticSignalResults <- list()
+  phylogeneticSignalResults$model <- mdl
+  phylogeneticSignalResults$wlambda.distr <- mdl$VCV[, "animal"]/(mdl$VCV[,
                                                                      "animal"] + mdl$VCV[, "units"])
-  wlambda <- mean(phylo.signal.results$wlambda.distr)
-  phylo.signal.results$resVar.distr <- mdl$VCV[, "units"]/(mdl$VCV[,
+  wlambda <- mean(phylogeneticSignalResults$wlambda.distr)
+  phylogeneticSignalResults$resVar.distr <- mdl$VCV[, "units"]/(mdl$VCV[,
                                                                    "animal"] + mdl$VCV[, "units"])
-  residualVariance <- mean(phylo.signal.results$resVar.distr)
-  phylo.signal.results$phyloSignal <- data.frame(Variable = variable,
+  residualVariance <- mean(phylogeneticSignalResults$resVar.distr)
+  phylogeneticSignalResults$phyloSignal <- data.frame(Variable = variable,
                                                  N = length(modellingData$dta$animal),
                                                  Model = fix.frml,
                                                  K = k,
                                                  Lambda = lambda,
                                                  Wlambda = wlambda,
                                                  Non_Phylogenetic_variance = residualVariance)
-  phylo.signal.results$model.diagnostics <- model.diagnostics
+  phylogeneticSignalResults$model.diagnostics <- model.diagnostics
 
-  save(phylo.signal.results, file = paste0(outputs.dir, "/models_outputs/phylo_signal.RData"))
-  print(paste0(outputs.dir, "/models_outputs/phylo_signal.RData"))
-
-  return(phylo.signal.results)
+  return(phylogeneticSignalResults)
 }

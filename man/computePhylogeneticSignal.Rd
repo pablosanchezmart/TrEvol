@@ -13,7 +13,7 @@ computePhylogeneticSignal(
 )
 }
 \arguments{
-\item{variable}{(character) Name of the variable. It must be contained in datset.}
+\item{variable}{(character) Name of the variable. It must be contained in dataset.}
 
 \item{dataset}{(data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.}
 

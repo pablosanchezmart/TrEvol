@@ -1,0 +1,50 @@
+#' Retrieve phylogenetic signal for each one of the traits contained in a vector
+#'
+#' @param VARIABLES (character) Names of the variables. They must be contained in dataset.
+#' @param PHYLOGENY (phylo) Phylogeny with tip labels contained in dataset$animal
+#' @param DATASET (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
+#' @param MODEL.SPECIFICATIONS (list) Mcmcglmm models specifications. See defineModelsSpecification.
+#' @param FORCERUN (logical) If false, models already run are not runned again.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+phylogeneticSignalTraits <- function(VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL, FORCERUN = F){
+
+  # models structure
+  uni_mdls.str <- data.frame("resp_var" = variables)
+  uni_mdls.str$type <- paste0("uni_", uni_mdls.str$resp_var)
+  uni_mdls.str$n_respVars <- 1
+  uni_mdls.str$pred_var <- ""
+  uni_mdls.str$fix.frml <- paste0(uni_mdls.str$resp_var, " ~ 1")
+  uni_mdls.str$ran.frml <- "~ animal"
+
+  individual.rslts <- list()
+  allPhyloSig.rslts <- data.frame()
+  allModelDiagnostics <- data.frame()
+  phylogeneticSignalResults <- list()
+  for(model in uni_mdls.str$type){
+    print(paste0("Running phylo. signal model: ", model))
+
+    model.descr <- uni_mdls.str %>% dplyr::filter(type == model)
+
+    mdl.rslts <- phyloSigFun(variable = model.descr$resp_var, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS, forceRun = FORCERUN)
+    individual.rslts[[model]] <- mdl.rslts
+    allPhyloSig.rslts <- rbind(allPhyloSig.rslts, mdl.rslts$phyloSignal)
+    allModelDiagnostics <- rbind(allModelDiagnostics, mdl.rslts$model.diagnostics)
+  }
+
+  phylogeneticSignalResults$individual.models.results <- individual.rslts
+  phylogeneticSignalResults$models.diagnostics <- allModelDiagnostics
+  phylogeneticSignalResults$phylogenetic.signal.results <- allPhyloSig.rslts
+  print("Model structure used:")
+  print(uni_mdls.str)
+  print("Phylogenetic signal results:")
+  print(allPhyloSig.rslts)
+
+  save(phylogeneticSignalResults, file = paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"))
+  print(paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"))
+
+  return(phylogeneticSignalResults)
+}
