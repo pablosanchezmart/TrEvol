@@ -10,7 +10,6 @@
 #' @export
 #'
 #' @examples
-#' @importFrom rlang .data
 computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specifications = NULL,
                                        forceRun = T)
 {
