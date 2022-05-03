@@ -29,7 +29,7 @@ simulateDataSet <- function(phylogeny = NA, nObs = 100, traitNames = c("HC_1", "
   rownames(diffMat) <- BM_traitNames
 
   BM.df = as.data.frame(castor::simulate_bm_model(phylogeny, diffusivity=diffMat)$tip_states)
-  colnames(BM.df) <- traitNames
+  colnames(BM.df) <- BM_traitNames
   BM.df <- cbind("animal" = phylogeny$tip.label, BM.df)
 
   rownames(BM.df) <- BM.df$animal
