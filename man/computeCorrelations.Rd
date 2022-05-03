@@ -9,8 +9,7 @@ computeCorrelations(
   variable2,
   dataset,
   phylogeny,
-  model.specifications = NULL,
-  forceRun = F
+  model.specifications = NULL
 )
 }
 \arguments{
@@ -23,8 +22,6 @@ computeCorrelations(
 \item{phylogeny}{(phylo) Phylogeny with tip labels contained in dataset$animal}
 
 \item{model.specifications}{(list) Mcmcglmm models specifications. See defineModelsSpecification.}
-
-\item{forceRun}{(logical) If false, models already run are not runned again.}
 }
 \value{
 

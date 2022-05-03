@@ -45,28 +45,35 @@ correlationsTraits <- function(VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATIO
     dplyr::filter(!duplicated(resp_var)) %>%
     dplyr::select(type, n_respVars, resp_var, resp_var1, resp_var2, pred_var, fix.frml, ran.frml, NP_ran.frml)
 
-  individual.rslts <- list()
-  allCorrelation.rslts <- data.frame()
-  allModelDiagnostics <- data.frame()
-  correlations.results <- list()
+  correlationsResults <- list()
+  correlationsResults$allCorrelation.rslts <- data.frame()
+  correlationsResults$allModelDiagnostics <- data.frame()
+  correlationsResults$individual.rslts <- list()
 
+  # load previous results
+  if (file.exists(paste0(outputs.dir, "/models_outputs/correlationsResults.RData"))) {
+    print("loanding previous results")
+    load(file = paste0(outputs.dir, "/models_outputs/correlationsResults.RData"))
+  }
+
+  # run models not included in results
   for(model in multi_mdls.str$type){
+    if (!model %in% names(correlationsResults$individual.models.results) | FORCERUN) {
     print(paste0("Running correlations model: ", model))
 
-    model.descr <- multi_mdls.str %>% dplyr::filter(type == model)
+    model.descr <- multi_mdls.str %>%
+      dplyr::filter(type == model)
 
-    mdl.rslts <- correlationFun(variable1 = model.descr$resp_var1, variable2 = model.descr$resp_var2, dta = DTA, tree = TREE,  model.specifications = MODEL.SPECIFICATIONS, forceRun = FORCERUN)
-    individual.rslts[[model]] <-  mdl.rslts
-
-    allCorrelation.rslts <- rbind(allCorrelation.rslts, mdl.rslts$corrrelationsSummary)
-    allModelDiagnostics <- rbind(allModelDiagnostics, mdl.rslts$model.diagnostics)
+    mdl.rslts <- computeCorrelations(variable1 = model.descr$resp_var1, variable2 = model.descr$resp_var2, datasert = DATASET, phylogeny = PHYLOGENY,
+                                     model.specifications = MODEL.SPECIFICATIONS)
+    correlationsResults$individual.models.results[[model]] <-  mdl.rslts
+    correlationsResults$correlation.results <- rbind(correlationsResults$correlation.results, mdl.rslts$corrrelationsSummary)
+    correlationsResults$models.diagnostics <- rbind(correlationsResults$models.diagnostics, mdl.rslts$model.diagnostics)
+    }
   }
-  correlations.results$individual.models.results <- individual.rslts
-  correlations.results$models.diagnostics <- allModelDiagnostics
-  correlations.results$correlation.results <- allCorrelation.rslts
-  correlations.results("Model structure used:")
+  correlationsResults("Model structure used:")
   print(multi_mdls.str)
   print("Phylogenetic signal results:")
   print(allCorrelation.rslts)
-  return(correlations.results)
+  return(correlationsResults)
 }

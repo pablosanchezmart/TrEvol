@@ -5,13 +5,12 @@
 #' @param dataset (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
 #' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
-#' @param forceRun (logical) If false, models already run are not runned again.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model.specifications = NULL, forceRun = F) {
+computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model.specifications = NULL) {
 
   # Model specifications
   if(is.null(model.specifications)){
@@ -25,11 +24,8 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model
   # Model
   fix.frml <- paste0("cbind(", variable1, ", ", variable2, ") ~ trait-1")
 
-  # Run models if previous results do not exist
-  if(!file.exists(paste0(outputs.dir, "/models_outputs/correlationResults.RData")) | forceRun){
-
-    # model
-    mdl <- MCMCglmm::MCMCglmm(fixed = stats::as.formula(fix.frml),
+  # model
+  mdl <- MCMCglmm::MCMCglmm(fixed = stats::as.formula(fix.frml),
                     random = ~ us(trait):animal, rcov = ~us(trait):units,
                     data= modellingData$dta, pedigree = modellingData$phylo,
                     family = c("gaussian", "gaussian"),
@@ -38,19 +34,8 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model
                     burnin = model.specifications$burning_iterations,
                     thin = model.specifications$thinning_iterations,
                     verbose = F)
-    mdl$name <- fix.frml
+  mdl$name <- fix.frml
 
-  } else {
-    print("loanding previous results")
-    load(file = paste0(outputs.dir, "/models_outputs/correlationsResults.RData"))
-
-    if(length(correlationsResults$corrrelationsSummary[, 1]) > 1){
-    mdl <- correlationsResults$individual.models.results[[which(!is.na(stringr::str_extract(names(correlationsResults$individual.models.results), variable1)) & !is.na(stringr::str_extract(names(correlationsResults$individual.models.results), variable2)))]]$model
-    } else{
-      mdl <- correlationsResults$model
-    }
-
-}
   # Bayesian model diagnostics check
   model.diagnostics <- diagnoseModels(mdl)
 

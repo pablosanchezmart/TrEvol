@@ -10,42 +10,41 @@
 #' @export
 #'
 #' @examples
-phylogeneticSignalTraits <- function(VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL, FORCERUN = F){
-
-  # models structure
-  uni_mdls.str <- data.frame("resp_var" = variables)
+phylogeneticSignalTraits <- function (VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL,
+                                      FORCERUN = F)
+{
+  uni_mdls.str <- data.frame(resp_var = VARIABLES)
   uni_mdls.str$type <- paste0("uni_", uni_mdls.str$resp_var)
   uni_mdls.str$n_respVars <- 1
   uni_mdls.str$pred_var <- ""
   uni_mdls.str$fix.frml <- paste0(uni_mdls.str$resp_var, " ~ 1")
   uni_mdls.str$ran.frml <- "~ animal"
 
-  phylogeneticSignalResults$phylogenetic.signal.results <- data.frame("variable" = variables)
-  phylogeneticSignalResults$models.diagnostics <- data.frame("variable" = variables)
+  phylogeneticSignalResults <- list()
+  phylogeneticSignalResults$phylogenetic.signal.results <- data.frame()
+  phylogeneticSignalResults$models.diagnostics <- data.frame()
   phylogeneticSignalResults$individual.models.results <- list()
 
-  # load previous results if exist
-
-  if (file.exists(paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData")) | !FORCERUN) {
+  # load previous results
+  if (file.exists(paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"))) {
     print("loanding previous results")
-    load(file = paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"), envir = .GlobalEnv)
-}
+    load(file = paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"))
+  }
 
-  for(model in uni_mdls.str$type){
+  # run models not included in results
+  for (model in uni_mdls.str$type) {
+    if (!model %in% names(phylogeneticSignalResults$individual.models.results) | FORCERUN) {
+      print(paste0("Running phylo. signal model: ", model))
+      model.descr <- uni_mdls.str %>%
+        dplyr::filter(type == model)
+      mdl.rslts <- computePhylogeneticSignal(variable = model.descr$resp_var, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
 
-    if(model %in% names(phylogeneticSignalResults$individual.models.results)){
-      next()
+      phylogeneticSignalResults$phylogenetic.signal.results <- rbind(phylogeneticSignalResults$phylogenetic.signal.results,
+                                                                     mdl.rslts$phyloSignal)
+      phylogeneticSignalResults$models.diagnostics <- rbind(phylogeneticSignalResults$models.diagnostics,
+                                                            mdl.rslts$model.diagnostics)
+      phylogeneticSignalResults$individual.models.results[[model]] <- mdl.rslts
     }
-
-    print(paste0("Running phylo. signal model: ", model))
-
-    model.descr <- uni_mdls.str %>% dplyr::filter(type == model)
-
-    mdl.rslts <- phyloSigFun(variable = model.descr$resp_var, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
-
-    phylogeneticSignalResults$phylogenetic.signal.results <- rbind(allPhyloSig.rslts, mdl.rslts$phyloSignal)
-    phylogeneticSignalResults$models.diagnostics <- rbind(allModelDiagnostics, mdl.rslts$model.diagnostics)
-    phylogeneticSignalResults$individual.models.results[[model]] <- mdl.rslts
   }
 
   print("Model structure used:")
