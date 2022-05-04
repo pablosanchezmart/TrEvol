@@ -1,3 +1,16 @@
+#' Retrieve partial phylogenetic signal for each one of the traits contained in a vector once a variable or a group of variables are considered as fixed effects
+#'
+#' @param VARIABLES (character) Names of the variables. They must be contained in dataset.
+#' @param PREDICTORS (character) Names of the predictors. They must be contained in dataset.
+#' @param PHYLOGENY (phylo) Phylogeny with tip labels contained in dataset$animal
+#' @param DATASET (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
+#' @param MODEL.SPECIFICATIONS (list) Mcmcglmm models specifications. See defineModelsSpecification.
+#' @param FORCERUN (logical) If false, models already run are not runned again.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 phylogeneticSignalTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL,
                                       FORCERUN = F) {
 
@@ -30,7 +43,7 @@ phylogeneticSignalTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET,
 
     # avoid running models already present in results
     if (!model %in% names(partialPhylogeneticSignalResults$individual.models.results) | FORCERUN) {
-      print(paste0("Running phylo. signal model: ", model))
+      print(paste0("Running partial phylo. signal model: ", model))
       model.descr <- uni_mdls.str %>%
         dplyr::filter(type == model)
       mdl.rslts <- computePhylogeneticSignal(variable = model.descr$resp_var, predictors = PREDICTORS, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
