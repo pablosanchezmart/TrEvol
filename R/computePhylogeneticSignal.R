@@ -22,21 +22,23 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
                                      method = "K"))
   lambda <- as.numeric(phytools::phylosig(modellingData$phylo,
                                           var.df, method = "lambda")[1])
+
+  wlambda.distr <- mdl$VCV[, "animal"]/(mdl$VCV[, "animal"] + mdl$VCV[, "units"])
+  resVar.distr <- mdl$VCV[, "units"]/(mdl$VCV[, "animal"] + mdl$VCV[, "units"])
+
+  # reuslts
   phylogeneticSignalResults <- list()
-  phylogeneticSignalResults$model <- mdl
-  phylogeneticSignalResults$wlambda.distr <- mdl$VCV[, "animal"]/(mdl$VCV[,
-                                                                     "animal"] + mdl$VCV[, "units"])
-  wlambda <- mean(phylogeneticSignalResults$wlambda.distr)
-  phylogeneticSignalResults$resVar.distr <- mdl$VCV[, "units"]/(mdl$VCV[,
-                                                                   "animal"] + mdl$VCV[, "units"])
-  residualVariance <- mean(phylogeneticSignalResults$resVar.distr)
   phylogeneticSignalResults$phyloSignal <- data.frame(Variable = variable,
-                                                 N = length(modellingData$dta$animal),
-                                                 Model = fix.frml,
-                                                 K = k,
-                                                 Lambda = lambda,
-                                                 Wlambda = wlambda,
-                                                 Non_Phylogenetic_variance = residualVariance)
+                                                      N = length(modellingData$dta$animal),
+                                                      Model = fix.frml,
+                                                      K = k,
+                                                      Lambda = lambda,
+                                                      Wlambda = mean(wlambda.distr),
+                                                      Non_Phylogenetic_variance = mean(resVar.distr))
+
+  phylogeneticSignalResults$wlambda.distr <- wlambda.distr
+  phylogeneticSignalResults$resVar.distr <- resVar.distr
+  phylogeneticSignalResults$model <- mdl
   phylogeneticSignalResults$model.diagnostics <- model.diagnostics
 
   return(phylogeneticSignalResults)

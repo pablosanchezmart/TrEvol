@@ -122,11 +122,11 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny, model.
 
   ## Results gathering
 
-  # Model
-  correlationsResults$model <- mdl
   # Correlations
   correlationsResults$correlations.distr <- correlationsChains
   correlationsResults$corrrelationsSummary <- t1.t2.cor.results
+  # Model
+  correlationsResults$model <- mdl
   # Model diagnostics
   correlationsResults$model.diagnostics <- model.diagnostics
   return(correlationsResults)
