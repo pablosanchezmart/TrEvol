@@ -1,12 +1,3 @@
-#' Compute phylogenetic signal using univariate phylogenetic mixed models for a given variable.
-#'
-#' @param variable (character) Name of the variable. It must be contained in dataset.
-#' @param dataset (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
-#' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
-#' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
-#'
-#' @return List containing univariate model results, diagnostics and phylogenetic signal results summary. Phlogenetic signal using Blomberg's K and Pagel's lambda are also reported (using phytools phylosig() fun)
-#' @export
 computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specifications = NULL) {
 
   modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = variable)

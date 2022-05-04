@@ -2,8 +2,6 @@
 
 export("%>%")
 export(completePhyloData)
-export(computeCorrelations)
-export(computePhylogeneticSignal)
 export(correlationsTraits)
 export(defineModelsSpecifications)
 export(diagnoseModels)

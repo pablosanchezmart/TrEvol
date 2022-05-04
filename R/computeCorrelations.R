@@ -1,16 +1,4 @@
-#' Compute correlations using bivariate phylogenetic mixed models for a given pair of variables.
-#'
-#' @param variable1 (character) Name of the variable. It must be contained in datset.
-#' @param variable2 (character) Name of the variable. It must be contained in datset.
-#' @param dataset (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
-#' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
-#' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
-#'
-#' @return
-#' @export
-#'
-#' @examples
-computeCorrelations <- function(variable1, variable2, dataset, phylogeny,  model.specifications = NULL) {
+computeCorrelations <- function(variable1, variable2, dataset, phylogeny, model.specifications = NULL) {
 
   # Model specifications
   if(is.null(model.specifications)){
