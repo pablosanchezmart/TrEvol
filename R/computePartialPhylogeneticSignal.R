@@ -44,16 +44,16 @@ computePhylogeneticSignal <- function(variable, predictors = NULL, dataset, phyl
   resNonPhylogeneticVar <- (mdl$VCV[, "units"])/(vmVarF + mdl$VCV[, "animal"] + mdl$VCV[, "units"])
 
   # results
-  phylogeneticSignalResults <- list()
-  phylogeneticSignalResults$phyloSignal <- data.frame("Variable" = response,
+  partialPhylogeneticSignalResults <- list()
+  partialPhylogeneticSignalResults$phyloSignal <- data.frame("Variable" = response,
                                                       "N" = length(modellingData$dta$animal),
                                                       "Model" = fix.frml,
                                                       "Partial_Wlambda" = mean(wlambda.distr),
                                                       "Partial_non_phylogenetic_variance" = mean(resNonPhylogeneticVar))
-  phylogeneticSignalResults$wlambda.distr <- wlambda.distr
-  phylogeneticSignalResults$resNonPhylogeneticVar <- resNonPhylogeneticVar
-  phylogeneticSignalResults$model <- mdl
-  phylogeneticSignalResults$model.diagnostics <- model.diagnostics
+  partialPhylogeneticSignalResults$wlambda.distr <- wlambda.distr
+  partialPhylogeneticSignalResults$resNonPhylogeneticVar <- resNonPhylogeneticVar
+  partialPhylogeneticSignalResults$model <- mdl
+  partialPhylogeneticSignalResults$model.diagnostics <- model.diagnostics
 
-  return(phylogeneticSignalResults)
+  return(partialPhylogeneticSignalResults)
 }
