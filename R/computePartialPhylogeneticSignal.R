@@ -1,7 +1,17 @@
-computePhylogeneticSignal <- function(variable, predictors, dataset, phylogeny, model.specifications = NULL) {
+computePhylogeneticSignal <- function(variable, predictors = NULL, dataset, phylogeny, model.specifications = NULL) {
 
-  modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = variable)
-  fix.frml <- paste0(variable, " ~ 1")
+  if(is.null(predictors)){
+    stop("Predictor needed. Define it as a character or a vector in the predictor argument.")
+  }
+
+
+  modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = C(variable, predictors))
+
+  # formula
+  fix.frml <- paste0(response, "~ 1 ")
+  for(predictor in predictors){
+    fix.frml <- paste0(fix.frml, " + ", predictor)
+  }
 
   if (is.null(model.specifications)) {
     print("Using default model specificatios. Use defineModelsSpecifications() output on model.specifications argument to set them manually.")
@@ -16,27 +26,33 @@ computePhylogeneticSignal <- function(variable, predictors, dataset, phylogeny, 
   mdl$name <- fix.frml
 
   model.diagnostics <- diagnoseModels(model = mdl)
-  var.df <- modellingData$dta[, variable]
-  names(var.df) <- modellingData$dta$animal
-  k <- as.numeric(phytools::phylosig(modellingData$phylo, var.df,
-                                     method = "K"))
-  lambda <- as.numeric(phytools::phylosig(modellingData$phylo,
-                                          var.df, method = "lambda")[1])
+
+
+  # Residual phylogenetic signal
+  n <- length(mdl$VCV[, 1])
+  vmVarF <- numeric(n)
+
+  # fixed effect explained variance (from Kakagawa 2013)
+  for(i in 1:n){
+    Var <- var(as.vector(mdl$Sol[i,] %*% t(mdl$X)))
+    vmVarF[i] <- Var
+  }
+
+  # partial phylogenetic signal calculation
+  wlambda.distr <- (mdl$VCV[, "animal"])/(vmVarF + mdl$VCV[, "animal"] + mdl$VCV[, "units"])
+
+  resNonPhylogeneticVar <- (mdl$VCV[, "units"])/(vmVarF + mdl$VCV[, "animal"] + mdl$VCV[, "units"])
+
+  # results
   phylogeneticSignalResults <- list()
+  phylogeneticSignalResults$phyloSignal <- data.frame("Variable" = response,
+                                                      "N" = length(modellingData$dta$animal),
+                                                      "Model" = fix.frml,
+                                                      "Partial_Wlambda" = mean(wlambda.distr),
+                                                      "Partial_non_phylogenetic_variance" = mean(resNonPhylogeneticVar))
+  phylogeneticSignalResults$wlambda.distr <- wlambda.distr
+  phylogeneticSignalResults$resNonPhylogeneticVar <- resNonPhylogeneticVar
   phylogeneticSignalResults$model <- mdl
-  phylogeneticSignalResults$wlambda.distr <- mdl$VCV[, "animal"]/(mdl$VCV[,
-                                                                          "animal"] + mdl$VCV[, "units"])
-  wlambda <- mean(phylogeneticSignalResults$wlambda.distr)
-  phylogeneticSignalResults$resVar.distr <- mdl$VCV[, "units"]/(mdl$VCV[,
-                                                                        "animal"] + mdl$VCV[, "units"])
-  residualVariance <- mean(phylogeneticSignalResults$resVar.distr)
-  phylogeneticSignalResults$phyloSignal <- data.frame(Variable = variable,
-                                                      N = length(modellingData$dta$animal),
-                                                      Model = fix.frml,
-                                                      K = k,
-                                                      Lambda = lambda,
-                                                      Wlambda = wlambda,
-                                                      Non_Phylogenetic_variance = residualVariance)
   phylogeneticSignalResults$model.diagnostics <- model.diagnostics
 
   return(phylogeneticSignalResults)
