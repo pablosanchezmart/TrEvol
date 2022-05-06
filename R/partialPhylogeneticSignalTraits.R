@@ -33,7 +33,7 @@ partialPhylogeneticSignalTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, D
   uni_mdls.str$NP_ran.frml <- ""
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/partialPhylogeneticSignalResults", PREDICTORS, ".RData"))) {
+  if (file.exists(paste0(outputs.dir, "/models_outputs/partialPhylogeneticSignalResults", PREDICTORS, ".RData")) && isFALSE(FORCERUN)) {
     print("loanding previous results")
     load(file = paste0(outputs.dir, "/models_outputs/partialPhylogeneticSignalResults", PREDICTORS, ".RData"))
   }

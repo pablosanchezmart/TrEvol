@@ -28,7 +28,7 @@ phylogeneticSignalTraits <- function (VARIABLES, PHYLOGENY, DATASET, MODEL.SPECI
   uni_mdls.str$ran.frml <- "~ animal"
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"))) {
+  if (file.exists(paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData")) && isFALSE(FORCERUN)) {
     print("loanding previous results")
     load(file = paste0(outputs.dir, "/models_outputs/phylogeneticSignalResults.RData"))
   }

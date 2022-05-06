@@ -52,7 +52,7 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
 
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/partialCorrelationsResults", PREDICTORS, ".RData"))) {
+  if (file.exists(paste0(outputs.dir, "/models_outputs/partialCorrelationsResults", PREDICTORS, ".RData")) && isFALSE(FORCERUN)) {
     print("loanding previous results")
     load(file = paste0(outputs.dir, "/models_outputs/partialCorrelationsResults", PREDICTORS, ".RData"))
   }

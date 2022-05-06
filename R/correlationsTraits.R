@@ -52,7 +52,7 @@ correlationsTraits <- function (VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATI
     dplyr::select(type,n_respVars, resp_var, resp_var1, resp_var2, pred_var, fix.frml, ran.frml, NP_ran.frml)
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/correlationsResults.RData"))) {
+  if (file.exists(paste0(outputs.dir, "/models_outputs/correlationsResults.RData")) && isFALSE(FORCERUN)) {
     print("loanding previous results")
     load(file = paste0(outputs.dir, "/models_outputs/correlationsResults.RData"))
   }
