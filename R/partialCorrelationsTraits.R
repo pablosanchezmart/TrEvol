@@ -23,7 +23,8 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
 
   # models structure
 
-  multi_mdls.str <- expand.grid(VARIABLES, VARIABLES) # all possible pairwise combinations between variables
+  multi_mdls.str <- expand.grid(VARIABLES, VARIABLES) # all possible pairwise combinations between variable
+  names(multi_mdls.str) <- c("Var1", "Var2")
 
   multi_mdls.str$type <- paste0("bi_", multi_mdls.str$Var1, "_", multi_mdls.str$Var2)
   multi_mdls.str$n_respVars <- 2
@@ -50,8 +51,8 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
   multi_mdls.str$NP_ran.frml <- ""
 
   multi_mdls.str <- multi_mdls.str %>%
-    filter(!Var1 == Var2) %>%
-    filter(!duplicated(resp_var)) %>%
+    dplyr::filter(!Var1 == Var2) %>%
+    dplyr::filter(!duplicated(resp_var)) %>%
     dplyr::select(type, n_respVars, resp_var, resp_var1, resp_var2, pred_var, fix.frml, ran.frml, NP_ran.frml)
 
 
