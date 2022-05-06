@@ -1,11 +1,11 @@
-computePartialCorrelations <- function(variable, predictors = NULL, dataset, phylogeny, model.specifications = NULL) {
+computePartialCorrelations <- function(variable1, variable2, predictors = NULL, dataset, phylogeny, model.specifications = NULL) {
 
   if(is.null(predictors)){
     stop("Predictor needed. Define it as a character or a vector in the predictor argument.")
   }
 
 
-  modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(variable, predictors))
+  modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(variable1, variable2, predictors))
 
   # formula
   fix.frml <- paste0("cbind(", variable1, ", ", variable2, ") ~ trait-1")

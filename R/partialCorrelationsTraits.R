@@ -71,7 +71,8 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
       model.descr <- multi_mdls.str %>%
       dplyr::filter(type == model)
 
-      mdl.rslts <- computePartialCorrelations(variable = model.descr$resp_var, predictors = PREDICTORS, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
+      mdl.rslts <- computePartialCorrelations(variable1 = model.descr$resp_var1, variable2 = model.descr$resp_var2, predictors = PREDICTORS, dataset = DATASET, phylogeny = PHYLOGENY,
+                                              model.specifications = MODEL.SPECIFICATIONS)
       partialCorrelationsResults$correlation.results <- rbind(correlationsResults$correlation.results,
                                                        mdl.rslts$corrrelationsSummary)
       partialCorrelationsResults$models.diagnostics <- rbind(correlationsResults$models.diagnostics,
