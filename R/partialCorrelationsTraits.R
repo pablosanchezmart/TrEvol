@@ -63,12 +63,12 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
   }
 
   # run models and extract results
-  for (model in uni_mdls.str$type) {
+  for (model in multi_mdls.str$type) {
 
     # avoid running models already present in results
     if (!model %in% names(partialCorrelationsResults$individual.models.results) | FORCERUN) {
       print(paste0("Running partial correlations model: ", model))
-      model.descr <- uni_mdls.str %>%
+      model.descr <- multi_mdls.str %>%
       dplyr::filter(type == model)
 
       mdl.rslts <- computePartialCorrelations(variable = model.descr$resp_var, predictors = PREDICTORS, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
@@ -81,7 +81,7 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
   }
 
   print("Model structure used:")
-  print(uni_mdls.str)
+  print(multi_mdls.str)
   print("Phylogenetic signal results:")
   print(partialCorrelationsResults$phylogenetic.signal.results)
 
