@@ -5,7 +5,7 @@ computePartialPhylogeneticSignal <- function(variable, predictors = NULL, datase
   }
 
 
-  modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = C(variable, predictors))
+  modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(variable, predictors))
 
   # formula
   fix.frml <- paste0(response, "~ 1 ")
