@@ -1,4 +1,17 @@
-plotVcvScatterplots <- function(VARIABLE1 = "ln_Ks", VARIABLE2 = "ln_negP50", DATASET, PREDICTORS,
+#' Plot scatterplots showing the variance-covariancae related to phylogeny-neutral genetic structure and convergence.
+#'
+#' @param VARIABLE1 (character) Name of the first variable. It must be contained in dataset.
+#' @param VARIABLE2 (character) Name of the second variable. It must be contained in dataset.
+#' @param PREDICTORS  (character) Names of the predictors. They must be contained in dataset.
+#' @param PHYLOGENY (phylo) Phylogeny with tip labels contained in dataset$animal
+#' @param DATASET (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
+#' @param MODEL.SPECIFICATIONS (list) Mcmcglmm models specifications. See defineModelsSpecification.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotVcvScatterplots <- function(VARIABLE1 = "ln_Ks", VARIABLE2 = "ln_negP50", PREDICTORS, DATASET,
                                 MODEL.SPECIFICATIONS, PHYLOGENY){
 
   #### TOTAL RESULTS ----------------------------------------------------------- ####
