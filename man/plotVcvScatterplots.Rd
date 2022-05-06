@@ -5,9 +5,9 @@
 \title{Plot scatterplots showing the variance-covariancae related to phylogeny-neutral genetic structure and convergence.}
 \usage{
 plotVcvScatterplots(
-  VARIABLE1 = "ln_Ks",
-  VARIABLE2 = "ln_negP50",
-  PREDICTORS,
+  VARIABLE1,
+  VARIABLE2,
+  PREDICTORS = NA,
   DATASET,
   MODEL.SPECIFICATIONS,
   PHYLOGENY

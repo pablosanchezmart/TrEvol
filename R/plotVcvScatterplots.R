@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-plotVcvScatterplots <- function(VARIABLE1 = "ln_Ks", VARIABLE2 = "ln_negP50", PREDICTORS, DATASET,
+plotVcvScatterplots <- function(VARIABLE1, VARIABLE2, PREDICTORS = NA, DATASET,
                                 MODEL.SPECIFICATIONS, PHYLOGENY){
 
   #### TOTAL RESULTS ----------------------------------------------------------- ####
@@ -40,10 +40,10 @@ plotVcvScatterplots <- function(VARIABLE1 = "ln_Ks", VARIABLE2 = "ln_negP50", PR
                   random = ~ us(trait):animal, rcov = ~us(trait):units,
                   data= modellingData$dta, pedigree = modellingData$phylo,
                   family = c("gaussian", "gaussian"),
-                  prior = model.specifications$multiresponse_prior,
-                  nitt = model.specifications$number_interations,
-                  burnin = model.specifications$burning_iterations,
-                  thin = model.specifications$thinning_iterations,
+                  prior = MODEL.SPECIFICATIONS$multiresponse_prior,
+                  nitt = MODEL.SPECIFICATIONS$number_interations,
+                  burnin = MODEL.SPECIFICATIONS$burning_iterations,
+                  thin = MODEL.SPECIFICATIONS$thinning_iterations,
                   verbose = F,
                   pr = T)
   mdl$name <- fix.frml
@@ -100,10 +100,10 @@ plotVcvScatterplots <- function(VARIABLE1 = "ln_Ks", VARIABLE2 = "ln_negP50", PR
                     random = ~ us(trait):animal, rcov = ~us(trait):units,
                     data= modellingData$dta, pedigree = modellingData$phylo,
                     family = c("gaussian", "gaussian"),
-                    prior = model.specifications$multiresponse_prior,
-                    nitt = model.specifications$number_interations,
-                    burnin = model.specifications$burning_iterations,
-                    thin = model.specifications$thinning_iterations,
+                    prior = MODEL.SPECIFICATIONS$multiresponse_prior,
+                    nitt = MODEL.SPECIFICATIONS$number_interations,
+                    burnin = MODEL.SPECIFICATIONS$burning_iterations,
+                    thin = MODEL.SPECIFICATIONS$thinning_iterations,
                     verbose = F,
                     pr = T)
     mdl$name <- fix.frml
