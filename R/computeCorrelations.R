@@ -103,21 +103,21 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny, model.
 
                                   "Total_cor" = mean(totalCor.t1.t2),
                                   "Phylogenetic_cor" = mean(phyloCor.t1.t2),
-                                  "Proportional_phylogenetic_cor" = mean(relativePhyloCor.t1.t2),
+                                  "Relative_phylogenetic_cor" = mean(relativePhyloCor.t1.t2),
                                   "Convergent_cor" = mean(resCor.t1.t2),
-                                  "Proportional_convergent_cor" = mean(relativeResCor.t1.t2),
+                                  "Relative_convergent_cor" = mean(relativeResCor.t1.t2),
 
                                   "SD_Total_cor" = stats::sd(totalCor.t1.t2),
                                   "SD_Phylogenetic_cor" = stats::sd(phyloCor.t1.t2),
-                                  "SD_Proportional_phylogenetic_cor" = stats::sd(relativePhyloCor.t1.t2),
+                                  "SD_Relative_phylogenetic_cor" = stats::sd(relativePhyloCor.t1.t2),
                                   "SD_Convergent_cor_sd" = stats::sd(resCor.t1.t2),
-                                  "SD_Proportional_convergent_cor" = stats::sd(relativeResCor.t1.t2),
+                                  "SD_Relative_convergent_cor" = stats::sd(relativeResCor.t1.t2),
 
                                   "Pvalue_Total_cor" = totalCor.t1.t2_pval,
                                   "Pvalue_Phylogenetic_cor" = phyloCor.t1.t2_pval,
-                                  "Pvalue_Proportional_phylogenetic_cor" = relativePhyloCor.t1.t2_pval,
+                                  "Pvalue_Relative_phylogenetic_cor" = relativePhyloCor.t1.t2_pval,
                                   "Pvalue_Convergent_cor" = resCor.t1.t2_pval,
-                                  "Pvalue_Proportional_convergent_cor" = relativeResCor.t1.t2_pval
+                                  "Pvalue_Relative_convergent_cor" = relativeResCor.t1.t2_pval
   )
 
   ## Results gathering

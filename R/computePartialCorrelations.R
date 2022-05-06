@@ -57,7 +57,7 @@ computePartialCorrelations <- function(variable1, variable2, predictors = NULL, 
   sol_2 <- mdl$Sol[, stringr::str_detect(colnames(mdl$X), variable2)]
   X_2 <- mdl$X[, stringr::str_detect(colnames(mdl$X), variable2)]
   for(i in 1:n){
-    Var <- var(as.vector(sol_2[i,] %*% t(as.matrix(X_2))))
+    Var <- stats::var(as.vector(sol_2[i,] %*% t(as.matrix(X_2))))
     vmVarF2[i] <- Var
   }
 
@@ -134,21 +134,21 @@ computePartialCorrelations <- function(variable1, variable2, predictors = NULL, 
 
                                                                 "Total_cor" = mean(totalCor.t1.t2),
                                                                 "Phylogenetic_cor" = mean(phyloCor.t1.t2),
-                                                                "Proportional_phylogenetic_cor" = mean(relativePhyloCor.t1.t2),
+                                                                "Relative_phylogenetic_cor" = mean(relativePhyloCor.t1.t2),
                                                                 "Convergent_cor" = mean(resCor.t1.t2),
-                                                                "Proportional_convergent_cor" = mean(relativeResCor.t1.t2),
+                                                                "Relative_convergent_cor" = mean(relativeResCor.t1.t2),
 
                                                                 "SD_Partial_total_cor" = stats::sd(totalCor.t1.t2),
                                                                 "SD_phylogenetic_cor" = stats::sd(phyloCor.t1.t2),
-                                                                "SD_Proportional_phylogenetic_cor" = stats::sd(relativePhyloCor.t1.t2),
+                                                                "SD_Relative_phylogenetic_cor" = stats::sd(relativePhyloCor.t1.t2),
                                                                 "SD_Convergent_cor" = stats::sd(resCor.t1.t2),
-                                                                "SD_Proportional_convergent_cor" = stats::sd(relativeResCor.t1.t2),
+                                                                "SD_Relative_convergent_cor" = stats::sd(relativeResCor.t1.t2),
 
                                                                 "Pvalue_Total_cor" = totalCor.t1.t2_pval,
                                                                 "Pvalue_Phylogenetic_cor" = phyloCor.t1.t2_pval,
-                                                                "Pvalue_Proportional_phylogenetic_cor" = relativePhyloCor.t1.t2_pval,
+                                                                "Pvalue_Relative_phylogenetic_cor" = relativePhyloCor.t1.t2_pval,
                                                                 "Pvalue_Convergent_cor" = resCor.t1.t2_pval,
-                                                                "Pvalue_Proportional_convergent_cor" = relativeResCor.t1.t2_pval
+                                                                "Pvalue_Relative_convergent_cor" = relativeResCor.t1.t2_pval
   )
 
   # Correlations

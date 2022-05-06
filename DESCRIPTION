@@ -18,6 +18,7 @@ Imports:
     coda,
     dplyr,
     faux,
+    ggplot2,
     igraph,
     magrittr,
     MCMCglmm,

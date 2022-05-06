@@ -33,7 +33,7 @@ computePartialPhylogeneticSignal <- function(variable, predictors = NULL, datase
 
   # fixed effect explained variance (from Kakagawa 2013)
   for(i in 1:n){
-    Var <- var(as.vector(mdl$Sol[i,] %*% t(as.matrix(mdl$X))))
+    Var <- stats::var(as.vector(mdl$Sol[i,] %*% t(as.matrix(mdl$X))))
     vmVarF[i] <- Var
   }
 
