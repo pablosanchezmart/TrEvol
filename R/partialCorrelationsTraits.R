@@ -12,7 +12,7 @@
 #'
 #' @examples
 partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL,
-                                      FORCERUN = F) {
+                                      FORCERUN = T) {
 
   # results object
   partialCorrelationsResults <- list()

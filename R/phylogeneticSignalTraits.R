@@ -11,7 +11,7 @@
 #'
 #' @examples
 phylogeneticSignalTraits <- function (VARIABLES, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL,
-                                      FORCERUN = F) {
+                                      FORCERUN = T) {
 
   # results object
   phylogeneticSignalResults <- list()

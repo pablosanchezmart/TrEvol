@@ -10,7 +10,7 @@ partialPhylogeneticSignalTraits(
   PHYLOGENY,
   DATASET,
   MODEL.SPECIFICATIONS = NULL,
-  FORCERUN = F
+  FORCERUN = T
 )
 }
 \arguments{
