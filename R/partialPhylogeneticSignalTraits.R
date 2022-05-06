@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-phylogeneticSignalTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL,
+partialPhylogeneticSignalTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET, MODEL.SPECIFICATIONS = NULL,
                                       FORCERUN = F) {
 
   # results object
