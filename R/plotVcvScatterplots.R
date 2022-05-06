@@ -140,7 +140,7 @@ plotVcvScatterplots <- function(VARIABLE1, VARIABLE2, PREDICTORS = NA, DATASET,
 
     fit.df <- data.frame("fit_1" = fit[1:length(modellingData$dta$animal), ],
                          "fit_2" = fit[(length(modellingData$dta$animal)+1):length(fit), ])
-    colnames(fit.df) <- c(variable1, variable2)
+    colnames(fit.df) <- c(VARIABLE1, VARIABLE2)
 
     modellingData$dta[, paste0("residuals_", VARIABLE1, ".", PREDICTORS)] <- modellingData$dta[, VARIABLE1] - fit.df[, VARIABLE1]
     modellingData$dta[, paste0("residuals_", VARIABLE2, ".", PREDICTORS)] <- modellingData$dta[, VARIABLE2] - fit.df[, VARIABLE2]
@@ -193,10 +193,10 @@ plotVcvScatterplots <- function(VARIABLE1, VARIABLE2, PREDICTORS = NA, DATASET,
 
   rangeY <- highY - lowY
 
-  variable1_axis <- stringr::str_replace_all(variable1, "_", " ")
+  variable1_axis <- stringr::str_replace_all(VARIABLE1, "_", " ")
   variable1_axis <- stringr::str_remove_all(variable1_axis, "ln")
 
-  variable2_axis <- stringr::str_replace_all(variable2, "_", " ")
+  variable2_axis <- stringr::str_replace_all(VARIABLE2, "_", " ")
   variable2_axis <- stringr::str_remove_all(variable2_axis, "ln")
 
   ### Data correlation ####
