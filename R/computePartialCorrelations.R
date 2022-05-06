@@ -50,14 +50,14 @@ computePartialCorrelations <- function(variable1, variable2, predictors = NULL, 
   sol_1 <- mdl$Sol[, stringr::str_detect(colnames(mdl$X), variable1)]
   X_1 <- mdl$X[, stringr::str_detect(colnames(mdl$X), variable1)]
   for(i in 1:n){
-    Var <- stats::var(as.vector(sol_1[i,] %*% t(X_1)))
+    Var <- stats::var(as.vector(sol_1[i,] %*% t(as.matrix(X_1))))
     vmVarF1[i] <- Var
   }
 
   sol_2 <- mdl$Sol[, stringr::str_detect(colnames(mdl$X), variable2)]
   X_2 <- mdl$X[, stringr::str_detect(colnames(mdl$X), variable2)]
   for(i in 1:n){
-    Var <- var(as.vector(sol_2[i,] %*% t(X_2)))
+    Var <- var(as.vector(sol_2[i,] %*% t(as.matrix(X_2))))
     vmVarF2[i] <- Var
   }
 
