@@ -44,7 +44,7 @@ computePartialPhylogeneticSignal <- function(variable, predictors = NULL, datase
 
   # results
   partialPhylogeneticSignalResults <- list()
-  partialPhylogeneticSignalResults$phyloSignal <- data.frame("Variable" = response,
+  partialPhylogeneticSignalResults$phyloSignal <- data.frame("Variable" = variable,
                                                       "N" = length(modellingData$dta$animal),
                                                       "Model" = fix.frml,
                                                       "Partial_Wlambda" = mean(wlambda.distr),
