@@ -46,7 +46,7 @@ partialPhylogeneticSignalTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, D
       print(paste0("Running partial phylo. signal model: ", model))
       model.descr <- uni_mdls.str %>%
         dplyr::filter(type == model)
-      mdl.rslts <- computePhylogeneticSignal(variable = model.descr$resp_var, predictors = PREDICTORS, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
+      mdl.rslts <- computePartialPhylogeneticSignal(variable = model.descr$resp_var, predictors = PREDICTORS, dataset = DATASET, phylogeny = PHYLOGENY, model.specifications = MODEL.SPECIFICATIONS)
 
       partialPhylogeneticSignalResults$phylogenetic.signal.results <- rbind(partialPhylogeneticSignalResults$phylogenetic.signal.results,
                                                                      mdl.rslts$phyloSignal)

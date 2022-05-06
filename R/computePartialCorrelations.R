@@ -5,7 +5,7 @@ computePartialCorrelations <- function(variable, predictors = NULL, dataset, phy
   }
 
 
-  modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = C(variable, predictors))
+  modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(variable, predictors))
 
   # formula
   fix.frml <- paste0("cbind(", variable1, ", ", variable2, ") ~ trait-1")
@@ -50,7 +50,7 @@ computePartialCorrelations <- function(variable, predictors = NULL, dataset, phy
   sol_1 <- mdl$Sol[, stringr::str_detect(colnames(mdl$X), variable1)]
   X_1 <- mdl$X[, stringr::str_detect(colnames(mdl$X), variable1)]
   for(i in 1:n){
-    Var <- var(as.vector(sol_1[i,] %*% t(X_1)))
+    Var <- stats::var(as.vector(sol_1[i,] %*% t(X_1)))
     vmVarF1[i] <- Var
   }
 
@@ -138,11 +138,11 @@ computePartialCorrelations <- function(variable, predictors = NULL, dataset, phy
                                                                 "Partial_convergent_cor" = mean(resCor.t1.t2),
                                                                 "Partial_proportional_convergent_cor" = mean(relativeResCor.t1.t2),
 
-                                                                "SD_Partial_total_cor" = sd(totalCor.t1.t2),
-                                                                "SD_Partial_phylogenetic_cor" = sd(phyloCor.t1.t2),
-                                                                "SD_Partial_Proportional_phylogenetic_cor" = sd(relativePhyloCor.t1.t2),
-                                                                "SD_Partial_convergent_cor" = sd(resCor.t1.t2),
-                                                                "SD_Partial_proportional_convergent_cor" = sd(relativeResCor.t1.t2),
+                                                                "SD_Partial_total_cor" = stats::sd(totalCor.t1.t2),
+                                                                "SD_Partial_phylogenetic_cor" = stats::sd(phyloCor.t1.t2),
+                                                                "SD_Partial_Proportional_phylogenetic_cor" = stats::sd(relativePhyloCor.t1.t2),
+                                                                "SD_Partial_convergent_cor" = stats::sd(resCor.t1.t2),
+                                                                "SD_Partial_proportional_convergent_cor" = stats::sd(relativeResCor.t1.t2),
 
                                                                 "Pvalue_Partial_total_cor" = totalCor.t1.t2_pval,
                                                                 "Pvalue_Partial_phylogenetic_cor" = phyloCor.t1.t2_pval,

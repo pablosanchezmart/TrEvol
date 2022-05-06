@@ -1,4 +1,4 @@
-computePhylogeneticSignal <- function(variable, predictors = NULL, dataset, phylogeny, model.specifications = NULL) {
+computePartialPhylogeneticSignal <- function(variable, predictors = NULL, dataset, phylogeny, model.specifications = NULL) {
 
   if(is.null(predictors)){
     stop("Predictor needed. Define it as a character or a vector in the predictor argument.")
