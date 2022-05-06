@@ -47,8 +47,8 @@ computePartialPhylogeneticSignal <- function(variable, predictors = NULL, datase
   partialPhylogeneticSignalResults$phyloSignal <- data.frame("Variable" = variable,
                                                       "N" = length(modellingData$dta$animal),
                                                       "Model" = fix.frml,
-                                                      "Partial_Wlambda" = mean(wlambda.distr),
-                                                      "Partial_non_phylogenetic_variance" = mean(resNonPhylogeneticVar))
+                                                      "Wlambda" = mean(wlambda.distr),
+                                                      "Non_Phylogenetic_variance" = mean(resNonPhylogeneticVar))
   partialPhylogeneticSignalResults$wlambda.distr <- wlambda.distr
   partialPhylogeneticSignalResults$resNonPhylogeneticVar <- resNonPhylogeneticVar
   partialPhylogeneticSignalResults$model <- mdl

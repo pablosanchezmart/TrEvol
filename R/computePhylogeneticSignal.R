@@ -28,13 +28,13 @@ computePhylogeneticSignal <- function(variable, dataset, phylogeny, model.specif
 
   # reuslts
   phylogeneticSignalResults <- list()
-  phylogeneticSignalResults$phyloSignal <- data.frame(Variable = variable,
-                                                      N = length(modellingData$dta$animal),
-                                                      Model = fix.frml,
-                                                      K = k,
-                                                      Lambda = lambda,
-                                                      Wlambda = mean(wlambda.distr),
-                                                      Non_Phylogenetic_variance = mean(resVar.distr))
+  phylogeneticSignalResults$phyloSignal <- data.frame("Variable" = variable,
+                                                      "N" = length(modellingData$dta$animal),
+                                                      "Model" = fix.frml,
+                                                      "K" = k,
+                                                      "Lambda" = lambda,
+                                                      "Wlambda" = mean(wlambda.distr),
+                                                      "Non_Phylogenetic_variance" = mean(resVar.distr))
 
   phylogeneticSignalResults$wlambda.distr <- wlambda.distr
   phylogeneticSignalResults$resVar.distr <- resVar.distr

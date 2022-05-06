@@ -141,14 +141,14 @@ computePartialCorrelations <- function(variable1, variable2, predictors = NULL, 
                                                                 "SD_Partial_total_cor" = stats::sd(totalCor.t1.t2),
                                                                 "SD_phylogenetic_cor" = stats::sd(phyloCor.t1.t2),
                                                                 "SD_Proportional_phylogenetic_cor" = stats::sd(relativePhyloCor.t1.t2),
-                                                                "SD_convergent_cor" = stats::sd(resCor.t1.t2),
-                                                                "SD_proportional_convergent_cor" = stats::sd(relativeResCor.t1.t2),
+                                                                "SD_Convergent_cor" = stats::sd(resCor.t1.t2),
+                                                                "SD_Proportional_convergent_cor" = stats::sd(relativeResCor.t1.t2),
 
-                                                                "Pvalue_total_cor" = totalCor.t1.t2_pval,
-                                                                "Pvalue_phylogenetic_cor" = phyloCor.t1.t2_pval,
+                                                                "Pvalue_Total_cor" = totalCor.t1.t2_pval,
+                                                                "Pvalue_Phylogenetic_cor" = phyloCor.t1.t2_pval,
                                                                 "Pvalue_Proportional_phylogenetic_cor" = relativePhyloCor.t1.t2_pval,
-                                                                "Pvalue_convergent_cor" = resCor.t1.t2_pval,
-                                                                "Pvalue_proportional_convergent_cor" = relativeResCor.t1.t2_pval
+                                                                "Pvalue_Convergent_cor" = resCor.t1.t2_pval,
+                                                                "Pvalue_Proportional_convergent_cor" = relativeResCor.t1.t2_pval
   )
 
   # Correlations
