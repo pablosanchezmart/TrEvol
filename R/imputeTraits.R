@@ -28,7 +28,7 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, imputati
     pCordA <- ape::pcoa(mat)
 
     phyloEigenV <- as.data.frame(pCordA$vectors)
-    phyloEigenV <- phyloEigenV[, c(1:100)]
+    phyloEigenV <- phyloEigenV[, c(1:50)]
     phyloEigenV$taxon <- rownames(phyloEigenV)
 
     imp.dataset <- merge(DATASET, phyloEigenV, by = "taxon", all.x = T)
