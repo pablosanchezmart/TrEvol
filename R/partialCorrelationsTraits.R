@@ -23,7 +23,7 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
 
   # models structure
 
-  multi_mdls.str <- expand.grid(variables.list, variables.list) # all possible pairwise combinations between variables
+  multi_mdls.str <- expand.grid(VARIABLES, VARIABLES) # all possible pairwise combinations between variables
 
   multi_mdls.str$type <- paste0("bi_", multi_mdls.str$Var1, "_", multi_mdls.str$Var2)
   multi_mdls.str$n_respVars <- 2
