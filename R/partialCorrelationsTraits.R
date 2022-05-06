@@ -42,6 +42,10 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
 
   multi_mdls.str$pred_var <- ""
   multi_mdls.str$fix.frml <- paste0("cbind(", multi_mdls.str$resp_var, ") ~ trait-1")
+
+  for(predictor in PREDICTORS){
+    multi_mdls.str$fix.frml <- paste0(multi_mdls.str$fix.frml, " + trait:", predictor)
+  }
   multi_mdls.str$ran.frml <- "~ us(trait):animal"
   multi_mdls.str$NP_ran.frml <- ""
 
