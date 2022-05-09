@@ -23,7 +23,6 @@ plotData <- function (phylogeny, dataset, variables, colorBy = NULL, nameBy = NU
   dataset <- as.data.frame(dataset)
   row.names(dataset) <- dataset$animal
   dataset <- dataset[phylogeny$tip.label, ]
-  dataset <- dataset[, c("animal", variables)]
 
   p <- ggtree::ggtree(phylogeny) +  ggplot2::coord_cartesian(clip = "off")
 
