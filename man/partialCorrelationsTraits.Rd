@@ -18,7 +18,7 @@ partialCorrelationsTraits(
 
 \item{PREDICTORS}{(character) Names of the predictors. They must be contained in dataset.}
 
-\item{PHYLOGENY}{(phylo) Phylogeny with tip labels contained in dataset$animal}
+\item{PHYLOGENY}{(phylo) Phylogeny with tip labels contained in dataset$animal.}
 
 \item{DATASET}{(data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.}
 

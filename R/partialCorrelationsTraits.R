@@ -2,7 +2,7 @@
 #'
 #' @param VARIABLES  (character) Names of the variables. They must be contained in dataset.
 #' @param PREDICTORS (character) Names of the predictors. They must be contained in dataset.
-#' @param PHYLOGENY (phylo) Phylogeny with tip labels contained in dataset$animal
+#' @param PHYLOGENY (phylo) Phylogeny with tip labels contained in dataset$animal.
 #' @param DATASET (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
 #' @param MODEL.SPECIFICATIONS (list) Mcmcglmm models specifications. See defineModelsSpecification.
 #' @param FORCERUN (logical) If false, models already run are not runned again.
