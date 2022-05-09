@@ -61,7 +61,7 @@ partialPhylogeneticSignalTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, D
   assign(paste0("partialPhylogeneticSignalResults", PREDICTORS), partialPhylogeneticSignalResults)
 
 
-  save(paste0("partialPhylogeneticSignalResults", PREDICTORS), file = paste0(outputs.dir,
+  save(get(paste0("partialPhylogeneticSignalResults", PREDICTORS)), file = paste0(outputs.dir,
                                                        "/models_outputs/partialPhylogeneticSignalResults", PREDICTORS,
                                                        ".RData"))
   print(paste0(outputs.dir, "/models_outputs/partialPhylogeneticSignalResults",
