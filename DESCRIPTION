@@ -16,6 +16,7 @@ Imports:
     bayestestR,
     castor,
     coda,
+    corrplot,
     doParallel,
     dplyr,
     faux,
