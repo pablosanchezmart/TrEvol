@@ -87,7 +87,10 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
   print(partialCorrelationsResults$phylogenetic.signal.results)
 
   # save results
-  save(partialCorrelationsResults, file = paste0(outputs.dir, "/models_outputs/partialCorrelationsResults", PREDICTORS, ".RData"))
+
+  assign(paste0("partialCorrelationsResults", PREDICTORS), partialCorrelationsResults)
+
+  save(  assign(paste0("partialCorrelationsResults", PREDICTORS), partialCorrelationsResults), file = paste0(outputs.dir, "/models_outputs/partialCorrelationsResults", PREDICTORS, ".RData"))
   print(paste0(outputs.dir, "/models_outputs/partialCorrelationsResults", PREDICTORS, ".RData"))
 
   return(partialCorrelationsResults)
