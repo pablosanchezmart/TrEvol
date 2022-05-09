@@ -1,7 +1,7 @@
 #' Plot variance-covariance networks
 #'
 #' @param correlations (data frame) correlations output of correlationsTraits$correlations.rslts
-#' @param phylogenetic.signal (data frame() phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts
+#' @param phylogenetic.signal (data frame) phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts
 #' @param phyloSignal.name (character) variable name of the phylogenetic signal as reported in phylogenetic.signal
 #' @param correlation.type (character) variable name of the correlation as reported iun correlations
 #' @param gr_vars (data frame) character vector as long as the number of variables indicating the variable name in the first column and the group of the variable in the second.

@@ -23,7 +23,7 @@ plotNetwork(
 \arguments{
 \item{correlations}{(data frame) correlations output of correlationsTraits$correlations.rslts}
 
-\item{phylogenetic.signal}{(data frame() phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts}
+\item{phylogenetic.signal}{(data frame) phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts}
 
 \item{phyloSignal.name}{(character) variable name of the phylogenetic signal as reported in phylogenetic.signal}
 

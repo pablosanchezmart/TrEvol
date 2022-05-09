@@ -1,8 +1,14 @@
-plotCorrelationMatrices <- function(correlations,
-                                    phylogenetic.signal,
-                            correlation.type1 = "Proportional_phylo_cor_mean",
-                            correlation.type2 = "Proportional_resid_cor_mean",
-                            varsOrder = NULL){
+#' Plot correlatin matrices.
+#'
+#' @param correlations (data frame) correlations output of correlationsTraits$correlations.rslts
+#' @param phylogenetic.signal (data frame) phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts
+#' @param order_vars (character) order of the variables to plot.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotCorrelationMatrices <- function(correlations, phylogenetic.signal, order_vars = NULL){
 
   # Plot only significant correlations
   correlations[which(correlations[ , paste0("Total_cor", "_pvalue")] > 0.05 & correlations[ , paste0("Total_cor", "_pvalue")] > 0.05), c("Total_cor", "Phylogenetic_cor")] <- 0
@@ -30,8 +36,8 @@ plotCorrelationMatrices <- function(correlations,
     correlation.matrix[var2, var2] <- phylogenetic.signal[phylogenetic.signal$Variable == var2, "Wlambda"]
   }
 
-  if(!is.null(varsOrder)){
-    correlation.matrix <- correlation.matrix[varsOrder, varsOrder]
+  if(!is.null(order_vars)){
+    correlation.matrix <- correlation.matrix[order_vars, order_vars]
   }
 
   p <- corrplot::corrplot(correlation.matrix, lower = "circle", upper="pie", diag = T, cl.pos = "n", tl.col = "black")
