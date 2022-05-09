@@ -14,6 +14,7 @@ BugReports: https://github.com/pablosanchezmart/TrEvol/issues
 Imports: 
     ape,
     bayestestR,
+    BiocManager,
     castor,
     coda,
     corrplot,
@@ -21,6 +22,8 @@ Imports:
     dplyr,
     faux,
     ggplot2,
+    ggstance,
+    ggtree,
     igraph,
     magrittr,
     MCMCglmm,
