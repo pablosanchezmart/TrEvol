@@ -110,7 +110,7 @@ computeCorrelations <- function(variable1, variable2, dataset, phylogeny, model.
                                   "SD_Total_cor" = stats::sd(totalCor.t1.t2),
                                   "SD_Phylogenetic_cor" = stats::sd(phyloCor.t1.t2),
                                   "SD_Relative_phylogenetic_cor" = stats::sd(relativePhyloCor.t1.t2),
-                                  "SD_Convergent_cor_sd" = stats::sd(resCor.t1.t2),
+                                  "SD_Convergent_cor" = stats::sd(resCor.t1.t2),
                                   "SD_Relative_convergent_cor" = stats::sd(relativeResCor.t1.t2),
 
                                   "Pvalue_Total_cor" = totalCor.t1.t2_pval,
