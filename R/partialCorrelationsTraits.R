@@ -16,7 +16,7 @@ partialCorrelationsTraits <- function (VARIABLES, PREDICTORS, PHYLOGENY, DATASET
 
   # results object
   partialCorrelationsResults <- list()
-  partialCorrelationsResults$phylogenetic.signal.results <- data.frame()
+  partialCorrelationsResults$correlation.results <- data.frame()
   partialCorrelationsResults$models.diagnostics <- data.frame()
   partialCorrelationsResults$individual.models.results <- list()
 
