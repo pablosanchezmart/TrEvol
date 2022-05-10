@@ -3,12 +3,13 @@
 #' @param correlations (data frame) correlations output of correlationsTraits$correlations.rslts
 #' @param phylogenetic.signal (data frame) phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts
 #' @param order_vars (character) order of the variables to plot.
+#' @param labels (data frame) name of the variables and their corresponding labels to be ploted.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL) {
+plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL) {
   correlations[which(correlations[, "Pvalue_Total_cor"] > 0.05 &
                        correlations[, "Pvalue_Relative_phylogenetic_cor"] >
                        0.05), c("Total_cor", "Relative_phylogenetic_cor")] <- 0
