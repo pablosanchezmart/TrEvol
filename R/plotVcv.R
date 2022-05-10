@@ -69,7 +69,7 @@ plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, label
   mixed.matrix[lower.tri(mixed.matrix, diag = T)] <- proportion.correlation.matrix[lower.tri(proportion.correlation.matrix, diag = T)]
 
   if(isTRUE(plotLegend)){
-    p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black")
+    p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black", cl.pos = "b")
   } else {
     p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black", cl.pos = "n")
   }
