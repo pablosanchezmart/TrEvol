@@ -14,7 +14,7 @@ plotNetwork(
   edgeLab = F,
   layout = "spring",
   onlySignificant = T,
-  notShowCors = NA,
+  notShowCors = NULL,
   threshold = 0,
   labelSize = 0.8,
   nodeLab = NULL

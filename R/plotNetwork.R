@@ -20,7 +20,7 @@
 #' @examples
 plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.name = NULL,
                          correlation.type, gr_vars = NULL, order_vars = NULL, edgeLab = F,
-                         layout = "spring", onlySignificant = T, notShowCors = NA,
+                         layout = "spring", onlySignificant = T, notShowCors = NULL,
                          threshold = 0, labelSize = 0.8, nodeLab = NULL)
 {
   # set non significant values to zero if needed
@@ -46,7 +46,7 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
   }
 
   # remove variables in which we are not interested now
-  if (!is.na(notShowCors) && any(notShowCors %in% vars)) {
+  if (!is.null(notShowCors) && any(notShowCors %in% vars)) {
     vars <- vars[-which(vars %in% notShowCors)]
     correlation.matrix <- correlation.matrix[vars, vars]
   }
@@ -107,7 +107,7 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
   p <- qgraph::qgraph(correlation.matrix, layout = layout,
                       vsize = 5, vsize2 = 1, esize = 10 * max(correlation.matrix),
                       palette = "pastel", negDashed = T, borders = T, legend = F,
-                      vTrans = 180, fade = T, aspect = T, legend.cex = 0.25,
+                      vTrans = 180, fade = F, aspect = T, legend.cex = 0.25,
                       edge.labels = edgeLab, edge.label.cex = 2 * length(vars)/length(vars),
                       labels = nodeLab, label.cex = labelSize, label.scale = F,
                       node.label.offset = c(0.5, -2), pie = ps.vars, pieBorder = 1,
