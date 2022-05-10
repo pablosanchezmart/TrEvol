@@ -4,13 +4,7 @@
 \alias{plotVcv}
 \title{Plot variance-covariance matrix (phylogenetic signal and relative phylogentic and convergent correlations)}
 \usage{
-plotVcv(
-  correlations,
-  phylogenetic.signal,
-  order_vars = NULL,
-  labels = NULL,
-  plotLegend = T
-)
+plotVcv(correlations, phylogenetic.signal, order_vars = NULL, labels = NULL)
 }
 \arguments{
 \item{correlations}{(data frame) correlations output of correlationsTraits$correlations.rslts}
@@ -20,8 +14,6 @@ plotVcv(
 \item{order_vars}{(character) order of the variables to plot.}
 
 \item{labels}{(data frame) name of the variables and their corresponding labels to be ploted.}
-
-\item{plotLegend}{(logical) indicates if coloured legend should be plotted.}
 }
 \value{
 

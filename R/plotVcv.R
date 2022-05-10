@@ -4,13 +4,12 @@
 #' @param phylogenetic.signal (data frame) phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts
 #' @param order_vars (character) order of the variables to plot.
 #' @param labels (data frame) name of the variables and their corresponding labels to be ploted.
-#' @param plotLegend (logical) indicates if coloured legend should be plotted.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL, plotLegend = T) {
+plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL) {
   correlations[which(correlations[, "Pvalue_Total_cor"] > 0.05 &
                        correlations[, "Pvalue_Relative_phylogenetic_cor"] >
                        0.05), c("Total_cor", "Relative_phylogenetic_cor")] <- 0
@@ -68,10 +67,6 @@ plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, label
   mixed.matrix[upper.tri(mixed.matrix, diag = F)] <- total.correlation.matrix[upper.tri(total.correlation.matrix, diag = F)]
   mixed.matrix[lower.tri(mixed.matrix, diag = T)] <- proportion.correlation.matrix[lower.tri(proportion.correlation.matrix, diag = T)]
 
-  if(isTRUE(plotLegend)){
-    p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black", cl.pos = "b")
-  } else {
-    p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black", cl.pos = "n")
-  }
+  p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black")
   return(p)
 }
