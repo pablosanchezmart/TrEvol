@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL) {
+plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL, plotLegend = T) {
   correlations[which(correlations[, "Pvalue_Total_cor"] > 0.05 &
                        correlations[, "Pvalue_Relative_phylogenetic_cor"] >
                        0.05), c("Total_cor", "Relative_phylogenetic_cor")] <- 0
@@ -67,6 +67,10 @@ plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, label
   mixed.matrix[upper.tri(mixed.matrix, diag = F)] <- total.correlation.matrix[upper.tri(total.correlation.matrix, diag = F)]
   mixed.matrix[lower.tri(mixed.matrix, diag = T)] <- proportion.correlation.matrix[lower.tri(proportion.correlation.matrix, diag = T)]
 
-  p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black")
+  if(isTRUE(plotLegend)){
+    p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black")
+  } else {
+    p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black", cl.pos = "n")
+  }
   return(p)
 }

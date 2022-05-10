@@ -4,7 +4,13 @@
 \alias{plotVcv}
 \title{Plot variance-covariance matrix (phylogenetic signal and relative phylogentic and convergent correlations)}
 \usage{
-plotVcv(correlations, phylogenetic.signal, order_vars = NULL, labels = NULL)
+plotVcv(
+  correlations,
+  phylogenetic.signal,
+  order_vars = NULL,
+  labels = NULL,
+  plotLegend = T
+)
 }
 \arguments{
 \item{correlations}{(data frame) correlations output of correlationsTraits$correlations.rslts}
