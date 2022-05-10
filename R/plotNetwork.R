@@ -25,17 +25,16 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
 {
   # set non significant values to zero if needed
   if (onlySignificant) {
-    correlations[which(correlations[, paste0("Pvalue_", correlation.type)] > 0.05), correlation.type] <- 0
+    correlations[which(correlations[, paste0("Pvalue_", correlation.type)] >
+                         0.05), correlation.type] <- 0
   }
-
-  # prepare correlation matrix
   correlations <- correlations[, c("Variable1", "Variable2",
                                    correlation.type)]
   vars <- unique(c(correlations$Variable1, correlations$Variable2))
-  correlation.matrix <- matrix(ncol = length(vars), nrow = length(vars), 0)
+  correlation.matrix <- matrix(ncol = length(vars), nrow = length(vars),
+                               0)
   colnames(correlation.matrix) <- vars
   rownames(correlation.matrix) <- vars
-
   for (i in 1:length(correlations$Variable1)) {
     var1 <- correlations$Variable1[i]
     var2 <- correlations$Variable2[i]
@@ -44,37 +43,31 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
     correlation.matrix[var1, var1] <- 0
     correlation.matrix[var2, var2] <- 0
   }
-
-  # remove variables in which we are not interested now
   if (!is.null(notShowCors) && any(notShowCors %in% vars)) {
     vars <- vars[-which(vars %in% notShowCors)]
     correlation.matrix <- correlation.matrix[vars, vars]
   }
-
-  # group variables
   if (!is.null(gr_vars)) {
-    if(all(vars %in% gr_vars[, 1])){
-      gr_vars <- gr_vars[which(gr_vars[, 1] %in% vars), ]
-      correlation.matrix <- correlation.matrix[gr_vars[, 1],
-                                               gr_vars[, 1]]
+    if (all(vars %in% gr_vars[, 1])) {
+      gr_vars <- gr_vars[which(gr_vars[, 1] %in% vars),
+      ]
+      correlation.matrix <- correlation.matrix[gr_vars[,
+                                                       1], gr_vars[, 1]]
       vars <- gr_vars[, 1]
-    } else{
+    }
+    else {
       stop("Not all variables of interest are included in gr_vars argument.")
     }
-
-    # reorder varibles if needed
   }
   if (!is.null(order_vars)) {
-    if(all(vars %in% order_vars)){
+    if (all(vars %in% order_vars)) {
       vars <- order_vars[which(order_vars %in% vars)]
       correlation.matrix <- correlation.matrix[vars, vars]
-    } else{
+    }
+    else {
       stop("Not all variables of interest are included in order_vars argument.")
     }
-
   }
-
-  # network metrics
   corGraph <- igraph::graph.adjacency(abs(as.matrix(correlation.matrix)),
                                       mode = "lower", weighted = T)
   diameter <- round(igraph::diameter(corGraph, directed = F),
@@ -88,22 +81,18 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
                                transtiivity = transitivity)
   rownames(nodeLab) <- nodeLab[, 1]
   nodeLab <- nodeLab[vars, 2]
-
-  # phylogenetic signal (nodes)
-  if(!is.null(phylogenetic.signal)){
+  if (!is.null(phylogenetic.signal)) {
     rownames(phylogenetic.signal) <- phylogenetic.signal[, 1]
-
-    if(!is.null(phylogenetic.signal) && all(rownames(phylogenetic.signal) %in% vars)){
+    if (!is.null(phylogenetic.signal) && all(vars %in% rownames(phylogenetic.signal))) {
       ps.vars <- phylogenetic.signal[vars, phyloSignal.name]
-    } else{
+    }
+    else {
       stop("Not all variables of interst are present in the phylogenetic signal dataframe")
     }
-
-  } else{
+  }
+  else {
     ps.vars <- rep(NULL, length(correlation.matrix[, 1]))
   }
-
-  # plot
   p <- qgraph::qgraph(correlation.matrix, layout = layout,
                       vsize = 5, vsize2 = 1, esize = 10 * max(correlation.matrix),
                       palette = "pastel", negDashed = T, borders = T, legend = F,
@@ -118,4 +107,3 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
                                                   round(networkMetrics$transtiivity, 2)), adj = 0, cex = 0.6)
   return(p)
 }
-
