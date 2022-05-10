@@ -4,6 +4,7 @@
 #' @param phylogenetic.signal (data frame) phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts
 #' @param order_vars (character) order of the variables to plot.
 #' @param labels (data frame) name of the variables and their corresponding labels to be ploted.
+#' @param plotLegend (logical) indicates if coloured legend should be plotted.
 #'
 #' @return
 #' @export

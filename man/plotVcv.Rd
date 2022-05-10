@@ -20,6 +20,8 @@ plotVcv(
 \item{order_vars}{(character) order of the variables to plot.}
 
 \item{labels}{(data frame) name of the variables and their corresponding labels to be ploted.}
+
+\item{plotLegend}{(logical) indicates if coloured legend should be plotted.}
 }
 \value{
 
