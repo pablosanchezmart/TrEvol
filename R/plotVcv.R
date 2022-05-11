@@ -15,8 +15,7 @@ plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, label
                        0.05), c("Total_cor", "Relative_phylogenetic_cor")] <- 0
   correlations <- correlations[, c("Variable1", "Variable2",
                                    "Total_cor", "Relative_phylogenetic_cor")]
-  correlations$cor_proportion <- abs(correlations[, "Total_cor"])/(abs(correlations[,
-                                                                                    "Total_cor"]) + (abs(correlations[, "Relative_phylogenetic_cor"])))
+  correlations$cor_proportion <- abs(abs(correlations[, "Relative_phylogenetic_cor"])/(abs(correlations[,"Total_cor"])))
   correlations$cor_proportion[which(is.na(correlations$cor_proportion))] <- 0
   correlations <- correlations %>% dplyr::select(Variable1,
                                                  Variable2, cor_proportion, Total_cor)
