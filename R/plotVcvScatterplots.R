@@ -287,7 +287,7 @@ plotVcvScatterplots <- function(VARIABLE1, VARIABLE2, PREDICTORS = NA, DATASET,
                                                x = Inf, y = -Inf, hjust = 1, vjust = 0)
 
       v1.predictor <- v1.predictor + ggplot2::xlab(PREDICTORS) + ggplot2::ylab(variable1_axis) + ggplot2::xlim(lowX, highX) + ggplot2::ylim(lowY, highY)
-      v1.predictor <- v1.predictor
+      v1.predictor <- v1.predictor + ggplot2::ggtitle(paste0(variable1_axis, " vs\n", predictor_axis))
 
       rslts$v1.predictor <- v1.predictor
 
@@ -297,7 +297,7 @@ plotVcvScatterplots <- function(VARIABLE1, VARIABLE2, PREDICTORS = NA, DATASET,
                                                x = Inf, y = -Inf, hjust = 1, vjust = 0)
 
       v2.predictor <- v2.predictor + ggplot2::xlab(predictor_axis) + ggplot2::ylab(variable2_axis) + ggplot2::xlim(lowX, highX) + ggplot2::ylim(lowY, highY)
-      v2.predictor <- v2.predictor
+      v2.predictor <- v2.predictor + ggplot2::ggtitle(paste0(variable2_axis, " vs\n", predictor_axis))
 
       rslts$v2.predictor <- v2.predictor
     }
