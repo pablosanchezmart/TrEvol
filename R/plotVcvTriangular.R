@@ -195,7 +195,7 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
   PIE.dat2 = PIE.dat2 + Pos[rep(1:length(DAT), len.pie), ]
 
   # symbols(Pos, add = TRUE, inches = FALSE, circles = rep(0.5, len.DAT) * 0.85, fg = col.border)
-  symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.fill, bg = bg, lwd = 3)
+  symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.fill, bg = bg, lwd = 2)
 
   polygon(PIE.dat2, border = col.fill, col = col.fill)
 

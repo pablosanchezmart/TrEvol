@@ -11,9 +11,7 @@
 #'
 #' @examples
 plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL, triangular = T) {
-  correlations[which(correlations[, "Pvalue_Total_cor"] > 0.05 &
-                       correlations[, "Pvalue_Relative_phylogenetic_cor"] >
-                       0.05), c("Total_cor", "Relative_phylogenetic_cor")] <- 0
+  correlations[which(correlations[, "Pvalue_Total_cor"] > 0.05 & correlations[, "Pvalue_Relative_phylogenetic_cor"] > 0.05), c("Total_cor", "Relative_phylogenetic_cor", "Relative_convergent_cor")] <- 0
 
   correlations$cor_proportion <- abs(correlations[, "Relative_phylogenetic_cor"]) /
     (abs(correlations[, "Relative_convergent_cor"]) + (abs(correlations[, "Relative_phylogenetic_cor"])))
@@ -65,7 +63,7 @@ plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, label
   }
 
   if(isTRUE(triangular)){
-    plotVcvTriangular(corr = total.correlation.matrix, corrProp = proportion.correlation.matrix)
+    p <- plotVcvTriangular(corr = total.correlation.matrix, corrProp = proportion.correlation.matrix)
   } else{
     mixed.matrix <- proportion.correlation.matrix
     mixed.matrix[upper.tri(mixed.matrix, diag = F)] <- total.correlation.matrix[upper.tri(total.correlation.matrix, diag = F)]
