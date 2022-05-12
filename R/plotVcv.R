@@ -4,12 +4,13 @@
 #' @param phylogenetic.signal (data frame) phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts
 #' @param order_vars (character) order of the variables to plot.
 #' @param labels (data frame) name of the variables and their corresponding labels to be ploted.
+#' @param triangular (logical) if true, all the information is plotted together in an efficient way in a triangular matrix.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL) {
+plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL, triangular = T) {
   correlations[which(correlations[, "Pvalue_Total_cor"] > 0.05 &
                        correlations[, "Pvalue_Relative_phylogenetic_cor"] >
                        0.05), c("Total_cor", "Relative_phylogenetic_cor")] <- 0
@@ -63,10 +64,17 @@ plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, label
     colnames(total.correlation.matrix) <- labels
   }
 
-  mixed.matrix <- proportion.correlation.matrix
-  mixed.matrix[upper.tri(mixed.matrix, diag = F)] <- total.correlation.matrix[upper.tri(total.correlation.matrix, diag = F)]
-  mixed.matrix[lower.tri(mixed.matrix, diag = T)] <- proportion.correlation.matrix[lower.tri(proportion.correlation.matrix, diag = T)]
+  if(isTRUE(triangular)){
+    plotVcvTriangular(corr = total.correlation.matrix, corrProp = proportion.correlation.matrix)
+  } else{
+    mixed.matrix <- proportion.correlation.matrix
+    mixed.matrix[upper.tri(mixed.matrix, diag = F)] <- total.correlation.matrix[upper.tri(total.correlation.matrix, diag = F)]
+    mixed.matrix[lower.tri(mixed.matrix, diag = T)] <- proportion.correlation.matrix[lower.tri(proportion.correlation.matrix, diag = T)]
 
-  p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black")
+    p <- corrplot::corrplot.mixed(mixed.matrix, lower = 'pie', upper = 'circle', diag = "l", tl.pos = "lt", tl.col = "black")
+  }
+
+
   return(p)
 }
+

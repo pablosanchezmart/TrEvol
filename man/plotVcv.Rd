@@ -4,7 +4,13 @@
 \alias{plotVcv}
 \title{Plot variance-covariance matrix (phylogenetic signal and relative phylogentic and convergent correlations)}
 \usage{
-plotVcv(correlations, phylogenetic.signal, order_vars = NULL, labels = NULL)
+plotVcv(
+  correlations,
+  phylogenetic.signal,
+  order_vars = NULL,
+  labels = NULL,
+  triangular = T
+)
 }
 \arguments{
 \item{correlations}{(data frame) correlations output of correlationsTraits$correlations.rslts}
@@ -14,6 +20,8 @@ plotVcv(correlations, phylogenetic.signal, order_vars = NULL, labels = NULL)
 \item{order_vars}{(character) order of the variables to plot.}
 
 \item{labels}{(data frame) name of the variables and their corresponding labels to be ploted.}
+
+\item{triangular}{(logical) if true, all the information is plotted together in an efficient way in a triangular matrix.}
 }
 \value{
 

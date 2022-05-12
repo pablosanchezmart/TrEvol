@@ -1,7 +1,5 @@
-
-
-plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = "white", title = "", add = FALSE, diag = TRUE, outline = FALSE, mar = c(0, 0, 0, 0), addgrid.col = NULL,  tl.pos = NULL,
-          tl.cex = 1, tl.col = "black", tl.offset = 0.4, tl.srt = 90, cl.pos = NULL, cl.length = NULL, cl.cex = 0.8, cl.ratio = 0.15, cl.align.text = "c", cl.offset = 0.5)
+plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = "white", title = "", add = FALSE, diag = TRUE, outline = FALSE, mar = c(0, 0, 0, 0), addgrid.col = NULL,  tl.pos = "ld",
+                               tl.cex = 1, tl.col = "black", tl.offset = 0.4, tl.srt = 90, cl.pos = "b", cl.length = NULL, cl.cex = 0.8, cl.ratio = 0.15, cl.align.text = "c", cl.offset = 0.5, type = "lower")
 {
 
 
@@ -79,7 +77,7 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
   col.lim2 = (intercept + col.lim) * zoom
   int = intercept * zoom
 
-  if (is.null(col) & is.corr) {
+  if (is.null(col)) {
     col = COL2("RdBu", 200)
   }
 
@@ -102,7 +100,7 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
   Pos = getPos.Dat(corr)[[1]]
   PosName = getPos.Dat(corr)[[3]]
 
-  AllCoords = rbind(Pos, PosNA)
+  AllCoords = rbind(Pos)
   n2 = max(AllCoords[, 2])
   n1 = min(AllCoords[, 2])
   nn = n2 - n1
@@ -122,22 +120,6 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
   ### PLOTTING SPECIFICATIONS ####
 
   col.fill = assign.color()
-
-  if (isFALSE(tl.pos)) {
-    tl.pos = "n"
-  }
-
-  if (is.null(tl.pos) || isTRUE(tl.pos)) {
-    tl.pos = switch(type, full = "lt", lower = "ld", upper = "td")
-  }
-
-  if (isFALSE(cl.pos)) {
-    cl.pos = "n"
-  }
-
-  if (is.null(cl.pos) || isTRUE(cl.pos)) {
-    cl.pos = switch(type, full = "r", lower = "b", upper = "r")
-  }
 
   if (isFALSE(outline)) {
     col.border = col.fill
@@ -195,7 +177,7 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
     xlim = xlim + diff(xlim) * 0.01 * c(-1, 1)
     ylim = ylim + diff(ylim) * 0.01 * c(-1, 1)
 
-    plot.window(xlim = xlim, ylim = ylim, asp = win.asp,
+    plot.window(xlim = xlim, ylim = ylim,
                 xlab = "", ylab = "", xaxs = "i", yaxs = "i")
   }
 
@@ -209,14 +191,15 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
   len.pie = unlist(lapply(PIE.dat, length))/2
   PIE.dat2 = matrix(unlist(PIE.dat), ncol = 2, byrow = TRUE)
   PIE.dat2 <- PIE.dat2 * rep(DAT, len.pie)
+  PIE.dat2 <- PIE.dat2 * 0.85
   PIE.dat2 = PIE.dat2 + Pos[rep(1:length(DAT), len.pie), ]
 
   # symbols(Pos, add = TRUE, inches = FALSE, circles = rep(0.5, len.DAT) * 0.85, fg = col.border)
-  symbols(Pos, add = TRUE, inches = FALSE, circles = abs(DAT)/2, fg = col.fill, bg = bg)
+  symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.fill, bg = bg, lwd = 3)
 
   polygon(PIE.dat2, border = col.fill, col = col.fill)
 
-  draw_grid(AllCoords, addgrid.col)
+  draw_grid(AllCoords, "black")
 
 
   # Legend
@@ -241,9 +224,9 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
       ylim = c(n1 - 0.5 - nn * cl.ratio, n1 - 0.5 - nn *
                  0.02)
     }
-    colorlegend(colbar = colbar, labels = round(labels, 2),
-                offset = cl.offset, ratio.colbar = 0.3, cex = cl.cex,
-                xlim = xlim, ylim = ylim, vertical = vertical, align = cl.align.text)
+    corrplot::colorlegend(colbar = colbar, labels = round(labels, 2),
+                          offset = cl.offset, ratio.colbar = 0.3, cex = cl.cex,
+                          xlim = xlim, ylim = ylim, vertical = vertical, align = cl.align.text)
   }
 
   # labels
