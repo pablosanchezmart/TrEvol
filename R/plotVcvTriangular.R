@@ -7,8 +7,8 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
   ### FUNCTIONS ####
 
   draw_grid = function(coords, fg) {
-    symbols(coords, add = TRUE, inches = FALSE, fg = fg, bg = NA,
-            rectangles = matrix(1, nrow = nrow(coords), ncol = 2))
+    graphics::symbols(coords, add = TRUE, inches = FALSE, fg = fg, bg = NA,
+            pos.ylabel = matrix(1, nrow = nrow(coords), ncol = 2))
   }
 
   apply_mat_filter = function(mat) {
@@ -79,7 +79,7 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
   int = intercept * zoom
 
   if (is.null(col)) {
-    col = COL2("RdBu", 200)
+    col = corrplot::COL2("RdBu", 200)
   }
 
   ### MATRIX SPECIFICATIONS ####
@@ -145,17 +145,17 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
     stop("Unsupported value type for parameter outline")
   }
 
-  oldpar = par(mar = mar, bg = par()$bg)
-  on.exit(par(oldpar), add = TRUE)
+  oldpar = graphics::par(mar = mar, bg = graphics::par()$bg)
+  on.exit(graphics::par(oldpar), add = TRUE)
 
 
   ### PLOT ####
 
   if (!add) {
-    plot.new()
-    xlabwidth = max(strwidth(newrownames, cex = tl.cex))
-    ylabwidth = max(strwidth(newcolnames, cex = tl.cex))
-    laboffset = strwidth("W", cex = tl.cex) * tl.offset
+    graphics::plot.new()
+    xlabwidth = max(graphics::strwidth(newrownames, cex = tl.cex))
+    ylabwidth = max(graphics::strwidth(newcolnames, cex = tl.cex))
+    laboffset = graphics::strwidth("W", cex = tl.cex) * tl.offset
     for (i in 1:50) {
       xlim = c(m1 - 0.5 - laboffset - xlabwidth * (grepl("l",
                                                          tl.pos) | grepl("d", tl.pos)), m2 + 0.5 + mm *
@@ -166,10 +166,10 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
                  abs(sin(tl.srt * pi/180)) * grepl("t", tl.pos) +
                  ylabwidth * abs(sin(tl.srt * pi/180)) * (type ==
                                                             "lower") * grepl("d", tl.pos))
-      plot.window(xlim, ylim, asp = 1, xaxs = "i", yaxs = "i")
-      x.tmp = max(strwidth(newrownames, cex = tl.cex))
-      y.tmp = max(strwidth(newcolnames, cex = tl.cex))
-      laboffset.tmp = strwidth("W", cex = tl.cex) * tl.offset
+      graphics::plot.window(xlim, ylim, asp = 1, xaxs = "i", yaxs = "i")
+      x.tmp = max(graphics::strwidth(newrownames, cex = tl.cex))
+      y.tmp = max(graphics::strwidth(newcolnames, cex = tl.cex))
+      laboffset.tmp = graphics::strwidth("W", cex = tl.cex) * tl.offset
       if (max(x.tmp - xlabwidth, y.tmp - ylabwidth, laboffset.tmp -
               laboffset) < 0.001) {
         break
@@ -191,18 +191,18 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
     xlim = xlim + diff(xlim) * 0.01 * c(-1, 1)
     ylim = ylim + diff(ylim) * 0.01 * c(-1, 1)
 
-    plot.window(xlim = xlim, ylim = ylim,
+    graphics::plot.window(xlim = xlim, ylim = ylim,
                 xlab = "", ylab = "", xaxs = "i", yaxs = "i")
   }
 
-  laboffset = strwidth("W", cex = tl.cex) * tl.offset
+  laboffset = graphics::strwidth("W", cex = tl.cex) * tl.offset
 
-  symbols(Pos, add = TRUE, inches = FALSE, rectangles = matrix(1, len.DAT, 2), bg = bg, fg = bg)
+  graphics::symbols(Pos, add = TRUE, inches = FALSE, rectangles = matrix(1, len.DAT, 2), bg = bg, fg = bg)
 
   # Circle
   if(fillType == "circle"){
-    symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.border, lwd = 3)
-    symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DATprop)/2, fg = "black", bg = col.border)
+    graphics::symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.border, lwd = 3)
+    graphics::symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DATprop)/2, fg = "black", bg = col.border)
   }
 
   #  pie
@@ -214,8 +214,8 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
     PIE.dat2 <- PIE.dat2 * 0.85
     PIE.dat2 = PIE.dat2 + Pos[rep(1:length(DAT), len.pie), ]
 
-    symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.border, lwd = 3)
-    polygon(PIE.dat2, border = col.fill, col = col.fill)
+    graphics::symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.border, lwd = 3)
+    graphics::polygon(PIE.dat2, border = col.fill, col = col.fill)
   }
 
   draw_grid(AllCoords, "black")
@@ -267,23 +267,23 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
     if (tl.pos == "d") {
       pos.ylabel = cbind(m1:(m1 + nn) - 0.5, n2:n1)
       pos.ylabel = pos.ylabel[1:min(n, m), ]
-      symbols(pos.ylabel[, 1] + 0.5, pos.ylabel[, 2], add = TRUE,
+      graphics::symbols(pos.ylabel[, 1] + 0.5, pos.ylabel[, 2], add = TRUE,
               bg = bg, fg = addgrid.col, inches = FALSE, squares = rep(1,
                                                                        length(pos.ylabel[, 1])))
-      text(pos.ylabel[, 1] + 0.5, pos.ylabel[, 2], newcolnames[1:min(n,
+      graphics::text(pos.ylabel[, 1] + 0.5, pos.ylabel[, 2], newcolnames[1:min(n,
                                                                      m)], col = tl.col, cex = tl.cex)
     }
     else {
       if (tl.pos != "l") {
-        text(pos.xlabel[, 1], pos.xlabel[, 2], newcolnames,
+        graphics::text(pos.xlabel[, 1], pos.xlabel[, 2], newcolnames,
              srt = tl.srt, adj = ifelse(tl.srt == 0, c(0.5,
                                                        0), c(0, 0)), col = tl.col, cex = tl.cex,
              offset = tl.offset)
       }
-      text(pos.ylabel[, 1], pos.ylabel[, 2], newrownames,
+      graphics::text(pos.ylabel[, 1], pos.ylabel[, 2], newrownames,
            col = tl.col, cex = tl.cex, pos = 2, offset = tl.offset)
     }
   }
 
-  title(title)
+  graphics::title(title)
 }
