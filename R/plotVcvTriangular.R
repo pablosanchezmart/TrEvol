@@ -1,5 +1,6 @@
 plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = "white", title = "", add = FALSE, diag = TRUE, outline = FALSE, mar = c(0, 0, 0, 0), addgrid.col = NULL,  tl.pos = "ld",
-                               tl.cex = 1, tl.col = "black", tl.offset = 0.4, tl.srt = 90, cl.pos = "b", cl.length = NULL, cl.cex = 0.8, cl.ratio = 0.15, cl.align.text = "c", cl.offset = 0.5, type = "lower")
+                               tl.cex = 1, tl.col = "black", tl.offset = 0.4, tl.srt = 90, cl.pos = "b", cl.length = NULL, cl.cex = 0.8, cl.ratio = 0.15, cl.align.text = "c", cl.offset = 0.5, type = "lower",
+                               fillType = "circle")
 {
 
 
@@ -113,9 +114,22 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
 
   DAT = getPos.Dat(corr)[[2]]
   len.DAT = length(DAT)
-  rm(expand_expression)
+
+  # prop cor
+
+  if (is.null(rownames(corrProp))) {
+    rownames(corrProp) = 1:n
+  }
+
+  if (is.null(colnames(corrProp))) {
+    colnames(corrProp) = 1:m
+  }
+
+  newrownames = sapply(rownames(corrProp)[(n + 1 - n2):(n + 1 - n1)], expand_expression)
+  newcolnames = sapply(colnames(corrProp)[m1:m2], expand_expression)
 
   DATprop = getPos.Dat(corrProp)[[2]]
+  rm(expand_expression)
 
   ### PLOTTING SPECIFICATIONS ####
 
@@ -185,19 +199,24 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
 
   symbols(Pos, add = TRUE, inches = FALSE, rectangles = matrix(1, len.DAT, 2), bg = bg, fg = bg)
 
-  # Circles and pies
+  # Circle
+  if(fillType == "circle"){
+    symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.border, lwd = 3)
+    symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DATprop)/2, fg = "black", bg = col.border)
+  }
 
-  PIE.dat = lapply(DATprop * 2 * pi, pie.dat)
-  len.pie = unlist(lapply(PIE.dat, length))/2
-  PIE.dat2 = matrix(unlist(PIE.dat), ncol = 2, byrow = TRUE)
-  PIE.dat2 <- PIE.dat2 * rep(DAT, len.pie)
-  PIE.dat2 <- PIE.dat2 * 0.85
-  PIE.dat2 = PIE.dat2 + Pos[rep(1:length(DAT), len.pie), ]
+  #  pie
+  if(fillType == "pie"){
+    PIE.dat = lapply(DATprop * 2 * pi, pie.dat)
+    len.pie = unlist(lapply(PIE.dat, length))/2
+    PIE.dat2 = matrix(unlist(PIE.dat), ncol = 2, byrow = TRUE)
+    PIE.dat2 <- PIE.dat2 * rep(DAT, len.pie)
+    PIE.dat2 <- PIE.dat2 * 0.85
+    PIE.dat2 = PIE.dat2 + Pos[rep(1:length(DAT), len.pie), ]
 
-  # symbols(Pos, add = TRUE, inches = FALSE, circles = rep(0.5, len.DAT) * 0.85, fg = col.border)
-  symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.fill, bg = bg, lwd = 2)
-
-  polygon(PIE.dat2, border = col.fill, col = col.fill)
+    symbols(Pos, add = TRUE, inches = FALSE, circles = 0.85 * abs(DAT)/2, fg = col.border, lwd = 3)
+    polygon(PIE.dat2, border = col.fill, col = col.fill)
+  }
 
   draw_grid(AllCoords, "black")
 
