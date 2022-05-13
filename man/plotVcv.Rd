@@ -9,7 +9,8 @@ plotVcv(
   phylogenetic.signal,
   order_vars = NULL,
   labels = NULL,
-  triangular = T
+  triangular = T,
+  fillType = "pie"
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ plotVcv(
 \item{labels}{(data frame) name of the variables and their corresponding labels to be ploted.}
 
 \item{triangular}{(logical) if true, all the information is plotted together in an efficient way in a triangular matrix.}
+
+\item{triangularFillType}{(pie or "circle) Ow to represent proportional correlation"}
 }
 \value{
 

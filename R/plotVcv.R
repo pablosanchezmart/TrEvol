@@ -5,12 +5,13 @@
 #' @param order_vars (character) order of the variables to plot.
 #' @param labels (data frame) name of the variables and their corresponding labels to be ploted.
 #' @param triangular (logical) if true, all the information is plotted together in an efficient way in a triangular matrix.
+#' @param triangularFillType (pie or "circle) Ow to represent proportional correlation"
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL, triangular = T) {
+plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL, triangular = T, fillType = "pie") {
   correlations[which(correlations[, "Pvalue_Total_cor"] > 0.05 & correlations[, "Pvalue_Relative_phylogenetic_cor"] > 0.05), c("Total_cor", "Relative_phylogenetic_cor", "Relative_convergent_cor")] <- 0
 
   correlations$cor_proportion <- abs(correlations[, "Relative_phylogenetic_cor"]) /
@@ -63,7 +64,7 @@ plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, label
   }
 
   if(isTRUE(triangular)){
-    p <- plotVcvTriangular(corr = total.correlation.matrix, corrProp = proportion.correlation.matrix)
+    p <- plotVcvTriangular(corr = total.correlation.matrix, corrProp = proportion.correlation.matrix, fillType = triangularFillType)
   } else{
     mixed.matrix <- proportion.correlation.matrix
     mixed.matrix[upper.tri(mixed.matrix, diag = F)] <- total.correlation.matrix[upper.tri(total.correlation.matrix, diag = F)]
