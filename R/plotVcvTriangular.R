@@ -8,7 +8,7 @@ plotVcvTriangular <- function (corr, corrProp, col = NULL, col.lim = NULL, bg = 
 
   draw_grid = function(coords, fg) {
     graphics::symbols(coords, add = TRUE, inches = FALSE, fg = fg, bg = NA,
-            pos.ylabel = matrix(1, nrow = nrow(coords), ncol = 2))
+            rectangles = matrix(1, nrow = nrow(coords), ncol = 2))
   }
 
   apply_mat_filter = function(mat) {
