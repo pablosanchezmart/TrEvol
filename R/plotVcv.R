@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL, triangular = T, fillType = "pie") {
+plotVcv <- function (correlations, phylogenetic.signal, order_vars = NULL, labels = NULL, triangular = T, triangularFillType = "pie") {
   correlations[which(correlations[, "Pvalue_Total_cor"] > 0.05 & correlations[, "Pvalue_Relative_phylogenetic_cor"] > 0.05), c("Total_cor", "Relative_phylogenetic_cor", "Relative_convergent_cor")] <- 0
 
   correlations$cor_proportion <- abs(correlations[, "Relative_phylogenetic_cor"]) /

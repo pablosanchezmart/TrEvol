@@ -10,7 +10,7 @@ plotVcv(
   order_vars = NULL,
   labels = NULL,
   triangular = T,
-  fillType = "pie"
+  triangularFillType = "pie"
 )
 }
 \arguments{
