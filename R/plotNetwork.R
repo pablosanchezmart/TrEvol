@@ -21,7 +21,7 @@
 plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.name = NULL,
                          correlation.type, gr_vars = NULL, order_vars = NULL, edgeLab = F,
                          layout = "spring", onlySignificant = T, notShowCors = NULL,
-                         threshold = 0, labelSize = 0.8, nodeLab = NULL)
+                         threshold = 0, labelSize = 0.8, nodeLab = NULL, plotMetrics = T)
 {
   # set non significant values to zero if needed
   if (onlySignificant) {
@@ -102,8 +102,11 @@ plotNetwork <- function (correlations, phylogenetic.signal = NULL, phyloSignal.n
                       node.label.offset = c(0.5, -2), pie = ps.vars, pieBorder = 1,
                       DoNotPlot = F, threshold = threshold, groups = gr_vars[,
                                                                              2])
-  graphics::text(x = 0.5, y = -1, labels = paste0("Connectivity = ",
-                                                  round(networkMetrics$beta_connectivity, 2), "\n", "Transitivity = ",
-                                                  round(networkMetrics$transtiivity, 2)), adj = 0, cex = 0.6)
+
+  if(plotMetrics){
+    graphics::text(x = 0.5, y = -1, labels = paste0("Connectivity = ",
+                                                    round(networkMetrics$beta_connectivity, 2), "\n", "Transitivity = ",
+                                                    round(networkMetrics$transtiivity, 2)), adj = 0, cex = 0.6)
+  }
   return(p)
 }
