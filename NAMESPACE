@@ -2,13 +2,11 @@
 
 export("%>%")
 export(completePhyloData)
-export(correlationsTraits)
 export(defineModelsSpecifications)
 export(diagnoseModels)
 export(imputeTraits)
 export(initializeTrEvo)
 export(meanOrMode)
-export(partialCorrelationsTraits)
 export(plotData)
 export(plotNetwork)
 export(plotVcv)
