@@ -1,3 +1,16 @@
+#' Compute covarince partition
+#'
+#' @param variable1
+#' @param variable2
+#' @param predictors
+#' @param dataset
+#' @param phylogeny
+#' @param model.specifications
+#'
+#' @return
+#' @export
+#'
+#' @examples
 computePartialCorrelations <- function(variable1 = "BM_HC_1", variable2 = "BM_HC_2", predictors = "BM_HC_predictor", dataset, phylogeny, model.specifications = modelSpecifications) {
 
   if(is.null(predictors)){
