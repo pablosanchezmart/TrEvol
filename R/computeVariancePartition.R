@@ -20,15 +20,15 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
   traitsVariancePartitionResults$individual.models.results <- list()
 
   # prepare models structure
-  uni_mdls.str <- data.frame(resp_var = traits)
-  uni_mdls.str$type <- paste0("uni_", uni_mdls.str$resp_var)
+  uni_mdls.str <- data.frame(trait = traits)
+  uni_mdls.str$type <- paste0("uni_", uni_mdls.str$trait)
   uni_mdls.str$n_respVars <- 1
   uni_mdls.str$pred_var <- ""
-  uni_mdls.str$fix.frml <- paste0(uni_mdls.str$resp_var, " ~ 1")
+  uni_mdls.str$fix.frml <- paste0(uni_mdls.str$trait, " ~ 1")
   uni_mdls.str$ran.frml <- "~ animal"
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")) && isFALSE(FORCERUN)) {
+  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")) && isFALSE(forceRun)) {
     print("loanding previous results")
     load(file = paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
   }
@@ -36,14 +36,14 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
   # run models and extract results
   for (model in uni_mdls.str$type) {
 
-    if (!model %in% names(traitsVariancePartitionResults$individual.models.results) | FORCERUN) {
+    if (!model %in% names(traitsVariancePartitionResults$individual.models.results) | forceRun) {
 
       print(paste0("Running variance calculation: ", model))
 
       model.descr <- uni_mdls.str %>%
         dplyr::filter(type == model)
 
-      trait <- model.descr$resp_var
+      trait <- model.descr$trait
 
       modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait, environmentalVariables))
 
@@ -57,7 +57,7 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
 
       ## Phylogenetic model
 
-      fix.frml <- paste0(trait, "~ 1 ")
+      fix.frml <- paste0(trait, "~ 1",  collapse = " ")
 
       mdlPhylo <- MCMCglmm::MCMCglmm(stats::as.formula(fix.frml),
                                      random = ~animal, family = "gaussian", prior = model.specifications$uniresponse_prior,
@@ -118,7 +118,7 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
       if(!is.null(environmentalVariables)){
 
         for(predictor in environmentalVariables){
-          fix.frml <- paste0(fix.frml, " + ", predictor)
+          fix.frml <- paste0(fix.frml, " + ", predictor, collapse = " ")
         }
 
         mdlPhyloEnv <- MCMCglmm::MCMCglmm(stats::as.formula(fix.frml),

@@ -25,32 +25,30 @@ computeCovariancePartition <- function(traits = c("BM_HC_1", "BM_HC_2"), environ
   # models structure
 
   multi_mdls.str <- expand.grid(traits, traits) # all possible pairwise combinations between variable
-  names(multi_mdls.str) <- c("Var1", "Var2")
+  names(multi_mdls.str) <- c("trait1", "trait2")
 
-  multi_mdls.str$type <- paste0("bi_", multi_mdls.str$Var1, "_", multi_mdls.str$Var2)
+  multi_mdls.str$type <- paste0("bi_", multi_mdls.str$trait1, "_", multi_mdls.str$trait2)
 
   # This is needed in order to avoid models with the same response variables but in different order (which are equivalent models)
-  multi_mdls.str$resp_var <- NA
-  for(i in 1:length(multi_mdls.str$Var1)){
-    traits <- c(as.character(multi_mdls.str[i, "Var1"]), as.character(multi_mdls.str[i, "Var2"]))
+  multi_mdls.str$traits <- NA
+  for(i in 1:length(multi_mdls.str$trait1)){
+    traits <- c(as.character(multi_mdls.str[i, "trait1"]), as.character(multi_mdls.str[i, "trait2"]))
     traits <- sort(traits)
-    var1 <- as.character(traits[[1]])
-    var2 <- as.character(traits[[2]])
-    multi_mdls.str$resp_var[i] <- paste0(var1, ", ", var2)
-    multi_mdls.str$resp_var1[i] <- var1
-    multi_mdls.str$resp_var2[i] <- var2
+    multi_mdls.str$traits[i] <- paste0(trait1, ", ", trait2)
+    multi_mdls.str$trait1[i] <- as.character(traits[[1]])
+    multi_mdls.str$trait2[i] <-  as.character(traits[[2]])
   }
 
-  multi_mdls.str$fix.frml <- paste0("cbind(", multi_mdls.str$resp_var, ") ~ trait-1")
+  multi_mdls.str$fix.frml <- paste0("cbind(", multi_mdls.str$traits, ") ~ trait-1")
   multi_mdls.str$ran.frml <- "~ us(trait):animal"
 
   multi_mdls.str <- multi_mdls.str %>%
-    dplyr::filter(!Var1 == Var2) %>%
-    dplyr::filter(!duplicated(resp_var)) %>%
-    dplyr::select(type, resp_var, resp_var1, resp_var2, fix.frml, ran.frml)
+    dplyr::filter(!trait1 == trait2) %>%
+    dplyr::filter(!duplicated(traits)) %>%
+    dplyr::select(type, traits, trait1, trait2, fix.frml, ran.frml)
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmentalVariables, ".RData")) && isFALSE(FORCERUN)) {
+  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmentalVariables, ".RData")) && isFALSE(forceRun)) {
     print("loanding previous results")
     load(file = paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmentalVariables, ".RData"))
   }
@@ -59,14 +57,14 @@ computeCovariancePartition <- function(traits = c("BM_HC_1", "BM_HC_2"), environ
   for (model in multi_mdls.str$type) {
 
     # avoid running models already present in results
-    if (!model %in% names(traitsCovariancePartitionResults$individual.models.results) | FORCERUN) {
+    if (!model %in% names(traitsCovariancePartitionResults$individual.models.results) | forceRun) {
 
       print(paste0("Running covariance calculation: ", model))
       model.descr <- multi_mdls.str %>%
         dplyr::filter(type == model)
 
-      trait1 <- model.descr$resp_var1
-      trait2 <- model.descr$resp_var2
+      trait1 <- model.descr$trait1
+      trait2 <- model.descr$trait2
 
       modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait1, trait2, environmentalVariables))
 
