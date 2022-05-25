@@ -41,7 +41,11 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
       print(paste0("Running phylo. signal model: ", model))
 
       model.descr <- uni_mdls.str %>%
+<<<<<<< HEAD
         dplyr::filter(type == model)
+=======
+                     dplyr::filter(type == model)
+>>>>>>> bf0db1d746dc56f588e94da480ef4be98f4a6cc3
 
       modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait, environmentalVariables))
 
@@ -156,6 +160,7 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
                                                             "total_environmental" = mean(totalEnvironmental),
                                                             "pure_environmental" = mean(pureEnvironmental),
                                                             "residual" = mean(residual)
+<<<<<<< HEAD
         )
 
         variancePartitionResults$variancePartitionDistributions[Pure_phylogenetic_conservatism] <- purePhyloVar
@@ -176,6 +181,28 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
         traitsVariancePartitionResults$individual.models.results[[model]] <- variancePartitionResults
 
       }
+=======
+                                                            )
+
+    variancePartitionResults$variancePartitionDistributions[Pure_phylogenetic_conservatism] <- purePhyloVar
+    variancePartitionResults$variancePartitionDistributions[Phylogenetic_niche_conservatism] <- phylogeneticNicheConservatism
+    variancePartitionResults$variancePartitionDistributions[total_environmental] <- totalEnvironmental
+    variancePartitionResults$variancePartitionDistributions[pure_environmental] <- pureEnvironmental
+    variancePartitionResults$variancePartitionDistributions[residual] <- residual
+
+    variancePartitionResults$mdlPhyloEnv <- mdlPhyloEnv
+    variancePartitionResults$mdlPhyloEnv.diagnostics <- model.diagnostics
+
+    # add to all traits results
+    traitsVariancePartitionResults$phylogenetic.signal.results <- rbind(traitsVariancePartitionResults$phylogenetic.signal.results,
+                                                                   variancePartitionResults$phyloSignal)
+
+    traitsVariancePartitionResults$models.diagnostics <- rbind(traitsVariancePartitionResults$models.diagnostics,
+                                                          variancePartitionResults$model.diagnostics)
+    traitsVariancePartitionResults$individual.models.results[[model]] <- variancePartitionResults
+
+  }
+>>>>>>> bf0db1d746dc56f588e94da480ef4be98f4a6cc3
 
     }  # end evaluation if model already exists in results
 
