@@ -1,18 +1,18 @@
 #' Create and define results and outputs folders structure.
 #'
-#' @param folderName (character) Folder name.
+#' @param folder.name (character) Folder name.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-initializeTrEvo <- function(folderName = "simulations"){
+initializeTrEvo <- function(folder.name = "simulations"){
 
   print("loading workspace ...")
   options(scipen = 999, digits = 3)
   wd <- getwd()
-  outputs.dir <- paste0(wd, "/outputs/outputs_", folderName)
-  results.dir <- paste0(wd, "/results/results_", folderName)
+  outputs.dir <- paste0(wd, "/outputs/outputs_", folder.name)
+  results.dir <- paste0(wd, "/results/results_", folder.name)
   dir.create("outputs", showWarnings = F)
   dir.create(outputs.dir, showWarnings = F)
   dir.create(paste0(outputs.dir, "/models_outputs"), showWarnings = F)

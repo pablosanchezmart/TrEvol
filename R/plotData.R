@@ -1,19 +1,19 @@
 #' Plot data on the phylogeny
 #'
-#' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
-#' @param dataset (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
 #' @param variables (character) Names of the variables. They must be contained in dataset.
-#' @param colorBy (character) name of the variable to colour the tree by.
+#' @param dataset (data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.
+#' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
+#' @param color.by (character) name of the variable to colour the tree by.
 #' @param nameBy (character) name of the taxonomic variable to name the tree by.
-#' @param panelSpace (numeric)
-#' @param FontsizeFactor (numeric)
+#' @param panel.space (numeric)
+#' @param Fontsize.factor (numeric)
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotData <- function (phylogeny, dataset, variables, colorBy = NULL, nameBy = NULL,
-                      panelSpace = 4, FontsizeFactor = 0.1) {
+plotData <- function (variables, dataset, phylogeny, color.by = NULL, nameBy = NULL,
+                      panel.space = 4, Fontsize.factor = 0.1) {
   if (!requireNamespace("ggtree", quietly = TRUE)) {
     BiocManager::install("ggtree", update = F, ask = F)
   }
@@ -38,13 +38,13 @@ plotData <- function (phylogeny, dataset, variables, colorBy = NULL, nameBy = NU
         nd <- phytools::findMRCA(phylogeny, spp, type = "node")
       }
 
-      p <- p + ggtree::geom_cladelabel(node = nd, label = o, fontsize = length(rownames(dataset[dataset[, nameBy] == o, ])) * FontsizeFactor + 1) +
+      p <- p + ggtree::geom_cladelabel(node = nd, label = o, fontsize = length(rownames(dataset[dataset[, nameBy] == o, ])) * Fontsize.factor + 1) +
         ggtree::theme_tree2(plot.margin = ggtree::margin(6, 6, 6, 6))
     }
   }
 
-  if (!is.null(colorBy)) {
-    cat.df <- data.frame(as.factor(dataset[, colorBy]))
+  if (!is.null(color.by)) {
+    cat.df <- data.frame(as.factor(dataset[, color.by]))
     for (var in variables) {
       d <- data.frame(id = row.names(dataset), varX = dataset[, var], color = cat.df[, 1])
       p <- ggtree::facet_plot(p, panel = var, data = d, geom = ggstance::geom_barh, mapping = ggtree::aes(x = varX, fill = color), stat = "identity")
@@ -55,6 +55,6 @@ plotData <- function (phylogeny, dataset, variables, colorBy = NULL, nameBy = NU
       p <- ggtree::facet_plot(p, panel = var, data = d, geom = ggstance::geom_barh, mapping = ggtree::aes(x = varX), stat = "identity")
     }
   }
-  p <- p + ggplot2::scale_fill_viridis_d() + ggplot2::theme(panel.spacing = ggtree::unit(panelSpace, "lines")) + ggplot2::theme(legend.position = "none")
+  p <- p + ggplot2::scale_fill_viridis_d() + ggplot2::theme(panel.spacing = ggtree::unit(panel.space, "lines")) + ggplot2::theme(legend.position = "none")
   print(p)
 }

@@ -1,18 +1,19 @@
 #' Covariance partition including (or not) environment
 #'
 #' @param traits (character) Name of the trait or list of traits. It  must be contained in the dataset.
-#' @param environmentalVariables (character) Names of the environmental variables They must be contained in dataset.
+#' @param environmental.variables (character) Names of the environmental variables They must be contained in dataset.
 #' @param dataset (data frame) Dataset containing the trait of interest and a column named "animal" describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
 #' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
-#' @param forceRun (logical) If false, models already run are not runned again.
+#' @param force.run (logical) If false, models already run are not runned again.
+#' @param save (logical) If false, resulta re not saved.
 #'
 #' @return
 #' @export
 #'
 #' @examples
 
-computeCovariancePartition <- function(traits, environmentalVariables = NULL, dataset, phylogeny, model.specifications = NULL, forceRun = T) {
+computeCovariancePartition <- function(traits, environmental.variables = NULL, dataset, phylogeny, model.specifications = NULL, force.run = T, save = T) {
 
 
   # results object
@@ -47,16 +48,16 @@ computeCovariancePartition <- function(traits, environmentalVariables = NULL, da
     dplyr::select(type, traits, trait1, trait2, fix.frml, ran.frml)
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmentalVariables, ".RData")) && isFALSE(forceRun)) {
+  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmental.variables, ".RData")) && isFALSE(force.run)) {
     print("loanding previous results")
-    load(file = paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmentalVariables, ".RData"))
+    load(file = paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmental.variables, ".RData"))
   }
 
   # run models and extract results
   for (model in multi_mdls.str$type) {
 
     # avoid running models already present in results
-    if (!model %in% names(traitsCovariancePartitionResults$individual.models.results) | forceRun) {
+    if (!model %in% names(traitsCovariancePartitionResults$individual.models.results) | force.run) {
 
       print(paste0("Running covariance calculation: ", model))
       model.descr <- multi_mdls.str %>%
@@ -65,7 +66,7 @@ computeCovariancePartition <- function(traits, environmentalVariables = NULL, da
       trait1 <- as.character(model.descr$trait1)
       trait2 <- as.character(model.descr$trait2)
 
-      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait1, trait2, environmentalVariables))
+      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait1, trait2, environmental.variables))
 
       # formula
       fix.frml <- paste0("cbind(", trait1, ", ", trait2, ") ~ trait-1")
@@ -164,7 +165,7 @@ computeCovariancePartition <- function(traits, environmentalVariables = NULL, da
       covariancePartitionResults$model.diagnostics <- model.diagnostics
 
 
-      if(is.null(environmentalVariables)){
+      if(is.null(environmental.variables)){
       # add to all traits results
       traitsCovariancePartitionResults$covarianceResults <- rbind(traitsCovariancePartitionResults$covarianceResults,
                                                               covariancePartitionResults$covariancePartition)
@@ -177,9 +178,9 @@ computeCovariancePartition <- function(traits, environmentalVariables = NULL, da
 
       ### Variance partition including the environment ####
 
-      if(!is.null(environmentalVariables)){
+      if(!is.null(environmental.variables)){
 
-      for(predictor in environmentalVariables){
+      for(predictor in environmental.variables){
         fix.frml <- paste0(fix.frml, " + trait:", predictor)
       }
 
@@ -257,7 +258,7 @@ computeCovariancePartition <- function(traits, environmentalVariables = NULL, da
       # results
 
       covariancePartitionResults$covariancePartition <-  cbind(covariancePartitionResults$covariancePartition,
-                                                               "Environmental_variables" = paste0(environmentalVariables, collapse = ", "),
+                                                               "Environmental_variables" = paste0(environmental.variables, collapse = ", "),
                                                                "Pure_coordinated_phylogenetic_conservatism" = mean(pureCoordinatedPhylogeneticConservatism),
                                                                "Coordinated_phylogenetic_niche_conservatism" = mean(coordinatedNichePhylogeneticConservatism),
                                                                "Total_environmental_coordination" = mean(totalEnvironmentalCoordination),
@@ -300,8 +301,9 @@ computeCovariancePartition <- function(traits, environmentalVariables = NULL, da
 
   # save results
 
-  save(list = "traitsCovariancePartitionResults", file = paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData"))
-  print(paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData"))
-
+  if(save){
+    save(list = "traitsCovariancePartitionResults", file = paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData"))
+    print(paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData"))
+  }
   return(traitsCovariancePartitionResults)
 }

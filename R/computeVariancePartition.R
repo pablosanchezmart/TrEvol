@@ -1,17 +1,18 @@
 #' Variance partition including (or not) environment
 #'
 #' @param traits (character) Name of the trait or list of traits. It  must be contained in the dataset.
-#' @param environmentalVariables (character) Names of the environmental variables They must be contained in dataset.
+#' @param environmental.variables (character) Names of the environmental variables They must be contained in dataset.
 #' @param dataset (data frame) Dataset containing the trait of interest and a column named "animal" describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
 #' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
-#' @param forceRun (logical) If false, models already run are not runned again.
+#' @param force.run (logical) If false, models already run are not runned again.
+#' @param save (logical) If false, resulta re not saved.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-computeVariancePartition <- function(traits, environmentalVariables = NULL, dataset, phylogeny, model.specifications = NULL, forceRun = T) {
+computeVariancePartition <- function(traits, environmental.variables = NULL, dataset, phylogeny, model.specifications = NULL, force.run = T, save = T) {
 
   # results object
   traitsVariancePartitionResults <- list()
@@ -27,7 +28,7 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
   uni_mdls.str$ran.frml <- "~ animal"
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")) && isFALSE(forceRun)) {
+  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")) && isFALSE(force.run)) {
     print("loanding previous results")
     load(file = paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
   }
@@ -35,7 +36,7 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
   # run models and extract results
   for (model in uni_mdls.str$type) {
 
-    if (!model %in% names(traitsVariancePartitionResults$individual.models.results) | forceRun) {
+    if (!model %in% names(traitsVariancePartitionResults$individual.models.results) | force.run) {
 
       print(paste0("Running variance calculation: ", model))
 
@@ -44,7 +45,7 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
 
       trait <- model.descr$trait
 
-      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait, environmentalVariables))
+      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait, environmental.variables))
 
       if (is.null(model.specifications)) {
         print("Using default model specificatios. Use defineModelsSpecifications() output on model.specifications argument to set them manually.")
@@ -102,7 +103,7 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
       variancePartitionResults$modelPhylo <- mdlPhylo
       variancePartitionResults$model.diagnostics <- model.diagnostics
 
-      if(is.null(environmentalVariables)){
+      if(is.null(environmental.variables)){
       # add to all traits results
       traitsVariancePartitionResults$varianceResults <- rbind(traitsVariancePartitionResults$varianceResults,
                                                                           variancePartitionResults$variancePartition)
@@ -114,9 +115,9 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
 
       ### Variance partition including the environment ####
 
-      if(!is.null(environmentalVariables)){
+      if(!is.null(environmental.variables)){
 
-        for(predictor in environmentalVariables){
+        for(predictor in environmental.variables){
           fix.frml <- paste0(fix.frml, " + ", predictor, collapse = " ")
         }
 
@@ -165,7 +166,7 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
         # results
 
         variancePartitionResults$variancePartition <- cbind(variancePartitionResults$variancePartition,
-                                                            "Environmental_variables" = paste0(environmentalVariables, collapse = ", "),
+                                                            "Environmental_variables" = paste0(environmental.variables, collapse = ", "),
                                                             "Pure_phylogenetic_conservatism" = mean(purePhylogeneticConservatism),
                                                             "Phylogenetic_niche_conservatism" = mean(phylogeneticNicheConservatism),
                                                             "Total_environmental" = mean(totalEnvironmental),
@@ -203,8 +204,9 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
 
   # save results
 
-  save(list = paste0("traitsVariancePartitionResults"), file = paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
-  print(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
-
+  if(save){
+    save(list = paste0("traitsVariancePartitionResults"), file = paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
+    print(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
+  }
   return(traitsVariancePartitionResults)
 }

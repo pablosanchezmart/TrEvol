@@ -1,12 +1,12 @@
 # library(testthat)
 # library(TrEvol)
-
-setwd("tests")
-
-# test_check("TrEvol")
-
-### simulate dataset ####
-
+#
+# setwd("tests")
+#
+# # test_check("TrEvol")
+#
+# ### simulate dataset ####
+#
 # devtools::load_all()
 #
 # nObs <- 100
@@ -21,6 +21,8 @@ setwd("tests")
 #                                                                         0.2, 0.2, 0.2, -0.8, 0.8, 1), ncol = 6))
 #
 # specifications <- defineModelsSpecifications(n_itterations = 100000, burning = 100, thinning = 5)
+#
+# specifications <- defineModelsSpecifications()
 #
 # initializeTrEvo()
 #
@@ -39,7 +41,8 @@ setwd("tests")
 # varianceResults_BM_HC_predictor$varianceResults
 # varianceResults_nonBM_HC_predictor$varianceResults
 #
-# varianceResults$varianceResults$Pure_phylogenetic_conservatism + varianceResults$varianceResults$Phylogenetic_niche_conservatism + varianceResults$varianceResults$Pure_environmental + varianceResults$varianceResults$Residual
+# varianceResults_BM_HC_predictor$varianceResults$Pure_phylogenetic_conservatism + varianceResults_BM_HC_predictor$varianceResults$Phylogenetic_niche_conservatism + varianceResults_BM_HC_predictor$varianceResults$Pure_environmental +
+#   varianceResults_BM_HC_predictor$varianceResults$Residual
 #
 # ### compute covariance partition ####
 #
@@ -54,10 +57,23 @@ setwd("tests")
 #
 # covarianceResults_BM_HC_predictor$covarianceResults$Total_coordination
 #
-# covarianceResults_BM_HC_predictor$covarianceResults$Pure_coordinated_phylogenetic_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Coordinated_niche_phylogenetic_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Pure_environmental_coordination + covarianceResults_BM_HC_predictor$covarianceResults$Residual_coordination
+# covarianceResults_BM_HC_predictor$covarianceResults$Pure_coordinated_phylogenetic_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Coordinated_phylogenetic_niche_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Pure_environmental_coordination + covarianceResults_BM_HC_predictor$covarianceResults$Residual_coordination
 #
-# ### plot results ####
 #
-
+# # ### plot results ####
+#
+# plotData(phylogeny = tr, dataset = df, variables = c("BM_HC_1", "BM_HC_2"))
+#
+# plotNetwork(correlations = covarianceResults_BM_HC_predictor$covarianceResults, phylogenetic.signal = varianceResults_BM_HC_predictor$varianceResults,
+#             phyloSignal.name = "Total_phylogenetic_conservatism", correlation.type = "Total_coordinated_phylogenetic_conservatism", onlySignificant = T, plotMetrics = T)
+#
+#
+# sp <- plotVcvScatterplots(variable1 = "BM_HC_1", variable2 = "BM_HC_2", environmental.variables = "BM_HC_predictor", dataset = df, model.specifications = specifications,
+#                     phylogeny = tr)
+#
+#
+#
+# # Delete files
+#
 # unlink("outputs", recursive = T)
 # unlink("results", recursive = T)
