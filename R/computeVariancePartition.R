@@ -1,6 +1,6 @@
 #' Variance partition including (or not) environment
 #'
-#' @param trait (character) Name of the trait or list of traits. It  must be contained in the dataset.
+#' @param traits (character) Name of the trait or list of traits. It  must be contained in the dataset.
 #' @param environmentalVariables (character) Names of the environmental variables They must be contained in dataset.
 #' @param dataset (data frame) Dataset containing the trait of interest and a column named "animal" describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-computeVariancePartition <- function(traits, environmentalVariables = NULL, dataset, phylogeny, model.specifications = NULL, forceRun = F) {
+computeVariancePartition <- function(traits, environmentalVariables = NULL, dataset, phylogeny, model.specifications = NULL, forceRun = T) {
 
   # results object
   traitsVariancePartitionResults <- list()
@@ -22,7 +22,6 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
   # prepare models structure
   uni_mdls.str <- data.frame(trait = traits)
   uni_mdls.str$type <- paste0("uni_", uni_mdls.str$trait)
-  uni_mdls.str$n_respVars <- 1
   uni_mdls.str$pred_var <- ""
   uni_mdls.str$fix.frml <- paste0(uni_mdls.str$trait, " ~ 1")
   uni_mdls.str$ran.frml <- "~ animal"
@@ -167,14 +166,14 @@ computeVariancePartition <- function(traits, environmentalVariables = NULL, data
 
         variancePartitionResults$variancePartition <- cbind(variancePartitionResults$variancePartition,
                                                             "Environmental_variables" = paste0(environmentalVariables, collapse = ", "),
-                                                            "Pure_phylogenetic_conservatism" = mean(purePhyloVar),
+                                                            "Pure_phylogenetic_conservatism" = mean(purePhylogeneticConservatism),
                                                             "Phylogenetic_niche_conservatism" = mean(phylogeneticNicheConservatism),
                                                             "Total_environmental" = mean(totalEnvironmental),
                                                             "Pure_environmental" = mean(pureEnvironmental),
                                                             "Residual" = mean(residual)
         )
 
-        variancePartitionResults$variancePartitionDistributions[["Pure_phylogenetic_conservatism"]] <- purePhyloVar
+        variancePartitionResults$variancePartitionDistributions[["Pure_phylogenetic_conservatism"]] <- purePhylogeneticConservatism
         variancePartitionResults$variancePartitionDistributions[["Phylogenetic_niche_conservatism"]] <- phylogeneticNicheConservatism
         variancePartitionResults$variancePartitionDistributions[["total_environmental"]] <- totalEnvironmental
         variancePartitionResults$variancePartitionDistributions[["pure_environmental"]] <- pureEnvironmental

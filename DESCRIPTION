@@ -18,6 +18,7 @@ Imports:
     castor,
     coda,
     corrplot,
+    devtools,
     doParallel,
     dplyr,
     faux,
