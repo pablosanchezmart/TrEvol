@@ -29,15 +29,15 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
 
   # lad previous results, if exist
 
-  if(!is.null(environmental.variables)){
-    prevResults.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults", environmental.variables, ".RData")
+  if(!is.null(results.file)){
+    results.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults", environmental.variables, ".RData")
   } else {
-    prevResults.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")
+    results.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")
   }
 
-  if (file.exists(prevResults.file) && isFALSE(force.run)) {
+  if (file.exists(results.file) && isFALSE(force.run)) {
     print("loanding previous results")
-    load(file = prevResults.file)
+    load(file = results.file)
   }
 
   # run models and extract results
@@ -214,8 +214,8 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
   # save results
 
   if(save){
-      save(list = paste0("traitsVariancePartitionResults"), file = paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
-      print(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
+      save(list = paste0("traitsVariancePartitionResults"), file = results.file)
+      print(results.file)
   }
   return(traitsVariancePartitionResults)
 }

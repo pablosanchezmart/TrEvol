@@ -50,14 +50,14 @@ computeCovariancePartition <- function(traits, environmental.variables = NULL, d
   # lad previous results, if exist
 
   if(!is.null(environmental.variables)){
-    prevResults.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmental.variables, ".RData")
+    results.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmental.variables, ".RData")
   } else {
-    prevResults.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData")
+    results.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData")
   }
 
-  if (file.exists(prevResults.file) && isFALSE(force.run)) {
+  if (file.exists(results.file) && isFALSE(force.run)) {
     print("loanding previous results")
-    load(file = prevResults.file)
+    load(file = results.file)
   }
 
 
@@ -310,8 +310,8 @@ computeCovariancePartition <- function(traits, environmental.variables = NULL, d
   # save results
 
   if(save){
-      save(list = paste0("traitsCovariancePartitionResults"), file = paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData"))
-      print(paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData"))
+      save(list = paste0("traitsCovariancePartitionResults"), file = results.file)
+      print(results.file)
   }
   return(traitsCovariancePartitionResults)
 }
