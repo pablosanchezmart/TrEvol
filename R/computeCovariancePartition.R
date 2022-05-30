@@ -48,10 +48,18 @@ computeCovariancePartition <- function(traits, environmental.variables = NULL, d
     dplyr::select(type, traits, trait1, trait2, fix.frml, ran.frml)
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmental.variables, ".RData")) && isFALSE(force.run)) {
-    print("loanding previous results")
-    load(file = paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmental.variables, ".RData"))
+
+  if(!is.null(environmental.variables)){
+    prevResults.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmental.variables, ".RData")
+  } else {
+    prevResults.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData")
   }
+
+  if (file.exists(prevResults.file) && isFALSE(force.run)) {
+    print("loanding previous results")
+    load(file = prevResults.file)
+  }
+
 
   # run models and extract results
   for (model in multi_mdls.str$type) {

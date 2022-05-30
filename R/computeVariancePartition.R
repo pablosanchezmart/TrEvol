@@ -28,9 +28,16 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
   uni_mdls.str$ran.frml <- "~ animal"
 
   # lad previous results, if exist
-  if (file.exists(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")) && isFALSE(force.run)) {
+
+  if(!is.null(environmental.variables)){
+    prevResults.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults", environmental.variables, ".RData")
+  } else {
+    prevResults.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")
+  }
+
+  if (file.exists(prevResults.file) && isFALSE(force.run)) {
     print("loanding previous results")
-    load(file = paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
+    load(file = prevResults.file)
   }
 
   # run models and extract results
@@ -104,6 +111,8 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
       variancePartitionResults$model.diagnostics <- model.diagnostics
 
       if(is.null(environmental.variables)){
+
+
       # add to all traits results
       traitsVariancePartitionResults$varianceResults <- rbind(traitsVariancePartitionResults$varianceResults,
                                                                           variancePartitionResults$variancePartition)
