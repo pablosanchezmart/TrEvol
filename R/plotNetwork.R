@@ -79,6 +79,8 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
   if (!is.null(variance.results)) {
     rownames(variance.results) <- variance.results[, 1]
     if (!is.null(variance.results) && all(vars %in% rownames(variance.results))) {
+      variance.results[which(variance.results < 0)] <- 0
+      variance.results[which(variance.results > 1)] <- 1
       ps.vars <- variance.results[vars, variance.type]
     } else {
       stop("Not all variables of interst are present in the phylogenetic signal dataframe")
