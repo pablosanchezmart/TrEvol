@@ -29,7 +29,7 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
 
   # lad previous results, if exist
 
-  if(!is.null(results.file)){
+  if(!is.null(environmental.variables)){
     results.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults", environmental.variables, ".RData")
   } else {
     results.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")
