@@ -33,9 +33,9 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
                                0)
   colnames(correlation.matrix) <- vars
   rownames(correlation.matrix) <- vars
-  for (i in 1:length(correlations$Variable1)) {
-    var1 <- correlations$Variable1[i]
-    var2 <- correlations$Variable2[i]
+  for (i in 1:length(correlations$Trait_1)) {
+    var1 <- correlations$Trait_1[i]
+    var2 <- correlations$Trait_2[i]
     correlation.matrix[var1, var2] <- correlations[i, covariance.type]
     correlation.matrix[var2, var1] <- correlations[i, covariance.type]
     correlation.matrix[var1, var1] <- 0
