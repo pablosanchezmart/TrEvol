@@ -205,8 +205,13 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
   # save results
 
   if(save){
-    save(list = paste0("traitsVariancePartitionResults"), file = paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
-    print(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
+    if(!is.null(environmental.variables)){
+      save(list = paste0("partialTraitsVariancePartitionResults"), file = paste0(outputs.dir, "/models_outputs/partialTraitsVariancePartitionResults.RData"))
+      print(paste0(outputs.dir, "/models_outputs/partialTraitsVariancePartitionResults.RData"))
+    } else{
+      save(list = paste0("traitsVariancePartitionResults"), file = paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
+      print(paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData"))
+    }
   }
   return(traitsVariancePartitionResults)
 }
