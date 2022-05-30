@@ -214,8 +214,14 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
   # save results
 
   if(save){
+    if(!is.null(environmental.variables)){
+      assign(paste0("traitsVariancePartitionResults_", environmental.variables), traitsVariancePartitionResults)
+      save(list = paste0("traitsVariancePartitionResults_", environmental.variables), file = results.file)
+      print(results.file)
+    } else{
       save(list = paste0("traitsVariancePartitionResults"), file = results.file)
       print(results.file)
+    }
   }
   return(traitsVariancePartitionResults)
 }
