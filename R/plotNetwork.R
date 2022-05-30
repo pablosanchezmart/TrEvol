@@ -28,7 +28,7 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
     covariance.results[which(covariance.results[, paste0("Pvalue_", covariance.type)] > 0.05), covariance.type] <- 0
   }
   correlations <- covariance.results[, c("Trait_1", "Trait_2", covariance.type)]
-  vars <- unique(c(correlations$Trait_1, correlations$Trait_1))
+  vars <- unique(c(correlations$Trait_1, correlations$Trait_2))
   correlation.matrix <- matrix(ncol = length(vars), nrow = length(vars),
                                0)
   colnames(correlation.matrix) <- vars
