@@ -166,13 +166,13 @@ computeCovariancePartition <- function(traits, environmental.variables = NULL, d
 
 
       if(is.null(environmental.variables)){
-      # add to all traits results
-      traitsCovariancePartitionResults$covarianceResults <- rbind(traitsCovariancePartitionResults$covarianceResults,
-                                                              covariancePartitionResults$covariancePartition)
+        # add to all traits results
+        traitsCovariancePartitionResults$covarianceResults <- rbind(traitsCovariancePartitionResults$covarianceResults,
+                                                                    covariancePartitionResults$covariancePartition)
 
-      traitsCovariancePartitionResults$models.diagnostics <- rbind(traitsCovariancePartitionResults$models.diagnostics,
-                                                             covariancePartitionResults$model.diagnostics)
-      traitsCovariancePartitionResults$individual.models.results[[model]] <- covariancePartitionResults
+        traitsCovariancePartitionResults$models.diagnostics <- rbind(traitsCovariancePartitionResults$models.diagnostics,
+                                                                     covariancePartitionResults$model.diagnostics)
+        traitsCovariancePartitionResults$individual.models.results[[model]] <- covariancePartitionResults
       }
 
 
@@ -180,114 +180,114 @@ computeCovariancePartition <- function(traits, environmental.variables = NULL, d
 
       if(!is.null(environmental.variables)){
 
-      for(predictor in environmental.variables){
-        fix.frml <- paste0(fix.frml, " + trait:", predictor)
-      }
+        for(predictor in environmental.variables){
+          fix.frml <- paste0(fix.frml, " + trait:", predictor)
+        }
 
-      mdlPhyloEnv <- MCMCglmm::MCMCglmm(fixed = stats::as.formula(fix.frml),
-                                        random = ~ us(trait):animal, rcov = ~us(trait):units,
-                                        data= modellingData$dta, pedigree = modellingData$phylo,
-                                        family = c("gaussian", "gaussian"),
-                                        prior = model.specifications$multiresponse_prior,
-                                        nitt = model.specifications$number_interations,
-                                        burnin = model.specifications$burning_iterations,
-                                        thin = model.specifications$thinning_iterations,
-                                        verbose = F)
+        mdlPhyloEnv <- MCMCglmm::MCMCglmm(fixed = stats::as.formula(fix.frml),
+                                          random = ~ us(trait):animal, rcov = ~us(trait):units,
+                                          data= modellingData$dta, pedigree = modellingData$phylo,
+                                          family = c("gaussian", "gaussian"),
+                                          prior = model.specifications$multiresponse_prior,
+                                          nitt = model.specifications$number_interations,
+                                          burnin = model.specifications$burning_iterations,
+                                          thin = model.specifications$thinning_iterations,
+                                          verbose = F)
 
-      mdlPhyloEnv$name <- fix.frml
+        mdlPhyloEnv$name <- fix.frml
 
-      model.diagnostics <- diagnoseModels(model = mdlPhyloEnv)
-
-
-      ### Covariance partition calculation
-
-      # pure phylogenetic covariance
-      purePhyloCV <-  mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait2, ".animal")]
-
-      # avoid negative variances when purePhylo covariance is a little bit higher than totalPhylo variance
-      # if(mean(purePhyloCV) > mean(totalPhyloCV)){
-      #   purePhyloCV <- totalPhyloCV
-      # }
-
-      # pure residual covariance
-      pureResidualCV <- mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait2, ".units")]
+        model.diagnostics <- diagnoseModels(model = mdlPhyloEnv)
 
 
-      # total coordinated phylogenetic conservatism
+        ### Covariance partition calculation
 
-      pureCoordinatedPhylogeneticConservatism <- purePhyloCV / (sqrt( ((totalPhyloVar1 + totalNonPhyloVar1) * (totalPhyloVar2 + totalNonPhyloVar2)) ))
+        # pure phylogenetic covariance
+        purePhyloCV <-  mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait2, ".animal")]
 
-      # pvalue related to correlation being different than 0
-      pd <- bayestestR::p_direction(pureCoordinatedPhylogeneticConservatism)
-      pd <- as.numeric(pd$pd)
-      pureCoordinatedPhylogeneticConservatism_pval <- 2*(1 - pd)
+        # avoid negative variances when purePhylo covariance is a little bit higher than totalPhylo variance
+        # if(mean(purePhyloCV) > mean(totalPhyloCV)){
+        #   purePhyloCV <- totalPhyloCV
+        # }
 
-      # total coordinated phylogenetic niche conservatism
-
-      coordinatedNichePhylogeneticConservatism <- (totalPhyloCV - purePhyloCV) / (sqrt( ((totalPhyloVar1 + totalNonPhyloVar1) * (totalPhyloVar2 + totalNonPhyloVar2)) ))
-
-      # pvalue related to correlation being different than 0
-      pd <- bayestestR::p_direction(coordinatedNichePhylogeneticConservatism)
-      pd <- as.numeric(pd$pd)
-      coordinatedNichePhylogeneticConservatism_pval <- 2*(1 - pd)
+        # pure residual covariance
+        pureResidualCV <- mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait2, ".units")]
 
 
-      # pure environmental coordination
+        # total coordinated phylogenetic conservatism
 
-      pureEnvironmentalCoordination <- (totalResidualCV - pureResidualCV) / (sqrt( ((totalPhyloVar1 + totalNonPhyloVar1) * (totalPhyloVar2 + totalNonPhyloVar2)) ))
+        pureCoordinatedPhylogeneticConservatism <- purePhyloCV / (sqrt( ((totalPhyloVar1 + totalNonPhyloVar1) * (totalPhyloVar2 + totalNonPhyloVar2)) ))
 
-      # pvalue related to correlation being different than 0
-      pd <- bayestestR::p_direction(pureEnvironmentalCoordination)
-      pd <- as.numeric(pd$pd)
-      pureEnvironmentalCoordination_pval <- 2*(1 - pd)
+        # pvalue related to correlation being different than 0
+        pd <- bayestestR::p_direction(pureCoordinatedPhylogeneticConservatism)
+        pd <- as.numeric(pd$pd)
+        pureCoordinatedPhylogeneticConservatism_pval <- 2*(1 - pd)
 
-      totalEnvironmentalCoordination <- coordinatedNichePhylogeneticConservatism + pureEnvironmentalCoordination
+        # total coordinated phylogenetic niche conservatism
 
-      # pvalue related to correlation being different than 0
-      pd <- bayestestR::p_direction(totalEnvironmentalCoordination)
-      pd <- as.numeric(pd$pd)
-      totalEnvironmentalCoordination_pval <- 2*(1 - pd)
+        coordinatedNichePhylogeneticConservatism <- (totalPhyloCV - purePhyloCV) / (sqrt( ((totalPhyloVar1 + totalNonPhyloVar1) * (totalPhyloVar2 + totalNonPhyloVar2)) ))
 
-      residualCoordination <- 1 - (pureCoordinatedPhylogeneticConservatism + coordinatedNichePhylogeneticConservatism + pureEnvironmentalCoordination)
+        # pvalue related to correlation being different than 0
+        pd <- bayestestR::p_direction(coordinatedNichePhylogeneticConservatism)
+        pd <- as.numeric(pd$pd)
+        coordinatedNichePhylogeneticConservatism_pval <- 2*(1 - pd)
 
-      # pvalue related to correlation being different than 0
-      pd <- bayestestR::p_direction(residualCoordination)
-      pd <- as.numeric(pd$pd)
-      residualCoordination_pval <- 2*(1 - pd)
 
-      # results
+        # pure environmental coordination
 
-      covariancePartitionResults$covariancePartition <-  cbind(covariancePartitionResults$covariancePartition,
-                                                               "Environmental_variables" = paste0(environmental.variables, collapse = ", "),
-                                                               "Pure_coordinated_phylogenetic_conservatism" = mean(pureCoordinatedPhylogeneticConservatism),
-                                                               "Coordinated_phylogenetic_niche_conservatism" = mean(coordinatedNichePhylogeneticConservatism),
-                                                               "Total_environmental_coordination" = mean(totalEnvironmentalCoordination),
-                                                               "Pure_environmental_coordination" = mean(pureEnvironmentalCoordination),
-                                                               "Residual_coordination" = mean(residualCoordination),
+        pureEnvironmentalCoordination <- (totalResidualCV - pureResidualCV) / (sqrt( ((totalPhyloVar1 + totalNonPhyloVar1) * (totalPhyloVar2 + totalNonPhyloVar2)) ))
 
-                                                               "Pvalue_Pure_coordinated_phylogenetic_conservatism" = pureCoordinatedPhylogeneticConservatism_pval,
-                                                               "Pvalue_Coordinated_phylogenetic_niche_conservatism" = coordinatedNichePhylogeneticConservatism_pval,
-                                                               "Pvalue_Total_environmental_coordination" = totalEnvironmentalCoordination_pval,
-                                                               "Pvalue_Pure_environmental_coordination" = pureEnvironmentalCoordination_pval,
-                                                               "Pvalue_Residual_coordination" = residualCoordination_pval
-      )
+        # pvalue related to correlation being different than 0
+        pd <- bayestestR::p_direction(pureEnvironmentalCoordination)
+        pd <- as.numeric(pd$pd)
+        pureEnvironmentalCoordination_pval <- 2*(1 - pd)
 
-      covariancePartitionResults$covariancePartitionDistributions[["pureCoordinatedPhylogeneticConservatism"]] <- pureCoordinatedPhylogeneticConservatism
-      covariancePartitionResults$covariancePartitionDistributions[["coordinatedPhylogeneticNicheConservatism"]] <- coordinatedNichePhylogeneticConservatism
-      covariancePartitionResults$covariancePartitionDistributions[["totalEnvironmentalCoordination"]] <- totalEnvironmentalCoordination
-      covariancePartitionResults$covariancePartitionDistributions[["pureEnvironmentalCoordination"]] <- pureEnvironmentalCoordination
-      covariancePartitionResults$covariancePartitionDistributions[["residualCoordination"]] <- residualCoordination
+        totalEnvironmentalCoordination <- coordinatedNichePhylogeneticConservatism + pureEnvironmentalCoordination
 
-      covariancePartitionResults$modelPhyloEnv <- mdlPhyloEnv
-      covariancePartitionResults$model.diagnostics <- model.diagnostics
+        # pvalue related to correlation being different than 0
+        pd <- bayestestR::p_direction(totalEnvironmentalCoordination)
+        pd <- as.numeric(pd$pd)
+        totalEnvironmentalCoordination_pval <- 2*(1 - pd)
 
-      # add to all traits results
-      traitsCovariancePartitionResults$covarianceResults <- rbind(traitsCovariancePartitionResults$covarianceResults,
-                                                              covariancePartitionResults$covariancePartition)
+        residualCoordination <- 1 - (pureCoordinatedPhylogeneticConservatism + coordinatedNichePhylogeneticConservatism + pureEnvironmentalCoordination)
 
-      traitsCovariancePartitionResults$models.diagnostics <- rbind(traitsCovariancePartitionResults$models.diagnostics,
-                                                             covariancePartitionResults$model.diagnostics)
-      traitsCovariancePartitionResults$individual.models.results[[model]] <- covariancePartitionResults
+        # pvalue related to correlation being different than 0
+        pd <- bayestestR::p_direction(residualCoordination)
+        pd <- as.numeric(pd$pd)
+        residualCoordination_pval <- 2*(1 - pd)
+
+        # results
+
+        covariancePartitionResults$covariancePartition <-  cbind(covariancePartitionResults$covariancePartition,
+                                                                 "Environmental_variables" = paste0(environmental.variables, collapse = ", "),
+                                                                 "Pure_coordinated_phylogenetic_conservatism" = mean(pureCoordinatedPhylogeneticConservatism),
+                                                                 "Coordinated_phylogenetic_niche_conservatism" = mean(coordinatedNichePhylogeneticConservatism),
+                                                                 "Total_environmental_coordination" = mean(totalEnvironmentalCoordination),
+                                                                 "Pure_environmental_coordination" = mean(pureEnvironmentalCoordination),
+                                                                 "Residual_coordination" = mean(residualCoordination),
+
+                                                                 "Pvalue_Pure_coordinated_phylogenetic_conservatism" = pureCoordinatedPhylogeneticConservatism_pval,
+                                                                 "Pvalue_Coordinated_phylogenetic_niche_conservatism" = coordinatedNichePhylogeneticConservatism_pval,
+                                                                 "Pvalue_Total_environmental_coordination" = totalEnvironmentalCoordination_pval,
+                                                                 "Pvalue_Pure_environmental_coordination" = pureEnvironmentalCoordination_pval,
+                                                                 "Pvalue_Residual_coordination" = residualCoordination_pval
+        )
+
+        covariancePartitionResults$covariancePartitionDistributions[["pureCoordinatedPhylogeneticConservatism"]] <- pureCoordinatedPhylogeneticConservatism
+        covariancePartitionResults$covariancePartitionDistributions[["coordinatedPhylogeneticNicheConservatism"]] <- coordinatedNichePhylogeneticConservatism
+        covariancePartitionResults$covariancePartitionDistributions[["totalEnvironmentalCoordination"]] <- totalEnvironmentalCoordination
+        covariancePartitionResults$covariancePartitionDistributions[["pureEnvironmentalCoordination"]] <- pureEnvironmentalCoordination
+        covariancePartitionResults$covariancePartitionDistributions[["residualCoordination"]] <- residualCoordination
+
+        covariancePartitionResults$modelPhyloEnv <- mdlPhyloEnv
+        covariancePartitionResults$model.diagnostics <- model.diagnostics
+
+        # add to all traits results
+        traitsCovariancePartitionResults$covarianceResults <- rbind(traitsCovariancePartitionResults$covarianceResults,
+                                                                    covariancePartitionResults$covariancePartition)
+
+        traitsCovariancePartitionResults$models.diagnostics <- rbind(traitsCovariancePartitionResults$models.diagnostics,
+                                                                     covariancePartitionResults$model.diagnostics)
+        traitsCovariancePartitionResults$individual.models.results[[model]] <- covariancePartitionResults
 
       } # end evaluation if model already exists in results
 
