@@ -20,7 +20,7 @@
 #                                                                         0.1, 0.1, 0.1, -0.9, 1, 0.8,
 #                                                                         0.2, 0.2, 0.2, -0.8, 0.8, 1), ncol = 6))
 #
-# specifications <- defineModelsSpecifications(n_itterations = 100000, burning = 100, thinning = 5)
+# specifications <- defineModelsSpecifications(number.iterations = 10000, burning = 100, thinning = 5)
 #
 # specifications <- defineModelsSpecifications()
 #
@@ -32,11 +32,11 @@
 #
 # ### compute variance partition ####
 #
-# varianceResults_BM_HC_predictor <- computeVariancePartition(traits = TRAITS, environmentalVariables = "BM_HC_predictor", dataset = df,
-#                                             phylogeny = tr, model.specifications = specifications, forceRun = T)
+# varianceResults_BM_HC_predictor <- computeVariancePartition(traits = TRAITS, environmental.variables = "BM_HC_predictor", dataset = df,
+#                                             phylogeny = tr, model.specifications = specifications, force.run = T, save = F)
 #
-# varianceResults_nonBM_HC_predictor <- computeVariancePartition(traits = TRAITS , environmentalVariables = "nonBM_HC_predictor", dataset = df,
-#                                             phylogeny = tr, model.specifications = specifications, forceRun = T)
+# varianceResults_nonBM_HC_predictor <- computeVariancePartition(traits = TRAITS , environmental.variables = "nonBM_HC_predictor", dataset = df,
+#                                             phylogeny = tr, model.specifications = specifications, force.run = T, save = F)
 #
 # varianceResults_BM_HC_predictor$varianceResults
 # varianceResults_nonBM_HC_predictor$varianceResults
@@ -46,11 +46,11 @@
 #
 # ### compute covariance partition ####
 #
-# covarianceResults_BM_HC_predictor <- computeCovariancePartition(traits = TRAITS, environmentalVariables = "BM_HC_predictor", dataset = df,
-#                                                                 phylogeny = tr, model.specifications = specifications, forceRun = F)
+# covarianceResults_BM_HC_predictor <- computeCovariancePartition(traits = TRAITS, environmental.variables = "BM_HC_predictor", dataset = df,
+#                                                                 phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
 #
-# covarianceResults_nonBM_HC_predictor <- computeCovariancePartition(traits = TRAITS, environmentalVariables = "nonBM_HC_predictor", dataset = df,
-#                                                                 phylogeny = tr, model.specifications = specifications, forceRun = F)
+# covarianceResults_nonBM_HC_predictor <- computeCovariancePartition(traits = TRAITS, environmental.variables = "nonBM_HC_predictor", dataset = df,
+#                                                                 phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
 #
 #
 # covarianceResults_BM_HC_predictor$covarianceResults
@@ -72,6 +72,9 @@
 #                     phylogeny = tr)
 #
 #
+# plotDta <- getPlotNetworkData(covariance.results = covarianceResults_BM_HC_predictor$covarianceResults, variance.results = varianceResults_BM_HC_predictor$varianceResults,
+#                    variance.type = "Total_phylogenetic_conservatism", covariance.type = "Total_coordinated_phylogenetic_conservatism", only.significant = T)
+# plotDta
 #
 # # Delete files
 #

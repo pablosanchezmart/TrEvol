@@ -21,6 +21,7 @@ Imports:
     devtools,
     doParallel,
     dplyr,
+    ecodist,
     faux,
     ggplot2,
     ggstance,

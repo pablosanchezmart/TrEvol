@@ -1,9 +1,9 @@
 #' Plot variance-covariance networks
 #'
-#' @param covariance.results (data frame) correlations output of correlationsTraits$covarianceResults
-#' @param variance.results (data frame) phylogenetic signal as reported by phylogeneticSignalTraits$varianceResults
+#' @param covariance.results (data frame) correlations output of computeCovariancePartition()$covarianceResults
+#' @param variance.results (data frame) phylogenetic signal as reported by computeVariancePartition()$varianceResults
 #' @param variance.type (character) variable name of the phylogenetic signal as reported in varianceResults
-#' @param covariance.type (character) variable name of the correlation as reported iun correlations
+#' @param covariance.type (character) variable name of the correlation as reported in correlations
 #' @param group.variables (data frame) character vector as long as the number of variables indicating the variable name in the first column and the group of the variable in the second.
 #' @param order.variables (character) order of the variables to plot
 #' @param edge.label (logical) if TRUE, edge labels show correlation coefficients
@@ -83,7 +83,7 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
       ps.vars[which(ps.vars < 0)] <- 0
       ps.vars[which(ps.vars > 1)] <- 1
     } else {
-      stop("Not all variables of interst are present in the phylogenetic signal dataframe")
+      stop("Not all variables of interest are present in the phylogenetic signal dataframe")
     }
   } else {
     ps.vars <- rep(NULL, length(correlation.matrix[, 1]))
