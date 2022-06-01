@@ -29,7 +29,7 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
   }
 
   if (threshold > 0) {
-    covariance.results[which(abs(covariance.results[, covariance.type]) > threshold), covariance.type] <- 0
+    covariance.results[which(abs(covariance.results[, covariance.type]) < threshold), covariance.type] <- 0
   }
   correlations <- covariance.results[, c("Trait_1", "Trait_2", covariance.type)]
   vars <- unique(c(correlations$Trait_1, correlations$Trait_2))

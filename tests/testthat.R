@@ -64,8 +64,8 @@
 #
 # plotData(phylogeny = tr, dataset = df, variables = c("BM_HC_1", "BM_HC_2"))
 #
-# plotNetwork(correlations = covarianceResults_BM_HC_predictor$covarianceResults, phylogenetic.signal = varianceResults_BM_HC_predictor$varianceResults,
-#             phyloSignal.name = "Total_phylogenetic_conservatism", correlation.type = "Total_coordinated_phylogenetic_conservatism", onlySignificant = T, plotMetrics = T)
+# plotNetwork(covariance.results = covarianceResults_BM_HC_predictor$covarianceResults, variance.results = varianceResults_BM_HC_predictor$varianceResults,
+#             variance.type = "Total_phylogenetic_conservatism", covariance.type =  "Total_coordinated_phylogenetic_conservatism", only.significant = F, threshold = 0.1)
 #
 #
 # sp <- plotVcvScatterplots(variable1 = "BM_HC_1", variable2 = "BM_HC_2", environmental.variables = "BM_HC_predictor", dataset = df, model.specifications = specifications,
