@@ -98,7 +98,7 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
                       edge.labels = edge.label, edge.label.cex = 2 * length(vars)/length(vars),
                       labels = node.label, label.cex = label.size, label.scale = F,
                       node.label.offset = c(0.5, -2), pie = ps.vars, pieBorder = 1,
-                      DoNotPlot = F, groups = group.variables[, 2])
+                      DoNotPlot = F, groups = group.variables[, 2], threshold = threshold)
 
   if(plot.metrics){
     graphics::text(x = 0.5, y = -1, labels = paste0("Connectivity = ",
