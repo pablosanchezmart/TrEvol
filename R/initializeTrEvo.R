@@ -16,6 +16,8 @@ initializeTrEvo <- function(folder.name = "simulations"){
   dir.create("outputs", showWarnings = F)
   dir.create(outputs.dir, showWarnings = F)
   dir.create(paste0(outputs.dir, "/models_outputs"), showWarnings = F)
+  dir.create(paste0(outputs.dir, "/phylogenetic_variance_covariance"), showWarnings = F)
+
   dir.create(paste0(outputs.dir, "/predictions"), showWarnings = F)
   dir.create("results", showWarnings = F)
   dir.create(results.dir, showWarnings = F)
