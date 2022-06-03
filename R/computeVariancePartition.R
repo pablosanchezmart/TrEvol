@@ -143,6 +143,10 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
 
         ### Variance partition calculation
 
+        # total variance
+
+        totalVar2 <- mdlPhyloEnv$VCV[, "animal"] + mdlPhyloEnv$VCV[, "units"]
+
         # non-environmental phylogenetic variance (pure phylogenetic variance)
         purePhyloVar <- mdlPhyloEnv$VCV[, "animal"]
 
@@ -157,20 +161,26 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
         ## results
 
         # pure phylogenetic conservatism
-        purePhylogeneticConservatism <-  purePhyloVar / totalVar
+        purePhylogeneticConservatism <-  purePhyloVar / totalVar2
+        mean(purePhylogeneticConservatism)
 
         # phylogenetic niche conservatism (environment x phylogeny)
-        phylogeneticNicheConservatism <- (totalPhyloVar - purePhyloVar) / totalVar
+        phylogeneticNicheConservatism <- (totalPhyloVar - purePhyloVar) / totalVar2
+        mean(phylogeneticNicheConservatism)
 
         # pure environmental
-        pureEnvironmental <- (totalNonPhyloVar - pureResidualVar) / totalVar
+        pureEnvironmental <- (totalNonPhyloVar - pureResidualVar) / totalVar2
+        mean(pureEnvironmental)
 
         # total environmental
         totalEnvironmental <- pureEnvironmental + phylogeneticNicheConservatism
 
         # residual
-        residual <- pureResidualVar / totalVar
+        residual <- pureResidualVar / totalVar2
+        mean(residual)
 
+
+        # total
 
         # results
 
