@@ -76,6 +76,57 @@
 #                    variance.type = "Total_phylogenetic_conservatism", covariance.type = "Total_coordinated_phylogenetic_conservatism", only.significant = T)
 # plotDta
 #
+#
+# #### IMPUTATION -----------------------------------------------------------------  ####
+#
+# #### PREDICTIONS --------------------------------------------------------------- ####
+#
+# # Pablo Sanchez Martinez
+#
+# dataGroup <- "simulations"
+#
+# print(paste0("Extracting results for: ", dataGroup))
+#
+# #### MODELS OUTPUTS ---------------------------------------------------------- ####
+#
+# for(f in list.files(path = paste0("outputs/outputs_", dataGroup, "/models_outputs/"),  full.names = T)){
+#     load(file = f)
+# }
+#
+#
+# #### MODELS PERFORMANCE --------------------------------------------------------- ####
+#
+#
+# ### Phylogeny as predictor ####
+#
+# # tr_pred <- read.tree("data/treevol_phylogeny_genus_lvl_2021.tre")
+#
+# df_pred <- df %>% dplyr::filter(animal %in% tr$tip.label)
+# df_pred <- df_pred %>% dplyr::rename(taxon = animal)
+#
+# tr_pred <- ape::keep.tip(tr, tr$tip.label[tr$tip.label %in% df_pred$taxon])
+#
+# for(predictor in predictors){
+#     df_pred <- df_pred %>% filter(!is.na(predictor))
+# }
+#
+# variablesToImpute <- "BM_HC_1"
+# imputationPredictors <- c(paste0("Phylo_axis_", 1:10))
+# propNA <- 0.2
+# numberIterations <- 100
+# forceRunImputation <- T
+#
+# df_imp <- imputeTraits(DATASET = df_pred, PHYLOGENY = tr_pred, correlationsTraitsResults = covarianceResults_BM_HC_predictor$covarianceResults,
+#                          imputationVariables = c(variablesToImpute), PREDICTORS = imputationPredictors, prodNAs = propNA, IterationsNumber = propNA, clustersNumber = 2, FORCERUN = forceRunImputation)
+#
+# save(df_imp, file = paste0(outputs.dir, "/predictions/imputation_", variablesToImpute, "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
+# print(paste0("/predictions/imputation_", variablesToImpute, "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
+#
+# nonBM_phylo_rmse.boxplots <- ggplot2::ggplot(df_imp$OOBerror, ggplot2::aes(x = variablesToImpute, y = RMSE)) +
+#   ggplot2::geom_abline(intercept = 1, slope = 0, linetype = "dashed") +
+#   ggplot2::geom_boxplot()
+# nonBM_phylo_rmse.boxplots
+#
 # # Delete files
 #
 # unlink("outputs", recursive = T)
