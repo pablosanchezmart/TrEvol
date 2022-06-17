@@ -6,7 +6,7 @@
 # # test_check("TrEvol")
 #
 # ### simulate dataset ####
-#
+
 # devtools::load_all()
 #
 # nObs <- 100
@@ -106,28 +106,40 @@
 #
 # tr_pred <- ape::keep.tip(tr, tr$tip.label[tr$tip.label %in% df_pred$taxon])
 #
+# predictors <- c("BM_HC_predictor", "nonBM_HC_predictor")
+#
 # for(predictor in predictors){
-#     df_pred <- df_pred %>% filter(!is.na(predictor))
+#     df_pred <- df_pred %>% dplyr::filter(!is.na(predictor))
 # }
 #
-# variablesToImpute <- "BM_HC_1"
+#
+# variablesToImpute <- c("nonBM_HC_1", "nonBM_HC_2", "BM_HC_1", "BM_HC_2")
 # imputationPredictors <- c(paste0("Phylo_axis_", 1:10))
-# propNA <- 0.2
-# numberIterations <- 100
+# propNA <- 0.5
+# numberIterations <- 10
 # forceRunImputation <- T
 #
 # df_imp <- imputeTraits(DATASET = df_pred, PHYLOGENY = tr_pred, correlationsTraitsResults = covarianceResults_BM_HC_predictor$covarianceResults,
-#                          imputationVariables = c(variablesToImpute), PREDICTORS = imputationPredictors, prodNAs = propNA, IterationsNumber = propNA, clustersNumber = 2, FORCERUN = forceRunImputation)
+#                        varianceResults = varianceResults_BM_HC_predictor$varianceResults,
+#                        orderCriterium = "Pure_coordinated_phylogenetic_conservatism",
+#                          imputationVariables = variablesToImpute, PREDICTORS = imputationPredictors, prodNAs = propNA, IterationsNumber = numberIterations, clustersNumber = 2,
+#                        FORCERUN = forceRunImputation)
 #
-# save(df_imp, file = paste0(outputs.dir, "/predictions/imputation_", variablesToImpute, "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
-# print(paste0("/predictions/imputation_", variablesToImpute, "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
+# save(df_imp, file = paste0(outputs.dir, "/predictions/imputation_", paste0(variablesToImpute, collapse = "_"), "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
+# print(paste0("/predictions/imputation_", paste0(variablesToImpute, collapse = "_"), "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
 #
-# nonBM_phylo_rmse.boxplots <- ggplot2::ggplot(df_imp$OOBerror, ggplot2::aes(x = variablesToImpute, y = RMSE)) +
+#
+# errors <- rbind(cbind("type" = "imputation1", df_imp$OOBerror_all_iterations), cbind("type" = "imputation2", df_imp$OOBerror_all_iterations2))
+#
+# p <- ggplot2::ggplot(errors, ggplot2::aes(x = Variable, y = RMSE, color = type)) +
 #   ggplot2::geom_abline(intercept = 1, slope = 0, linetype = "dashed") +
 #   ggplot2::geom_boxplot()
-# nonBM_phylo_rmse.boxplots
+# p
 #
-# # Delete files
+# df_imp$OOBerror
+# df_imp$OOBerror2
+# #
+# # # Delete files
 #
 # unlink("outputs", recursive = T)
 # unlink("results", recursive = T)
