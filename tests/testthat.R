@@ -114,16 +114,16 @@
 #
 #
 # variablesToImpute <- c("nonBM_HC_1", "nonBM_HC_2", "BM_HC_1", "BM_HC_2")
-# imputationPredictors <- c(paste0("Phylo_axis_", 1:10))
+# imputationPredictors <- NULL
 # propNA <- 0.5
 # numberIterations <- 10
 # forceRunImputation <- T
 #
-# df_imp <- imputeTraits(DATASET = df_pred, PHYLOGENY = tr_pred, correlationsTraitsResults = covarianceResults_BM_HC_predictor$covarianceResults,
+# df_imp <- imputeTraits(dataset = df_pred, phylogeny = tr_pred, correlationsTraitsResults = covarianceResults_BM_HC_predictor$covarianceResults,
 #                        varianceResults = varianceResults_BM_HC_predictor$varianceResults,
 #                        orderCriterium = "Pure_coordinated_phylogenetic_conservatism",
-#                          imputationVariables = variablesToImpute, PREDICTORS = imputationPredictors, prodNAs = propNA, IterationsNumber = numberIterations, clustersNumber = 2,
-#                        FORCERUN = forceRunImputation)
+#                          imputationVariables = variablesToImpute, predictors = imputationPredictors, numberOfPhyloCoordinates = 5, prodNAs = propNA, IterationsNumber = numberIterations, clustersNumber = 2,
+#                        forceRun = forceRunImputation)
 #
 # save(df_imp, file = paste0(outputs.dir, "/predictions/imputation_", paste0(variablesToImpute, collapse = "_"), "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
 # print(paste0("/predictions/imputation_", paste0(variablesToImpute, collapse = "_"), "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))

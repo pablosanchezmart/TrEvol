@@ -1,21 +1,21 @@
 #' Impute traits using the evolutionary (or genetic) correlations.
 #'
 #' @param imputationVariables (character) Names of the variables with NA where imputations will be implemented. If more than one, covariation among vimputation variables is considered.
-#' @param PREDICTORS (character) Names of the variables without NAs used as predictors.
-#' @param DATASET (data frame) Dataset containing the variable of interest and a column named taxon describing terminal taxa of phylogeny.
-#' @param PHYLOGENY (phylo) Phylogeny with tip labels contained in dataset$taxon
+#' @param predictors (character) Names of the variables without NAs used as predictors.
+#' @param dataset (data frame) dataset containing the variable of interest and a column named taxon describing terminal taxa of phylogeny.
+#' @param phylogeny (phylo) phylogeny with tip labels contained in dataset$taxon
 #' @param correlationsTraitsResults (list) Results from correlationsTraits() function.
 #' @param prodNAs (numeric) Proportion of artificial NAs to be introduced in a given dataset. For evaluation puposes.
 #' @param IterationsNumber (integer) Number of iterations of the imputation processs. Results are summarized.
 #' @param clustersNumber (integer) Number of clusters to use in parallelization.
-#' @param FORCERUN (logical) If false, previously calculated phylogenetic eigenvectors are used.
+#' @param forceRun (logical) If false, previously calculated phylogenetic eigenvectors are used.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, varianceResults = NULL, imputationVariables, orderCriterium = NULL,
-                             PREDICTORS = c(paste0("Phylo_axis_", 1:10)), prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, FORCERUN = T){
+imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, varianceResults = NULL, imputationVariables, orderCriterium = NULL, numberOfPhyloCoordinates = 5,
+                             predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T){
 
   ### Objects to gather results ####
 
@@ -27,19 +27,20 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
 
   imputationResults <- list()
 
+  modelName <- paste("(", paste(imputationVariables, collapse = " <-> "), ") <- ", paste(predictors, collapse = ", "), paste("numberPhyloCoord_", numberOfPhyloCoordinates))
+
   #### PHYLOGENETIC PRNCIPAL COMPONENTS ------------------------------------------ ####
 
   ### Phylogenetic principal coordinates ####
 
-  if (!file.exists(paste0(outputs.dir, "phylo_eigenvectors.csv")) |
-      isTRUE(FORCERUN)) {
-    mat <- ape::cophenetic.phylo(PHYLOGENY)
+  if (!file.exists(paste0(outputs.dir, "phylo_eigenvectors.csv")) | isTRUE(forceRun)) {
+    mat <- ape::cophenetic.phylo(phylogeny)
     mat <- as.data.frame(mat)
     pCordA <- ape::pcoa(mat)
     phyloEigenV <- as.data.frame(pCordA$vectors)
-    phyloEigenV <- phyloEigenV[DATASET$taxon, c(1:50)]
+    phyloEigenV <- phyloEigenV[dataset$taxon, c(1:50)]
     phyloEigenV$taxon <- rownames(phyloEigenV)
-    imp.dataset <- merge(DATASET, phyloEigenV, by = "taxon", all.x = T)
+    imp.dataset <- merge(dataset, phyloEigenV, by = "taxon", all.x = T)
     names(imp.dataset) <- stringr::str_replace_all(names(imp.dataset), "Axis.", "Phylo_axis_")
     utils::write.csv(imp.dataset, paste0(outputs.dir, "phylo_eigenvectors.csv"),
                      row.names = F)
@@ -54,8 +55,9 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
 
   # Order traits according to the covariance structure
 
+  correlationsTraitsResults$order <- abs(correlationsTraitsResults[, orderCriterium])
   phylo_order <- correlationsTraitsResults %>%
-    dplyr::arrange(dplyr::desc(abs(Pure_coordinated_phylogenetic_conservatism))) %>%
+    dplyr::arrange(dplyr::desc(abs(order))) %>%
     dplyr::select(c(Trait_1, Trait_2, orderCriterium))
 
   imputation.variables <- character()
@@ -76,7 +78,12 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
   imputation.variables[1:2] <- firstTwoOrder
 
   imputationVariables <- imputation.variables[imputation.variables %in% imputationVariables]
-  imp.dataset <- imp.dataset %>% dplyr::select(c(imputationVariables, PREDICTORS))
+
+  # Imputation dataset
+
+  predictors <- c(predictors, c(paste0("Phylo_axis_", 1:numberOfPhyloCoordinates)))
+
+  imp.dataset <- imp.dataset %>% dplyr::select(c(imputationVariables, predictors))
   xTrue <- imp.dataset
 
   ### IMPUTATION 1. Run models to impute variables following the previously determined order ####
@@ -105,11 +112,11 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
                                         MARGIN = 2, FUN = mean, na.rm = T),
                            # NRMSE = sqrt(rfImp.res$OOBerror[1:length(imputationVariables)]) / abs(apply(as.data.frame(xTrue[, imputationVariables]), MARGIN = 2, FUN = mean, na.rm = T)),
                            Sd = apply(as.data.frame(xTrue[, imputationVariables]), MARGIN = 2, FUN = stats::sd, na.rm = T),
-                           Model = paste(paste(imputationVariables, collapse = ", "), paste(PREDICTORS, collapse = ", ")))
+                           Model = modelName)
     row.names(OOBerror) <- NULL
     print(OOBerror)
     ximp <- as.data.frame(rfImp.res$ximp)
-    ximp$taxon <- DATASET$taxon
+    ximp$taxon <- dataset$taxon
     OOBerror.all <- rbind(OOBerror.all, OOBerror)
     ximp.all <- rbind(ximp.all, ximp)
   }
@@ -120,7 +127,7 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
   imputationResults$OOBerror <- stats::aggregate(OOBerror.all[, -c(which(names(OOBerror.all) == "Variable"), which(names(OOBerror.all) == "Model"))],
                                                  by = list(OOBerror.all$Variable), FUN = mean) %>%
                                 dplyr::rename(Variable = Group.1) %>%
-                                dplyr::mutate(Model = paste(paste(imputationVariables, collapse = ", "), paste(PREDICTORS, collapse = ", ")))
+                                dplyr::mutate(Model = modelName)
 
   if (IterationsNumber > 1) {
     imputationResults$ximp_sd <- stats::aggregate(ximp.all[, -which(names(ximp) == "taxon")], by = list(ximp.all$taxon), FUN = stats::sd) %>%
@@ -128,7 +135,7 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
 
     imputationResults$OOBerror_sd <- stats::aggregate(OOBerror.all[, -c(which(names(OOBerror.all) == "Variable"), which(names(OOBerror.all) == "Model"))],
                                                       by = list(OOBerror.all$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1) %>%
-                                     dplyr::mutate(Model = paste(paste(imputationVariables, collapse = ", "), paste(PREDICTORS, collapse = ", ")))
+                                     dplyr::mutate(Model = modelName)
     imputationResults$ximp_all_iterations <- ximp.all
     imputationResults$OOBerror_all_iterations <- OOBerror.all
   }
@@ -169,11 +176,11 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
                                           MARGIN = 2, FUN = mean, na.rm = T),
                              # NRMSE = sqrt(rfImp.res2$OOBerror[1:length(impVariable)]) / abs(apply(as.data.frame(xTrue[, impVariable]), MARGIN = 2, FUN = mean, na.rm = T)),
                              Sd = apply(as.data.frame(xTrue[, impVariable]), MARGIN = 2, FUN = stats::sd, na.rm = T),
-                             Model = paste(paste(impVariable, collapse = ", "), paste(PREDICTORS, collapse = ", ")))
+                             Model = modelName)
       row.names(OOBerror) <- NULL
       print(OOBerror)
       ximp2[, impVariable] <- as.data.frame(rfImp.res2$ximp[, impVariable])
-      ximp2$taxon <- DATASET$taxon
+      ximp2$taxon <- dataset$taxon
       OOBerror.all2 <- rbind(OOBerror.all2, OOBerror)
       ximp.all2 <- rbind(ximp.all2, ximp2)
 
@@ -187,7 +194,7 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
   imputationResults$OOBerror2 <- stats::aggregate(OOBerror.all2[, -c(which(names(OOBerror.all2) == "Variable"), which(names(OOBerror.all2) == "Model"))],
                                                  by = list(OOBerror.all2$Variable), FUN = mean) %>%
     dplyr::rename(Variable = Group.1) %>%
-    dplyr::mutate(Model = paste(paste(imputationVariables, collapse = ", "), paste(PREDICTORS, collapse = ", ")))
+    dplyr::mutate(Model = modelName)
 
   if (IterationsNumber > 1) {
     imputationResults$ximp_sd <- stats::aggregate(ximp.all2[, -which(names(ximp) == "taxon")], by = list(ximp.all2$taxon), FUN = stats::sd) %>%
@@ -195,7 +202,7 @@ imputeTraits <- function(DATASET, PHYLOGENY, correlationsTraitsResults, variance
 
     imputationResults$OOBerror_sd2 <- stats::aggregate(OOBerror.all2[, -c(which(names(OOBerror.all2) == "Variable"), which(names(OOBerror.all2) == "Model"))],
                                                       by = list(OOBerror.all2$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1) %>%
-      dplyr::mutate(Model = paste(paste(imputationVariables, collapse = ", "), paste(PREDICTORS, collapse = ", ")))
+      dplyr::mutate(Model = modelName)
     imputationResults$ximp_all_iterations2 <- ximp.all2
     imputationResults$OOBerror_all_iterations2 <- OOBerror.all2
   }
