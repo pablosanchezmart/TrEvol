@@ -19,10 +19,10 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
 
   ### Objects to gather results ####
 
-  OOBerror.all <- data.frame()
+  predictivePerformance.all <- data.frame()
   ximp.all <- data.frame()
 
-  OOBerror.all2 <- data.frame()
+  predictivePerformance.all2 <- data.frame()
   ximp.all2 <- data.frame()
 
   imputationResults <- list()
@@ -57,7 +57,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
 
   correlationsTraitsResults$order <- abs(correlationsTraitsResults[, orderCriterium])
   phylo_order <- correlationsTraitsResults %>%
-    dplyr::arrange(dplyr::desc(abs(order))) %>%
+    dplyr::arrange(dplyr::desc(order)) %>%
     dplyr::select(c(Trait_1, Trait_2, orderCriterium))
 
   imputation.variables <- character()
@@ -97,35 +97,58 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                                           maxiter = 50, ntree = 1000, parallelize = "forests",
                                           verbose = F, variablewise = T, decreasing = T,
                                           xtrue = as.matrix(xTrue))
+
+      # R2 calculation
+      r2.var <- numeric()
+      for(impVariable in imputationVariables){
+        matObs <- as.matrix(xTrue[, impVariable])
+        matNA <- as.matrix(imp.dataset[, impVariable])
+
+        observed <- matObs[which(!is.na(matObs) & is.na(matNA))]
+
+        predicted <- as.matrix(rfImp.res$ximp[, impVariable])
+        predicted <- predicted[which(!is.na(matObs) & is.na(matNA))]
+
+        r2.var[impVariable] <- cor(observed, predicted)^2
+      }
+
+      predictivePerformance <- data.frame(Variable = imputationVariables,
+                          N = length(imp.dataset[, 1]),
+                          N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, impVariable])), 1]),
+                          N_NA = length(imp.dataset[which(is.na(imp.dataset[, impVariable])), 1]),
+                          NRMSE = rfImp.res$OOBerror[1:length(imputationVariables)],
+                          R2 = r2.var,
+                          Model = modelName)
     } else {
       rfImp.res <- missForest::missForest(xmis = as.matrix(imp.dataset),
                                           maxiter = 50, ntree = 1000, parallelize = "forests",
                                           verbose = F, variablewise = T, decreasing = T)
+
+      predictivePerformance <- data.frame(Variable = imputationVariables,
+                          N = length(imp.dataset[, 1]),
+                          N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, impVariable])), 1]),
+                          N_NA = length(imp.dataset[which(is.na(imp.dataset[, impVariable])), 1]),
+                          NRMSE = rfImp.res$OOBerror[1:length(imputationVariables)],
+                          Model = modelName)
     }
     parallel::stopCluster(cl)
 
+    row.names(predictivePerformance) <- NULL
+    print(predictivePerformance)
+
     ## Results of the first round of imputation (gap filling) per iteration
 
-    OOBerror <- data.frame(Variable = imputationVariables,
-                           RMSE = sqrt(rfImp.res$OOBerror[1:length(imputationVariables)]),
-                           Mean = apply(as.data.frame(xTrue[, imputationVariables]),
-                                        MARGIN = 2, FUN = mean, na.rm = T),
-                           # NRMSE = sqrt(rfImp.res$OOBerror[1:length(imputationVariables)]) / abs(apply(as.data.frame(xTrue[, imputationVariables]), MARGIN = 2, FUN = mean, na.rm = T)),
-                           Sd = apply(as.data.frame(xTrue[, imputationVariables]), MARGIN = 2, FUN = stats::sd, na.rm = T),
-                           Model = modelName)
-    row.names(OOBerror) <- NULL
-    print(OOBerror)
     ximp <- as.data.frame(rfImp.res$ximp)
     ximp$taxon <- dataset$taxon
-    OOBerror.all <- rbind(OOBerror.all, OOBerror)
+    predictivePerformance.all <- rbind(predictivePerformance.all, predictivePerformance)
     ximp.all <- rbind(ximp.all, ximp)
   }
 
   ### Results aggregation (for all iterations)
 
   imputationResults$ximp <- stats::aggregate(ximp.all[, -which(names(ximp) == "taxon")], by = list(ximp.all$taxon), FUN = mean) %>% dplyr::rename(taxon = Group.1)
-  imputationResults$OOBerror <- stats::aggregate(OOBerror.all[, -c(which(names(OOBerror.all) == "Variable"), which(names(OOBerror.all) == "Model"))],
-                                                 by = list(OOBerror.all$Variable), FUN = mean) %>%
+  imputationResults$predictivePerformance <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"), which(names(predictivePerformance.all) == "Model"))],
+                                                 by = list(predictivePerformance.all$Variable), FUN = mean) %>%
                                 dplyr::rename(Variable = Group.1) %>%
                                 dplyr::mutate(Model = modelName)
 
@@ -133,11 +156,11 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     imputationResults$ximp_sd <- stats::aggregate(ximp.all[, -which(names(ximp) == "taxon")], by = list(ximp.all$taxon), FUN = stats::sd) %>%
                                  dplyr::rename(taxon = Group.1)
 
-    imputationResults$OOBerror_sd <- stats::aggregate(OOBerror.all[, -c(which(names(OOBerror.all) == "Variable"), which(names(OOBerror.all) == "Model"))],
-                                                      by = list(OOBerror.all$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1) %>%
+    imputationResults$predictivePerformance_sd <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"), which(names(predictivePerformance.all) == "Model"))],
+                                                      by = list(predictivePerformance.all$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1) %>%
                                      dplyr::mutate(Model = modelName)
     imputationResults$ximp_all_iterations <- ximp.all
-    imputationResults$OOBerror_all_iterations <- OOBerror.all
+    imputationResults$predictivePerformance_all_iterations <- predictivePerformance.all
   }
 
   ### IMPUTATION 2. Run models to impute variables following the previously determined order using imputed traits (except for the one being imputed) ####
@@ -146,8 +169,6 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
   ximp2 <- as.data.frame(imputationResults$ximp)
 
   for(impVariable in imputationVariables){
-
-    # ximp2[, impVariable] <- imp.dataset2[, impVariable]
 
     for (n in 1:IterationsNumber) {
       ximp2[, impVariable] <- missForest::prodNA(as.data.frame(imp.dataset2[, impVariable]), prodNAs)
@@ -161,27 +182,47 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                                             maxiter = 50, ntree = 1000, parallelize = "forests",
                                             verbose = F, variablewise = T, decreasing = T,
                                             xtrue = as.matrix(xTrue))
+
+
+        # R2 calculation
+        matObs <- as.matrix(xTrue[, impVariable])
+        matNA <- as.matrix(ximp2[, impVariable])
+
+        observed <- matObs[which(!is.na(matObs) & is.na(matNA))]
+
+        predicted <- as.matrix(rfImp.res$ximp[, impVariable])
+        predicted <- predicted[which(!is.na(matObs) & is.na(matNA))]
+
+        r2.var <- cor(observed, predicted)^2
+
+        predictivePerformance <- data.frame(Variable = impVariable,
+                            N = length(ximp2[, 1]),
+                            N_Obs = length(ximp2[which(!is.na(ximp2[, impVariable])), 1]),
+                            N_NA = length(ximp2[which(is.na(ximp2[, impVariable])), 1]),
+                            NRMSE = rfImp.res2$OOBerror[1:length(impVariable)],
+                            R2 = r2.var,
+                            Model = modelName)
       } else {
         rfImp.res2 <- missForest::missForest(xmis = as.matrix(ximp2),
+                                             N = length(ximp2[, 1]),
+                                             N_Obs = length(ximp2[which(!is.na(ximp2[, impVariable])), 1]),
+                                             N_NA = length(ximp2[which(is.na(ximp2[, impVariable])), 1]),
                                             maxiter = 50, ntree = 1000, parallelize = "forests",
                                             verbose = F, variablewise = T, decreasing = T)
+
+        predictivePerformance <- data.frame(Variable = impVariable,
+                            NRMSE = rfImp.res2$OOBerror[1:length(impVariable)],
+                            Model = modelName)
       }
       parallel::stopCluster(cl)
 
       ## Results of the second round of imputation (gap filling) per iteration
 
-      OOBerror <- data.frame(Variable = impVariable,
-                             RMSE = sqrt(rfImp.res2$OOBerror[1:length(impVariable)]),
-                             Mean = apply(as.data.frame(xTrue[, impVariable]),
-                                          MARGIN = 2, FUN = mean, na.rm = T),
-                             # NRMSE = sqrt(rfImp.res2$OOBerror[1:length(impVariable)]) / abs(apply(as.data.frame(xTrue[, impVariable]), MARGIN = 2, FUN = mean, na.rm = T)),
-                             Sd = apply(as.data.frame(xTrue[, impVariable]), MARGIN = 2, FUN = stats::sd, na.rm = T),
-                             Model = modelName)
-      row.names(OOBerror) <- NULL
-      print(OOBerror)
+      row.names(predictivePerformance) <- NULL
+      print(predictivePerformance)
       ximp2[, impVariable] <- as.data.frame(rfImp.res2$ximp[, impVariable])
       ximp2$taxon <- dataset$taxon
-      OOBerror.all2 <- rbind(OOBerror.all2, OOBerror)
+      predictivePerformance.all2 <- rbind(predictivePerformance.all2, predictivePerformance)
       ximp.all2 <- rbind(ximp.all2, ximp2)
 
       imp.dataset2[, impVariable] <- as.data.frame(rfImp.res2$ximp[, impVariable])
@@ -191,8 +232,8 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
   ### Results aggregation (for all iterations)
 
   imputationResults$ximp2 <- stats::aggregate(ximp.all2[, -which(names(ximp.all2) == "taxon")], by = list(ximp.all2$taxon), FUN = mean) %>% dplyr::rename(taxon = Group.1)
-  imputationResults$OOBerror2 <- stats::aggregate(OOBerror.all2[, -c(which(names(OOBerror.all2) == "Variable"), which(names(OOBerror.all2) == "Model"))],
-                                                 by = list(OOBerror.all2$Variable), FUN = mean) %>%
+  imputationResults$predictivePerformance2 <- stats::aggregate(predictivePerformance.all2[, -c(which(names(predictivePerformance.all2) == "Variable"), which(names(predictivePerformance.all2) == "Model"))],
+                                                 by = list(predictivePerformance.all2$Variable), FUN = mean) %>%
     dplyr::rename(Variable = Group.1) %>%
     dplyr::mutate(Model = modelName)
 
@@ -200,11 +241,11 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     imputationResults$ximp_sd <- stats::aggregate(ximp.all2[, -which(names(ximp) == "taxon")], by = list(ximp.all2$taxon), FUN = stats::sd) %>%
       dplyr::rename(taxon = Group.1)
 
-    imputationResults$OOBerror_sd2 <- stats::aggregate(OOBerror.all2[, -c(which(names(OOBerror.all2) == "Variable"), which(names(OOBerror.all2) == "Model"))],
-                                                      by = list(OOBerror.all2$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1) %>%
+    imputationResults$predictivePerformance_sd2 <- stats::aggregate(predictivePerformance.all2[, -c(which(names(predictivePerformance.all2) == "Variable"), which(names(predictivePerformance.all2) == "Model"))],
+                                                      by = list(predictivePerformance.all2$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1) %>%
       dplyr::mutate(Model = modelName)
     imputationResults$ximp_all_iterations2 <- ximp.all2
-    imputationResults$OOBerror_all_iterations2 <- OOBerror.all2
+    imputationResults$predictivePerformance_all_iterations2 <- predictivePerformance.all2
   }
 
   return(imputationResults)

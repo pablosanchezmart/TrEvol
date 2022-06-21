@@ -1,12 +1,13 @@
 # library(testthat)
 # library(TrEvol)
 #
-# setwd("tests")
 #
 # # test_check("TrEvol")
 #
 # ### simulate dataset ####
 
+# setwd("tests")
+#
 # devtools::load_all()
 #
 # nObs <- 100
@@ -122,22 +123,26 @@
 # df_imp <- imputeTraits(dataset = df_pred, phylogeny = tr_pred, correlationsTraitsResults = covarianceResults_BM_HC_predictor$covarianceResults,
 #                        varianceResults = varianceResults_BM_HC_predictor$varianceResults,
 #                        orderCriterium = "Pure_coordinated_phylogenetic_conservatism",
-#                          imputationVariables = variablesToImpute, predictors = imputationPredictors, numberOfPhyloCoordinates = 5, prodNAs = propNA, IterationsNumber = numberIterations, clustersNumber = 2,
+#                          imputationVariables = variablesToImpute, predictors = imputationPredictors, numberOfPhyloCoordinates = 5, prodNAs = propNA,
+#                        IterationsNumber = numberIterations, clustersNumber = 2,
 #                        forceRun = forceRunImputation)
 #
 # save(df_imp, file = paste0(outputs.dir, "/predictions/imputation_", paste0(variablesToImpute, collapse = "_"), "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
 # print(paste0("/predictions/imputation_", paste0(variablesToImpute, collapse = "_"), "_predictors_", paste0(imputationPredictors, collapse = "_"), "prodNA_", propNA, ".RData"))
 #
+# errors <- rbind(cbind("type" = "imputation1", df_imp$predictivePerformance_all_iterations[, c("Variable", "NRMSE", "R2")]),
+#                 cbind("type" = "imputation2", df_imp$predictivePerformance_all_iterations2[, c("Variable", "NRMSE", "R2")]))
 #
-# errors <- rbind(cbind("type" = "imputation1", df_imp$OOBerror_all_iterations), cbind("type" = "imputation2", df_imp$OOBerror_all_iterations2))
-#
-# p <- ggplot2::ggplot(errors, ggplot2::aes(x = Variable, y = RMSE, color = type)) +
+# pNRMSE <- ggplot2::ggplot(errors, ggplot2::aes(x = Variable, y = NRMSE, color = type)) +
 #   ggplot2::geom_abline(intercept = 1, slope = 0, linetype = "dashed") +
 #   ggplot2::geom_boxplot()
-# p
+# pNRMSE
 #
-# df_imp$OOBerror
-# df_imp$OOBerror2
+# pR2 <- ggplot2::ggplot(errors, ggplot2::aes(x = Variable, y = R2, color = type)) +
+#   ggplot2::geom_abline(intercept = 1, slope = 0, linetype = "dashed") +
+#   ggplot2::geom_boxplot()
+# pR2
+#
 # #
 # # # Delete files
 #
