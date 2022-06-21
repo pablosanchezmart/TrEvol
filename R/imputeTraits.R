@@ -55,6 +55,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
 
   # Order traits according to the covariance structure
 
+  if(!is.null(orderCriterium)){
   correlationsTraitsResults$order <- abs(correlationsTraitsResults[, orderCriterium])
   phylo_order <- correlationsTraitsResults %>%
     dplyr::arrange(dplyr::desc(order)) %>%
@@ -66,6 +67,9 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     impVars <- c(impVars$Trait_1, impVars$Trait_2)
     impVars <- impVars[!impVars %in% imputation.variables]
     imputation.variables <- c(imputation.variables, impVars)
+  }
+  } else {
+    imputation.variables <- imputationVariables
   }
 
   # Order the first two traits according to their phylogenetic variance
@@ -89,6 +93,11 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
   ### IMPUTATION 1. Run models to impute variables following the previously determined order ####
 
   for (n in 1:IterationsNumber) {
+    # if order criterium is null, randomize order in each iteration
+    if(is.null(orderCriterium)){
+      imputationVariables <- sample(imputationVariables)
+    }
+
     imp.dataset[, imputationVariables] <- missForest::prodNA(as.data.frame(xTrue[, imputationVariables]), prodNAs)
     cl <- parallel::makeCluster(clustersNumber)
     doParallel::registerDoParallel(cl)
