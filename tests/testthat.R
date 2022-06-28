@@ -5,7 +5,7 @@
 # # test_check("TrEvol")
 #
 # ### simulate dataset ####
-
+#
 # setwd("tests")
 #
 # devtools::load_all()
@@ -123,7 +123,7 @@
 # df_imp <- imputeTraits(dataset = df_pred, phylogeny = tr_pred, correlationsTraitsResults = covarianceResults_BM_HC_predictor$covarianceResults,
 #                        varianceResults = varianceResults_BM_HC_predictor$varianceResults,
 #                        orderCriterium = "Pure_coordinated_phylogenetic_conservatism",
-#                          imputationVariables = variablesToImpute, predictors = imputationPredictors, numberOfPhyloCoordinates = 5, prodNAs = propNA,
+#                        imputationVariables = variablesToImpute, predictors = imputationPredictors, numberOfPhyloCoordinates = 5, prodNAs = propNA,
 #                        IterationsNumber = numberIterations, clustersNumber = 2,
 #                        forceRun = forceRunImputation)
 #

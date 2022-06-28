@@ -67,19 +67,20 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     impVars <- c(impVars$Trait_1, impVars$Trait_2)
     impVars <- impVars[!impVars %in% imputation.variables]
     imputation.variables <- c(imputation.variables, impVars)
+
+    # Order the first two traits according to their phylogenetic variance
+    if(!is.null(varianceResults)){
+      firstTwoOrder <-  varianceResults %>%
+        dplyr::filter(Trait %in% imputation.variables[1:2]) %>%
+        dplyr::arrange(dplyr::desc(abs(Total_phylogenetic_conservatism))) %>%
+        dplyr::pull(Trait)
+
+      imputation.variables[1:2] <- firstTwoOrder
+    }
   }
   } else {
-    imputation.variables <- imputationVariables
+    imputation.variables <- sample(imputationVariables)
   }
-
-  # Order the first two traits according to their phylogenetic variance
-
-  firstTwoOrder <-  varianceResults %>%
-    dplyr::filter(Trait %in% imputation.variables[1:2]) %>%
-    dplyr::arrange(dplyr::desc(abs(Total_phylogenetic_conservatism))) %>%
-    dplyr::pull(Trait)
-
-  imputation.variables[1:2] <- firstTwoOrder
 
   imputationVariables <- imputation.variables[imputation.variables %in% imputationVariables]
 
