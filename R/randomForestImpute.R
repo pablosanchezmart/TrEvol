@@ -5,17 +5,26 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
                        sampsize = NULL, nodesize = NULL, maxnodes = NULL,
                        xtrue = NA, parallelize = c('no', 'variables', 'forests'))
 {
+  require(missForest)
+  require(doRNG)
+  require(randomForest)
+  combine <- randomForest::combine
   ## stop in case of wrong inputs passed to randomForest
   n <- nrow(xmis)
   p <- ncol(xmis)
-  if (!is.null(classwt))
+
+  if (!is.null(classwt)){
     stopifnot(length(classwt) == p, typeof(classwt) == 'list')
-  if (!is.null(cutoff))
+  }
+  if (!is.null(cutoff)){
     stopifnot(length(cutoff) == p, typeof(cutoff) == 'list')
-  if (!is.null(strata))
+  }
+  if (!is.null(strata)){
     stopifnot(length(strata) == p, typeof(strata) == 'list')
-  if (!is.null(nodesize))
+  }
+  if (!is.null(nodesize)){
     stopifnot(length(nodesize) == 2)
+  }
 
   ## remove completely missing variables
   if (any(apply(is.na(xmis), 2, sum) == n)){
@@ -29,7 +38,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
   ## return feedback on parallelization setup
   parallelize <- match.arg(parallelize)
   if (parallelize %in% c('variables', 'forests')) {
-    if (getDoParWorkers() == 1) {
+    if (foreach::getDoParWorkers() == 1) {
       stop("You must register a 'foreach' parallel backend to run 'missForest' in parallel. Set 'parallelize' to 'no' to compute serially.")
     } else if (verbose) {
       if (parallelize == 'variables') {
@@ -38,7 +47,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
         cat("  parallelizing computation of the random forest model objects\n")
       }
     }
-    if (getDoParWorkers() > p){
+    if (foreach::getDoParWorkers() > p){
       stop("The number of parallel cores should not exceed the number of variables (p=", p, ")")
     }
   }
@@ -74,24 +83,28 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
   }
 
   ## extract missingness pattern
-  # NAloc <- is.na(xmis)            # where are missings
-  # noNAvar <- apply(NAloc, 2, sum) # how many are missing in the vars
-  # sort.j <- order(noNAvar)        # indices of increasing amount of NA in vars
-  # if (decreasing)
-  #   sort.j <- rev(sort.j)
-  # sort.noNAvar <- noNAvar[sort.j]
+
+  NAloc <- is.na(xmis)        # where are missings
+  noNAvar <- apply(NAloc, 2, sum) # how many are missing in the vars
+
+  if(decreasing){
+    sort.j <- order(noNAvar)        # indices of increasing amount of NA in vars
+  } else {
+    sort.j <- c(1:length(noNAvar))
+  }
+
+  sort.noNAvar <- noNAvar[sort.j]
 
   ## compute a list of column indices for variable parallelization
-  # nzsort.j <- sort.j[sort.noNAvar > 0]
-  # if (parallelize == 'variables') {
-  #   '%cols%' <- get('%dorng%')
-  #   idxList <- as.list(isplitVector(nzsort.j, chunkSize = getDoParWorkers()))
-  # }
-  #   else {
-  #     ## force column loop to be sequential
-  #     '%cols%' <- get('%do%')
-  #     idxList <- nzsort.j
-  #   }
+  nzsort.j <- sort.j[sort.noNAvar > 0]
+  if (parallelize == 'variables') {
+    '%cols%' <- get('%dorng%')
+    idxList <- as.list(itertools::isplitVector(nzsort.j, chunkSize = foreach::getDoParWorkers()))
+  } else {
+      ## force column loop to be sequential
+      '%cols%' <- get('%do%')
+      idxList <- nzsort.j
+    }
 
   ## output
   Ximp <- vector('list', maxiter)
@@ -143,9 +156,9 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
 
     if (parallelize == "variables"){
       for (idx in idxList) {
-        results <- foreach(varInd = idx, .packages = 'randomForest') %cols% {
-          obsi <- !NAloc[, varInd] # which i's are observed
-          misi <- NAloc[, varInd] # which i's are missing
+        results <- foreach::foreach(varInd = idx, .packages = 'randomForest') %cols% {
+          obsi <- !noNAvar[, varInd] # which i's are observed
+          misi <- noNAvar[, varInd] # which i's are missing
           obsY <- ximp[obsi, varInd] # training response
           obsX <- ximp[obsi, seq(1, p)[-varInd]] # training variables
           misX <- ximp[misi, seq(1, p)[-varInd]] # prediction variables
@@ -199,7 +212,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
         }
         ## update the master copy of the data
         for (res in results) {
-          misi <- NAloc[,res$varInd]
+          misi <- noNAvar[,res$varInd]
           ximp[misi, res$varInd] <- res$misY
           OOBerror[res$varInd] <- res$oerr
         }
@@ -207,6 +220,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
     } else { # if parallelize != "variables"
       for (s in 1 : p) {
         varInd <- sort.j[s]
+
         if (noNAvar[[varInd]] != 0) {
           obsi <- !NAloc[, varInd]
           misi <- NAloc[, varInd]
@@ -217,8 +231,8 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
           if (typeY == "numeric") {
             if (parallelize == 'forests') {
               xntree <- NULL
-              RF <- foreach(xntree = idiv(ntree, chunks = getDoParWorkers()),
-                            .combine = 'combine', .multicombine = TRUE,
+              RF <- foreach::foreach(xntree = iterators:::idiv(ntree, chunks = foreach::getDoParWorkers()),
+                            .combine = "combine", .multicombine = TRUE,
                             .packages = 'randomForest') %dorng% {
                               randomForest( x = obsX,
                                             y = obsY,
@@ -254,8 +268,8 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
               misY <- factor(rep(names(summarY), sum(misi)))
             } else {
               if (parallelize == 'forests') {
-                RF <- foreach(xntree = idiv(ntree, chunks = getDoParWorkers()),
-                              .combine = 'combine', .multicombine = TRUE,
+                RF <- foreach::foreach(xntree = iterators:::idiv(ntree, chunks = foreach::getDoParWorkers()),
+                              .combine = "combine", .multicombine = TRUE,
                               .packages = 'randomForest') %dorng% {
                                 randomForest(
                                   x = obsX,
@@ -278,7 +292,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
                 ne <- ne[! is.na(ne)]
                 OOBerror[varInd] <- sum(ne) / length(ne)
               } else {
-                RF <- randomForest(x = obsX,
+                RF <- randomForest::randomForest(x = obsX,
                                    y = obsY,
                                    ntree = ntree,
                                    mtry = mtry,

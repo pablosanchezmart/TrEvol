@@ -67,16 +67,15 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     impVars <- c(impVars$Trait_1, impVars$Trait_2)
     impVars <- impVars[!impVars %in% imputation.variables]
     imputation.variables <- c(imputation.variables, impVars)
+  }
+  # Order the first two traits according to their phylogenetic variance
+  if(!is.null(varianceResults)){
+    firstTwoOrder <-  varianceResults %>%
+      dplyr::filter(Trait %in% imputation.variables[1:2]) %>%
+      dplyr::arrange(dplyr::desc(abs(Total_phylogenetic_conservatism))) %>%
+      dplyr::pull(Trait)
 
-    # Order the first two traits according to their phylogenetic variance
-    if(!is.null(varianceResults)){
-      firstTwoOrder <-  varianceResults %>%
-        dplyr::filter(Trait %in% imputation.variables[1:2]) %>%
-        dplyr::arrange(dplyr::desc(abs(Total_phylogenetic_conservatism))) %>%
-        dplyr::pull(Trait)
-
-      imputation.variables[1:2] <- firstTwoOrder
-    }
+    imputation.variables[1:2] <- firstTwoOrder
   }
   } else {
     imputation.variables <- sample(imputationVariables)
@@ -103,8 +102,8 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     cl <- parallel::makeCluster(clustersNumber)
     doParallel::registerDoParallel(cl)
     if (prodNAs != 0) {
-      rfImp.res <- missForest::missForest(xmis = as.matrix(imp.dataset),
-                                          maxiter = 50, ntree = 1000, parallelize = "forests",
+      rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
+                                          maxiter = 50, ntree = 100, parallelize = "forests",
                                           verbose = F, variablewise = T, decreasing = T,
                                           xtrue = as.matrix(xTrue))
 
@@ -130,7 +129,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                           R2 = r2.var,
                           Model = modelName)
     } else {
-      rfImp.res <- missForest::missForest(xmis = as.matrix(imp.dataset),
+      rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
                                           maxiter = 50, ntree = 1000, parallelize = "forests",
                                           verbose = F, variablewise = T, decreasing = T)
 
@@ -188,7 +187,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
       cl <- parallel::makeCluster(clustersNumber)
       doParallel::registerDoParallel(cl)
       if (prodNAs != 0) {
-        rfImp.res2 <- missForest::missForest(xmis = as.matrix(ximp2),
+        rfImp.res2 <- randomForestImpute(xmis = as.matrix(ximp2),
                                             maxiter = 50, ntree = 1000, parallelize = "forests",
                                             verbose = F, variablewise = T, decreasing = T,
                                             xtrue = as.matrix(xTrue))
@@ -213,7 +212,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                             R2 = r2.var,
                             Model = modelName)
       } else {
-        rfImp.res2 <- missForest::missForest(xmis = as.matrix(ximp2),
+        rfImp.res2 <- randomForestImpute(xmis = as.matrix(ximp2),
                                              N = length(ximp2[, 1]),
                                              N_Obs = length(ximp2[which(!is.na(ximp2[, impVariable])), 1]),
                                              N_NA = length(ximp2[which(is.na(ximp2[, impVariable])), 1]),
