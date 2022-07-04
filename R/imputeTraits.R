@@ -104,7 +104,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     if (prodNAs != 0) {
       rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
                                           maxiter = 50, ntree = 100, parallelize = "forests",
-                                          verbose = F, variablewise = T, decreasing = T,
+                                          verbose = F, variablewise = T, decreasing = F,
                                           xtrue = as.matrix(xTrue))
 
       # R2 calculation
@@ -131,7 +131,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     } else {
       rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
                                           maxiter = 50, ntree = 1000, parallelize = "forests",
-                                          verbose = F, variablewise = T, decreasing = T)
+                                          verbose = F, variablewise = T, decreasing = F)
 
       predictivePerformance <- data.frame(Variable = imputationVariables,
                           N = length(imp.dataset[, 1]),
@@ -189,7 +189,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
       if (prodNAs != 0) {
         rfImp.res2 <- randomForestImpute(xmis = as.matrix(ximp2),
                                             maxiter = 50, ntree = 1000, parallelize = "forests",
-                                            verbose = F, variablewise = T, decreasing = T,
+                                            verbose = F, variablewise = T, decreasing = F,
                                             xtrue = as.matrix(xTrue))
 
 
@@ -217,7 +217,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                                              N_Obs = length(ximp2[which(!is.na(ximp2[, impVariable])), 1]),
                                              N_NA = length(ximp2[which(is.na(ximp2[, impVariable])), 1]),
                                             maxiter = 50, ntree = 1000, parallelize = "forests",
-                                            verbose = F, variablewise = T, decreasing = T)
+                                            verbose = F, variablewise = T, decreasing = F)
 
         predictivePerformance <- data.frame(Variable = impVariable,
                             NRMSE = rfImp.res2$OOBerror[1:length(impVariable)],
