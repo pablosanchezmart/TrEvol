@@ -1,9 +1,8 @@
-randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = FALSE,
-                       decreasing = FALSE, verbose = FALSE,
+randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
                        mtry = floor(sqrt(ncol(xmis))), replace = TRUE,
                        classwt = NULL, cutoff = NULL, strata = NULL,
                        sampsize = NULL, nodesize = NULL, maxnodes = NULL,
-                       xtrue = NA, parallelize = c('no', 'variables', 'forests'))
+                       xtrue = NA, parallelize = FALSE)
 {
   require(missForest)
   require(doRNG)
@@ -36,16 +35,9 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
   }
 
   ## return feedback on parallelization setup
-  parallelize <- match.arg(parallelize)
-  if (parallelize %in% c('variables', 'forests')) {
+  if (parallelize) {
     if (foreach::getDoParWorkers() == 1) {
       stop("You must register a 'foreach' parallel backend to run 'missForest' in parallel. Set 'parallelize' to 'no' to compute serially.")
-    } else if (verbose) {
-      if (parallelize == 'variables') {
-        cat("  parallelizing over the variables of the input data matrix 'xmis'\n")
-      } else {
-        cat("  parallelizing computation of the random forest model objects\n")
-      }
     }
     if (foreach::getDoParWorkers() > p){
       stop("The number of parallel cores should not exceed the number of variables (p=", p, ")")
@@ -55,28 +47,28 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
   ## perform initial S.W.A.G. on xmis (mean imputation)
   ximp <- xmis
   varType <- character(p)
+  names(varType) <- colnames(ximp)
   for (t.co in 1:p) {
     if (is.numeric(xmis[[t.co]])) {
       varType[t.co] <- 'numeric'
-      ximp[is.na(xmis[,t.co]),t.co] <- mean(xmis[,t.co], na.rm = TRUE)
+      # ximp[is.na(xmis[,t.co]),t.co] <- mean(xmis[,t.co], na.rm = TRUE)
       next()
     }
     if (is.factor(xmis[[t.co]])) {
       varType[t.co] <- 'factor'
       ## take the level which is more 'likely' (majority vote)
-      max.level <- max(table(ximp[[t.co]]))
+      # max.level <- max(table(ximp[[t.co]]))
       ## if there are several classes which are major, sample one at random
-      class.assign <- sample(names(which(max.level == summary(ximp[[t.co]]))), 1)
+      # class.assign <- sample(names(which(max.level == summary(ximp[[t.co]]))), 1)
       ## it shouldn't be the NA class
-      if (class.assign != "NA's") {
-        ximp[is.na(xmis[[t.co]]),t.co] <- class.assign
-      } else {
-        while (class.assign == "NA's") {
-          class.assign <- sample(names(which(max.level ==
-                                               summary(ximp[[t.co]]))), 1)
-        }
-        ximp[is.na(xmis[[t.co]]),t.co] <- class.assign
-      }
+      # if (class.assign != "NA's") {
+      #   ximp[is.na(xmis[[t.co]]),t.co] <- class.assign
+      # } else {
+      #   while (class.assign == "NA's") {
+      #     class.assign <- sample(names(which(max.level == summary(ximp[[t.co]]))), 1)
+      #   }
+      #   ximp[is.na(xmis[[t.co]]),t.co] <- class.assign
+      # }
       next()
     }
     stop(sprintf('column %s must be factor or numeric, is %s', names(xmis)[t.co], class(xmis[[t.co]])))
@@ -87,30 +79,22 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
   NAloc <- is.na(xmis)        # where are missings
   noNAvar <- apply(NAloc, 2, sum) # how many are missing in the vars
 
-  if(decreasing){
-    sort.j <- order(noNAvar)        # indices of increasing amount of NA in vars
-  } else {
-    sort.j <- c(1:length(noNAvar))
-  }
+  sort.j <- c(1:length(noNAvar))
 
   sort.noNAvar <- noNAvar[sort.j]
 
   ## compute a list of column indices for variable parallelization
   nzsort.j <- sort.j[sort.noNAvar > 0]
-  if (parallelize == 'variables') {
-    '%cols%' <- get('%dorng%')
-    idxList <- as.list(itertools::isplitVector(nzsort.j, chunkSize = foreach::getDoParWorkers()))
-  } else {
-      ## force column loop to be sequential
-      '%cols%' <- get('%do%')
-      idxList <- nzsort.j
-    }
+
+  ## force column loop to be sequential
+  '%cols%' <- get('%do%')
+  idxList <- nzsort.j
 
   ## output
   Ximp <- vector('list', maxiter)
 
   ## initialize parameters of interest
-  iter <- 0
+  iter <- 1
   k <- length(unique(varType))
   convNew <- rep(0, k)
   convOld <- rep(Inf, k)
@@ -142,94 +126,38 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
     }
   }
 
+  ximp.old <- ximp
+
   ## iterate missForest
   while (stopCriterion(varType, convNew, convOld, iter, maxiter)){
     if (iter != 0){
       convOld <- convNew
       OOBerrOld <- OOBerr
     }
-    if (verbose){
-      cat("  missForest iteration", iter+1, "in progress...")
-    }
+
     t.start <- proc.time()
-    ximp.old <- ximp
 
-    if (parallelize == "variables"){
-      for (idx in idxList) {
-        results <- foreach::foreach(varInd = idx, .packages = 'randomForest') %cols% {
-          obsi <- !noNAvar[, varInd] # which i's are observed
-          misi <- noNAvar[, varInd] # which i's are missing
-          obsY <- ximp[obsi, varInd] # training response
-          obsX <- ximp[obsi, seq(1, p)[-varInd]] # training variables
-          misX <- ximp[misi, seq(1, p)[-varInd]] # prediction variables
-          typeY <- varType[varInd]
-          if (typeY == 'numeric'){
-            RF <- randomForest(
-              x = obsX,
-              y = obsY,
-              ntree = ntree,
-              mtry = mtry,
-              replace = replace,
-              sampsize = if (!is.null(sampsize)) sampsize[[varInd]] else
-                if (replace) nrow(obsX) else ceiling(0.632 * nrow(obsX)),
-              nodesize = if (!is.null(nodesize)) nodesize[1] else 1,
-              maxnodes = if (!is.null(maxnodes)) maxnodes else NULL)
-            ## record out-of-bag error
-            oerr <- RF$mse[ntree]
-            #           }
-            ## predict missing values in column varInd
-            misY <- predict(RF, misX)
-          } else { # if Y is categorical
-            obsY <- factor(obsY) ## remove empty classes
-            summarY <- summary(obsY)
-            if (length(summarY) == 1){ ## if there is only one level left
-              oerr <- 0
-              misY <- factor(rep(names(summarY), length(misi)))
-            } else {
-              RF <- randomForest(
-                x = obsX,
-                y = obsY,
-                ntree = ntree,
-                mtry = mtry,
-                replace = replace,
-                classwt = if (!is.null(classwt)) classwt[[varInd]] else
-                  rep(1, nlevels(obsY)),
-                cutoff = if (!is.null(cutoff)) cutoff[[varInd]] else
-                  rep(1/nlevels(obsY), nlevels(obsY)),
-                strata = if (!is.null(strata)) strata[[varInd]] else obsY,
-                sampsize = if (!is.null(sampsize)) sampsize[[varInd]] else
-                  if (replace) nrow(obsX) else ceiling(0.632*nrow(obsX)),
-                nodesize = if (!is.null(nodesize)) nodesize[2] else 5,
-                maxnodes = if (!is.null(maxnodes)) maxnodes else NULL)
-              ## record out-of-bag error
-              oerr <- RF$err.rate[[ntree,1]]
-              #             }
-              ## predict missing values in column varInd
-              misY <- predict(RF, misX)
-            }
-          }
-          list(varInd = varInd, misY = misY, oerr = oerr)
-        }
-        ## update the master copy of the data
-        for (res in results) {
-          misi <- noNAvar[,res$varInd]
-          ximp[misi, res$varInd] <- res$misY
-          OOBerror[res$varInd] <- res$oerr
-        }
-      }
-    } else { # if parallelize != "variables"
-      for (s in 1 : p) {
-        varInd <- sort.j[s]
+    varsToImpute <- names(which(noNAvar != 0))
+    ximp <- ximp[, -which(colnames(ximp) %in% varsToImpute)]
 
-        if (noNAvar[[varInd]] != 0) {
+    for (varInd in varsToImpute) {
+
+      ##> select only variables without missing values
+
+      ximp <- cbind(ximp.old[, varInd], ximp)
+      colnames(ximp)[1] <- varInd
+
+      ## <
+
+      if (noNAvar[[varInd]] != 0) {
           obsi <- !NAloc[, varInd]
           misi <- NAloc[, varInd]
           obsY <- ximp[obsi, varInd]
-          obsX <- ximp[obsi, seq(1, p)[-varInd]]
-          misX <- ximp[misi, seq(1, p)[-varInd]]
+          obsX <- ximp[obsi, -which(colnames(ximp) == varInd)]
+          misX <- ximp[misi, -which(colnames(ximp) == varInd)]
           typeY <- varType[varInd]
           if (typeY == "numeric") {
-            if (parallelize == 'forests') {
+            if (parallelize) {
               xntree <- NULL
               RF <- foreach::foreach(xntree = iterators:::idiv(ntree, chunks = foreach::getDoParWorkers()),
                             .combine = "combine", .multicombine = TRUE,
@@ -267,7 +195,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
             if (length(summarY) == 1) {
               misY <- factor(rep(names(summarY), sum(misi)))
             } else {
-              if (parallelize == 'forests') {
+              if (parallelize) {
                 RF <- foreach::foreach(xntree = iterators:::idiv(ntree, chunks = foreach::getDoParWorkers()),
                               .combine = "combine", .multicombine = TRUE,
                               .packages = 'randomForest') %dorng% {
@@ -316,65 +244,37 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100, variablewise = F
           ximp[misi, varInd] <- misY
         }
       }
-    }
-    if (verbose){
-      cat('done!\n')
-    }
 
-    iter <- iter + 1
     Ximp[[iter]] <- ximp
 
     t.co2 <- 1
     ## check the difference between iteration steps
-    for (t.type in names(convNew)){
-      t.ind <- which(varType == t.type)
-      if (t.type == 'numeric'){
-        convNew[t.co2] <- sum((ximp[, t.ind] - ximp.old[, t.ind])^2) / sum(ximp[, t.ind]^2)
-      } else {
-        dist <- sum(as.character(as.matrix(ximp[, t.ind])) != as.character(as.matrix(ximp.old[, t.ind])))
-        convNew[t.co2] <- dist / (n * sum(varType == 'factor'))
+    if(iter > 1){
+
+      for (t.type in names(convNew)){
+        t.ind <- which(varType == t.type)
+        if (t.type == 'numeric'){
+          convNew[t.co2] <- sum((ximp[, t.ind] -  Ximp[[iter-1]] )^2) / sum(ximp[, t.ind]^2)
+        } else {
+          dist <- sum(as.character(as.matrix(ximp[, t.ind])) != as.character(as.matrix( Ximp[[iter-1]][, t.ind])))
+          convNew[t.co2] <- dist / (n * sum(varType == 'factor'))
+        }
+        t.co2 <- t.co2 + 1
       }
-      t.co2 <- t.co2 + 1
+
     }
 
+
     ## compute estimated imputation error
-    if (!variablewise){
-      NRMSE <- sqrt(mean(OOBerror[varType == 'numeric'])/
-                      var(as.vector(as.matrix(xmis[, varType == 'numeric'])),
-                          na.rm = TRUE))
-      PFC <- mean(OOBerror[varType == 'factor'])
-      if (k == 1){
-        if (unique(varType) == 'numeric'){
-          OOBerr <- NRMSE
-          names(OOBerr) <- 'NRMSE'
-        } else {
-          OOBerr <- PFC
-          names(OOBerr) <- 'PFC'
-        }
-      } else {
-        OOBerr <- c(NRMSE, PFC)
-        names(OOBerr) <- c('NRMSE', 'PFC')
-      }
-    } else {
       OOBerr <- OOBerror
       names(OOBerr)[varType == 'numeric'] <- 'MSE'
       names(OOBerr)[varType == 'factor'] <- 'PFC'
-    }
 
     if (any(!is.na(xtrue))){
       err <- suppressWarnings(mixError(ximp, xmis, xtrue))
     }
+      iter <- iter + 1
 
-    ## return status output, if desired
-    if (verbose){
-      delta.start <- proc.time() - t.start
-      if (any(!is.na(xtrue))){
-        cat("    error(s):", err, "\n")
-      }
-      cat("    estimated error(s):", OOBerr, "\n")
-      cat("    difference(s):", convNew, "\n")
-      cat("    time:", delta.start[3], "seconds\n\n")
-    }
   }#end while((convNew<convOld)&(iter<maxiter)){
 
   ## produce output w.r.t. stopping rule

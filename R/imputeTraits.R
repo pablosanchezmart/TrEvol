@@ -15,7 +15,7 @@
 #'
 #' @examples
 imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, varianceResults = NULL, imputationVariables, orderCriterium = NULL, numberOfPhyloCoordinates = 5,
-                             predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T){
+                             predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T, parallelization = T){
 
   ### Objects to gather results ####
 
@@ -93,18 +93,17 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
   ### IMPUTATION 1. Run models to impute variables following the previously determined order ####
 
   for (n in 1:IterationsNumber) {
-    # if order criterium is null, randomize order in each iteration
-    if(is.null(orderCriterium)){
-      imputationVariables <- sample(imputationVariables)
-    }
+    # # if order criterium is null, randomize order in each iteration
+    # if(is.null(orderCriterium)){
+    #   imputationVariables <- sample(imputationVariables)
+    # }
 
     imp.dataset[, imputationVariables] <- missForest::prodNA(as.data.frame(xTrue[, imputationVariables]), prodNAs)
     cl <- parallel::makeCluster(clustersNumber)
     doParallel::registerDoParallel(cl)
     if (prodNAs != 0) {
       rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
-                                          maxiter = 50, ntree = 100, parallelize = "forests",
-                                          verbose = F, variablewise = T, decreasing = F,
+                                          maxiter = 50, ntree = 100, parallelize = parallelization,
                                           xtrue = as.matrix(xTrue))
 
       # R2 calculation
@@ -130,8 +129,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                           Model = modelName)
     } else {
       rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
-                                          maxiter = 50, ntree = 1000, parallelize = "forests",
-                                          verbose = F, variablewise = T, decreasing = F)
+                                          maxiter = 50, ntree = 1000, parallelize = parallelization)
 
       predictivePerformance <- data.frame(Variable = imputationVariables,
                           N = length(imp.dataset[, 1]),
@@ -188,8 +186,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
       doParallel::registerDoParallel(cl)
       if (prodNAs != 0) {
         rfImp.res2 <- randomForestImpute(xmis = as.matrix(ximp2),
-                                            maxiter = 50, ntree = 1000, parallelize = "forests",
-                                            verbose = F, variablewise = T, decreasing = F,
+                                            maxiter = 50, ntree = 1000, parallelize = parallelization,
                                             xtrue = as.matrix(xTrue))
 
 
@@ -216,8 +213,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                                              N = length(ximp2[, 1]),
                                              N_Obs = length(ximp2[which(!is.na(ximp2[, impVariable])), 1]),
                                              N_NA = length(ximp2[which(is.na(ximp2[, impVariable])), 1]),
-                                            maxiter = 50, ntree = 1000, parallelize = "forests",
-                                            verbose = F, variablewise = T, decreasing = F)
+                                            maxiter = 50, ntree = 1000, parallelize = parallelization)
 
         predictivePerformance <- data.frame(Variable = impVariable,
                             NRMSE = rfImp.res2$OOBerror[1:length(impVariable)],
