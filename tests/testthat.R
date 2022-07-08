@@ -47,6 +47,9 @@
 #
 # ### compute covariance partition ####
 #
+# covarianceResults <- computeCovariancePartition(traits = c(TRAITS, ENVIRONMENTALVARIABLES), dataset = df,
+#                  phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
+#
 # covarianceResults_BM_HC_predictor <- computeCovariancePartition(traits = TRAITS, environmental.variables = "BM_HC_predictor", dataset = df,
 #                                                                 phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
 #
@@ -122,10 +125,10 @@
 #
 # ## Evolutionary order
 #
-# df_imp <- imputeTraits(dataset = df_pred, phylogeny = tr_pred, correlationsTraitsResults = covarianceResults_BM_HC_predictor$covarianceResults,
+# df_imp <- imputeTraits(dataset = df_pred, phylogeny = tr_pred, predictors = ENVIRONMENTALVARIABLES, correlationsTraitsResults = covarianceResults$covarianceResults,
 #                        varianceResults = varianceResults_BM_HC_predictor$varianceResults,
 #                        orderCriterium = "Total_coordinated_phylogenetic_conservatism",
-#                        imputationVariables = variablesToImpute, predictors = imputationPredictors, numberOfPhyloCoordinates = 5, prodNAs = propNA,
+#                        imputationVariables = variablesToImpute, numberOfPhyloCoordinates = 5, prodNAs = propNA,
 #                        IterationsNumber = numberIterations, clustersNumber = 2,
 #                        forceRun = forceRunImputation)
 #
@@ -147,10 +150,10 @@
 #
 # ## Random order
 #
-# df_imp_rand <- imputeTraits(dataset = df_pred, phylogeny = tr_pred, correlationsTraitsResults = covarianceResults_BM_HC_predictor$covarianceResults,
-#                        varianceResults = varianceResults_BM_HC_predictor$varianceResults,
+# df_imp_rand <- imputeTraits(dataset = df_pred, phylogeny = tr_pred, correlationsTraitsResults = NULL,
+#                        varianceResults = NULL,
 #                        orderCriterium = NULL,
-#                        imputationVariables = variablesToImpute, predictors = imputationPredictors, numberOfPhyloCoordinates = 5, prodNAs = propNA,
+#                        imputationVariables = variablesToImpute, predictors = ENVIRONMENTALVARIABLES, numberOfPhyloCoordinates = 5, prodNAs = propNA,
 #                        IterationsNumber = numberIterations, clustersNumber = 2,
 #                        forceRun = forceRunImputation)
 #
@@ -170,7 +173,9 @@
 # pR2_rand
 #
 #
-# df_imp$predictivePerformance2$R2 - df_imp_rand$predictivePerformance2$R2
+# df_imp$predictivePerformance2$R2 - df_imp_rand$predictivePerformance$R2
+#
+# df_imp$predictivePerformance$R2 - df_imp_rand$predictivePerformance$R2
 #
 # #
 # # # Delete files

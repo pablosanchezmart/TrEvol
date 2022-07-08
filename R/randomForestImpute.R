@@ -152,9 +152,9 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
       if (noNAvar[[varInd]] != 0) {
           obsi <- !NAloc[, varInd]
           misi <- NAloc[, varInd]
-          obsY <- ximp[obsi, varInd]
-          obsX <- ximp[obsi, -which(colnames(ximp) == varInd)]
-          misX <- ximp[misi, -which(colnames(ximp) == varInd)]
+          obsY <- as.matrix(ximp[obsi, varInd])
+          obsX <- as.matrix(ximp[obsi, -which(colnames(ximp) == varInd)])
+          misX <- as.matrix(ximp[misi, -which(colnames(ximp) == varInd)])
           typeY <- varType[varInd]
           if (typeY == "numeric") {
             if (parallelize) {
