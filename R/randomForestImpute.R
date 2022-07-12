@@ -10,7 +10,15 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
   combine <- randomForest::combine
   ## stop in case of wrong inputs passed to randomForest
   n <- nrow(xmis)
-  p <- ncol(xmis)
+  # p <- ncol(xmis)
+
+  ## extract missingness pattern
+
+  NAloc <- is.na(xmis)        # where are missings
+  noNAvar <- apply(NAloc, 2, sum) # how many are missing in the vars
+  varsToImpute <- names(which(noNAvar != 0))
+
+  p <- length(varsToImpute)
 
   if (!is.null(classwt)){
     stopifnot(length(classwt) == p, typeof(classwt) == 'list')
@@ -29,7 +37,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
   if (any(apply(is.na(xmis), 2, sum) == n)){
     indCmis <- which(apply(is.na(xmis), 2, sum) == n)
     xmis <- xmis[,-indCmis]
-    p <- ncol(xmis)
+    # p <- ncol(xmis)
     cat('  removed variable(s)', indCmis,
         'due to the missingness of all entries\n')
   }
@@ -39,46 +47,30 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
     if (foreach::getDoParWorkers() == 1) {
       stop("You must register a 'foreach' parallel backend to run 'missForest' in parallel. Set 'parallelize' to 'no' to compute serially.")
     }
-    if (foreach::getDoParWorkers() > p){
-      stop("The number of parallel cores should not exceed the number of variables (p=", p, ")")
-    }
+    # if (foreach::getDoParWorkers() > p){
+    #   stop("The number of parallel cores should not exceed the number of variables (p=", p, ")")
+    # }
   }
 
   ## perform initial S.W.A.G. on xmis (mean imputation)
   ximp <- xmis
   varType <- character(p)
-  names(varType) <- colnames(ximp)
+  names(varType) <- varsToImpute
   for (t.co in 1:p) {
     if (is.numeric(xmis[[t.co]])) {
       varType[t.co] <- 'numeric'
-      # ximp[is.na(xmis[,t.co]),t.co] <- mean(xmis[,t.co], na.rm = TRUE)
       next()
     }
     if (is.factor(xmis[[t.co]])) {
       varType[t.co] <- 'factor'
-      ## take the level which is more 'likely' (majority vote)
-      # max.level <- max(table(ximp[[t.co]]))
-      ## if there are several classes which are major, sample one at random
-      # class.assign <- sample(names(which(max.level == summary(ximp[[t.co]]))), 1)
-      ## it shouldn't be the NA class
-      # if (class.assign != "NA's") {
-      #   ximp[is.na(xmis[[t.co]]),t.co] <- class.assign
-      # } else {
-      #   while (class.assign == "NA's") {
-      #     class.assign <- sample(names(which(max.level == summary(ximp[[t.co]]))), 1)
-      #   }
-      #   ximp[is.na(xmis[[t.co]]),t.co] <- class.assign
-      # }
       next()
     }
     stop(sprintf('column %s must be factor or numeric, is %s', names(xmis)[t.co], class(xmis[[t.co]])))
   }
 
-  ## extract missingness pattern
-
-  NAloc <- is.na(xmis)        # where are missings
-  noNAvar <- apply(NAloc, 2, sum) # how many are missing in the vars
-
+  if(length(varsToImpute) < 1){
+    stop("No missing values in dataset")
+  }
   sort.j <- c(1:length(noNAvar))
 
   sort.noNAvar <- noNAvar[sort.j]
@@ -98,8 +90,9 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
   k <- length(unique(varType))
   convNew <- rep(0, k)
   convOld <- rep(Inf, k)
-  OOBerror <- numeric(p)
-  names(OOBerror) <- varType
+
+  OOBerror <- rep(NA, length(varsToImpute))
+  names(OOBerror) <- varsToImpute
 
   ## setup convergence variables w.r.t. variable types
   if (k == 1){
@@ -130,24 +123,23 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
 
   ## iterate missForest
   while (stopCriterion(varType, convNew, convOld, iter, maxiter)){
-    if (iter != 0){
+    # print(iter)
+    if (iter > 2){
       convOld <- convNew
       OOBerrOld <- OOBerr
     }
 
     t.start <- proc.time()
 
-    varsToImpute <- names(which(noNAvar != 0))
     ximp <- ximp[, -which(colnames(ximp) %in% varsToImpute)]
 
     for (varInd in varsToImpute) {
 
-      ##> select only variables without missing values
+      ## Select only variables without missing values
 
       ximp <- cbind(ximp.old[, varInd], ximp)
       colnames(ximp)[1] <- varInd
 
-      ## <
 
       if (noNAvar[[varInd]] != 0) {
           obsi <- !NAloc[, varInd]
@@ -174,7 +166,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
                             }
               ## record out-of-bag error
               OOBerror[varInd] <- mean((predict(RF) - RF$y) ^ 2, na.rm = TRUE)
-              #               OOBerror[varInd] <- RF$mse[ntree]
+              # OOBerror[varInd] <- RF$mse[ntree]
             } else {
               RF <- randomForest( x = obsX,
                                   y = obsY,
@@ -267,6 +259,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
 
     ## compute estimated imputation error
       OOBerr <- OOBerror
+      varType <- varType[varsToImpute]
       names(OOBerr)[varType == 'numeric'] <- 'MSE'
       names(OOBerr)[varType == 'factor'] <- 'PFC'
 
@@ -280,7 +273,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
   ## produce output w.r.t. stopping rule
   if (iter == maxiter){
     if (any(is.na(xtrue))){
-      out <- list(ximp = Ximp[[iter]], OOBerror = OOBerr)
+      out <- list(ximp = Ximp[[iter]], OOBerror = OOBerrOld)
     } else {
       out <- list(ximp = Ximp[[iter]], OOBerror = OOBerr, error = err)
     }

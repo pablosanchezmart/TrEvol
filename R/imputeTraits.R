@@ -205,10 +205,15 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                                             N = length(imp.dataset[, 1]),
                                             N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                             N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
-                                            NRMSE = rfImp.res$OOBerror[1:length(imputationVariable)],
+                                            NRMSE = rfImp.res$error[1:length(imputationVariable)],
                                             R2 = r2.var,
                                             Model = modelName)
       } else {
+
+        if(all(!is.na(imp.dataset))){
+          stop("No missing values in dataset")
+        }
+
         rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
                                         maxiter = 50, ntree = 1000, parallelize = parallelization)
 
@@ -233,9 +238,6 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
     }
 
   }
-
-
-  # ximp.all <- cbind(ximp.all, ximp[, predictiveVariables])
 
   ### Results aggregation (for all iterations)
 
@@ -305,7 +307,7 @@ imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, variance
                                             N = length(ximp2[, 1]),
                                             N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                             N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
-                                            NRMSE = rfImp.res2$OOBerror[1:length(imputationVariable)],
+                                            NRMSE = rfImp.res2$error[1:length(imputationVariable)],
                                             R2 = r2.var,
                                             Model = modelName)
       } else {

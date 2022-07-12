@@ -118,10 +118,14 @@
 #
 # variablesToImpute <- c("nonBM_HC_1", "nonBM_HC_2", "BM_HC_1", "BM_HC_2", "nonBM_LC_1", "nonBM_LC_2", "BM_LC_1", "BM_LC_2")
 # imputationPredictors <- NULL
-# propNA <- 0.5
+# propNA <- 0
 # numberIterations <- 10
 # forceRunImputation <- T
 #
+# df_pred[1:10, 2] <- NA
+# df_pred[1:10, 3] <- NA
+#
+# variablesToImpute <- c("BM_HC_1", "BM_HC_2")
 #
 # ## Evolutionary order
 #
@@ -129,10 +133,10 @@
 #                        varianceResults = varianceResults_BM_HC_predictor$varianceResults,
 #                        orderCriterium = "Total_coordinated_phylogenetic_conservatism",
 #                        imputationVariables = variablesToImpute, numberOfPhyloCoordinates = 5, prodNAs = propNA,
-#                        IterationsNumber = numberIterations, clustersNumber = 2,
+#                        IterationsNumber = numberIterations, parallelization = T, clustersNumber = 2,
 #                        forceRun = forceRunImputation)
 #
-# df_imp$predictivePerformance2
+# df_imp$predictivePerformance
 #
 # errors <- rbind(cbind("type" = "imputation1", df_imp$predictivePerformance_all_iterations[, c("Variable", "NRMSE", "R2")]),
 #                 cbind("type" = "imputation2", df_imp$predictivePerformance_all_iterations2[, c("Variable", "NRMSE", "R2")]))
