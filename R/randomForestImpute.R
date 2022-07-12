@@ -246,7 +246,7 @@ randomForestImpute <- function(xmis, maxiter = 10, ntree = 100,
       for (t.type in names(convNew)){
         t.ind <- which(varType == t.type)
         if (t.type == 'numeric'){
-          convNew[t.co2] <- sum((ximp[, t.ind] -  Ximp[[iter-1]] )^2) / sum(ximp[, t.ind]^2)
+          convNew[t.co2] <- sum((ximp[, t.ind] -  Ximp[[iter-1]][, t.ind] )^2) / sum(ximp[, t.ind]^2)
         } else {
           dist <- sum(as.character(as.matrix(ximp[, t.ind])) != as.character(as.matrix( Ximp[[iter-1]][, t.ind])))
           convNew[t.co2] <- dist / (n * sum(varType == 'factor'))
