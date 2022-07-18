@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-simulateDataSet <- function(phylogeny = NULL, nObs = 100, trait.names = c("HC_1", "HC_2", "HC_predictor", "LC_1",  "LC_2",   "LC_predictor"),
+simulateDataSet <- function(phylogeny = NULL, nObs = 100, trait.names = c("G1_trait1", "G1_trait2", "G1_envPred", "G2_trait1", "G2_trait1", "G2_envPred"),
                                                                vcvMatrix = matrix(c(1, 0.9, 0.8, 0, 0.1, 0.2,
                                                                                     0.9, 1, 0.8, 0, 0.1, 0.2,
                                                                                     0.8, 0.8, 1, 0, 0.1, 0.2,
@@ -21,8 +21,8 @@ simulateDataSet <- function(phylogeny = NULL, nObs = 100, trait.names = c("HC_1"
     phylogeny <- phytools::pbtree(n = nObs)
   }
 
-  BM_trait.names <- paste0("BM_", trait.names)
-  nonBM_trait.names <- paste0("nonBM_", trait.names)
+  BM_trait.names <- paste0("phylo_", trait.names)
+  nonBM_trait.names <- paste0("nonPhylo_", trait.names)
 
   diffMat <- vcvMatrix
   colnames(diffMat) <- BM_trait.names
