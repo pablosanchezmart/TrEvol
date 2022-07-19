@@ -5,7 +5,7 @@
 #' @param trait.names Names of the traits to simulate
 #' @param vcvMatrix Variance covariance matrix setting the covariance among traits. Ncol have to be the same lenght as trait.names.
 #'
-#' @return A data frame with phylogenetically and non-phylogenetically correlated traits.
+#' @return A list with a data frame with phylogenetically and non-phylogenetically correlated traits and the variance-covariance matrix used.
 #' @export
 #'
 #' @examples
@@ -48,5 +48,10 @@ simulateDataSet <- function(phylogeny = NULL, nObs = 100, trait.names = c("G1_tr
 
   df <- merge(BM.df, nonBM.df, by = "animal")
   print(diffMat)
-  return(df)
+
+  rslts <- list()
+
+  rslts$data <- df
+  rslts$vcvMatrix <- diffMat
+  return(rslts)
 }
