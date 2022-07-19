@@ -47,5 +47,6 @@ simulateDataSet <- function(phylogeny = NULL, nObs = 100, trait.names = c("G1_tr
   rownames(nonBM.df) <- nonBM.df$animal
 
   df <- merge(BM.df, nonBM.df, by = "animal")
+  print(diffMat)
   return(df)
 }
