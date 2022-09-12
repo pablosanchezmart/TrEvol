@@ -20,6 +20,10 @@ defineModelsSpecifications <- function(number.iterations = 100, burning = 10, th
                                        multiresponse.prior = list(
                                          R=list(V=diag(2)/2,nu=2),
                                          G=list(G1=list(V=diag(2)/2,nu=2))
+                                       ),
+                                       triresponse.prior = list(
+                                         R=list(V=diag(3)/2,nu=2),
+                                         G=list(G1=list(V=diag(3)/2,nu=2))
                                        )
 ) {
 
@@ -27,6 +31,7 @@ defineModelsSpecifications <- function(number.iterations = 100, burning = 10, th
                                      "burning_iterations" = burning,
                                      "thinning_iterations" = thinning,
                                      "uniresponse_prior" = uniresponse.prior,
-                                     "multiresponse_prior" = multiresponse.prior)
+                                     "multiresponse_prior" = multiresponse.prior,
+                                     "triresponse_prior" = triresponse.prior)
   return(models.specifications.list)
 }

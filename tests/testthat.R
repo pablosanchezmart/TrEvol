@@ -27,9 +27,11 @@
 #
 # initializeTrEvo()
 #
-# TRAITS <- c("BM_HC_1", "BM_HC_2", "BM_LC_1", "BM_LC_2", "nonBM_HC_1", "nonBM_HC_2", "nonBM_LC_1", "nonBM_LC_2")
+# # TRAITS <- c("BM_HC_1", "BM_HC_2", "BM_LC_1", "BM_LC_2", "nonBM_HC_1", "nonBM_HC_2", "nonBM_LC_1", "nonBM_LC_2")
+# TRAITS <- c("phylo_G1_trait1", "phylo_G1_trait2", "phylo_G2_trait2")
 #
-# ENVIRONMENTALVARIABLES <- c("BM_HC_predictor", "BM_LC_predictor", "nonBM_HC_predictor", "nonBM_LC_predictor")
+# # ENVIRONMENTALVARIABLES <- c("BM_HC_predictor", "BM_LC_predictor", "nonBM_HC_predictor", "nonBM_LC_predictor")
+# ENVIRONMENTALVARIABLES <- c("phylo_G1_envPred")
 #
 # ### compute variance partition ####
 #
@@ -62,6 +64,11 @@
 # covarianceResults_BM_HC_predictor$covarianceResults$Total_coordination
 #
 # covarianceResults_BM_HC_predictor$covarianceResults$Pure_coordinated_phylogenetic_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Coordinated_phylogenetic_niche_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Pure_environmental_coordination + covarianceResults_BM_HC_predictor$covarianceResults$Residual_coordination
+#
+# ### compute variance covariance partition ####
+#
+# varcovResults <- computeVarianceCovariancePartition(traits = TRAITS, environmental.variable = "phylo_G1_envPred", dataset = df$data,
+#                                                     phylogeny = tr, model.specifications = specifications, force.run = T, save = F)
 #
 #
 # # ### plot results ####
