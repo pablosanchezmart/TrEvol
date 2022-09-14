@@ -2,7 +2,7 @@
 #' Variance partition including (or not) environment
 #'
 #' @param traits (character) Name of the trait or list of traits. It  must be contained in the dataset.
-#' @param environmental.variable (character) Names of the environmental variables They must be contained in dataset.
+#' @param environmental.variables (character) Names of the environmental variables They must be contained in dataset.
 #' @param dataset (data frame) Dataset containing the trait of interest and a column named "animal" describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
 #' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-computeVarianceCovariancePartition <- function(traits, environmental.variable = NULL, dataset, phylogeny, model.specifications = NULL, showCorrelations = T,
+computeVarianceCovariancePartition <- function(traits, environmental.variables = NULL, dataset, phylogeny, model.specifications = NULL, showCorrelations = T,
                                                force.run = T, save = T) {
 
   traitsVCVPartitionResults <- list()
@@ -27,7 +27,7 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
 
   multi_mdls.str <- expand.grid(traits, traits) # all possible pairwise combinations between variable
   names(multi_mdls.str) <- c("trait1", "trait2")
-  multi_mdls.str$environment <- environmental.variable
+  multi_mdls.str$environment <- environmental.variables
 
   # This is needed in order to avoid models with the same response variables but in different order (which are equivalent models)
   multi_mdls.str$traits <- NA
@@ -39,7 +39,7 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
     multi_mdls.str$trait2[i] <-  as.character(both_traits[[2]])
   }
 
-  if(!is.null(environmental.variable)){
+  if(!is.null(environmental.variables)){
     multi_mdls.str$type <- paste0("tri_", multi_mdls.str$trait1, "_", multi_mdls.str$trait2, "_", multi_mdls.str$environment)
     multi_mdls.str$fix.frml <- paste0("cbind(", multi_mdls.str$traits, ", ", multi_mdls.str$environment, ") ~ trait-1")
   } else{
@@ -55,8 +55,8 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
 
   ### RUN MODELS ####
 
-  if(!is.null(environmental.variable)){
-    results.file <- paste0(outputs.dir, "/models_outputs/traitsVCVPartitionResults", environmental.variable, ".RData")
+  if(!is.null(environmental.variables)){
+    results.file <- paste0(outputs.dir, "/models_outputs/traitsVCVPartitionResults", environmental.variables, ".RData")
   } else {
     results.file <- paste0(outputs.dir, "/models_outputs/traitsVCVPartitionResults.RData")
   }
@@ -80,7 +80,7 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
       trait1 <- as.character(model.descr$trait1)
       trait2 <- as.character(model.descr$trait2)
 
-      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait1, trait2, environmental.variable))
+      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait1, trait2, environmental.variables))
 
       if (is.null(model.specifications)) {
         print("Using default model specificatios. Use defineModelsSpecifications() output on model.specifications argument to set them manually.")
@@ -88,8 +88,8 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
       }
 
       # model
-      if(!is.null(environmental.variable)){
-        fix.frml <- paste0("cbind(", trait1, ", ", trait2, ", ", environmental.variable, ") ~ trait-1")
+      if(!is.null(environmental.variables)){
+        fix.frml <- paste0("cbind(", trait1, ", ", trait2, ", ", environmental.variables, ") ~ trait-1")
 
         mdlPhyloEnv <- MCMCglmm::MCMCglmm(fixed = stats::as.formula(fix.frml),
                                           random = ~ us(trait):animal, rcov = ~us(trait):units,
@@ -185,7 +185,7 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
       total_non_phylogenetic_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_non_phylogenetic_variance_t2))) # Pvalue
 
 
-      if(!is.null(environmental.variable)){
+      if(!is.null(environmental.variables)){
 
 
         ## Pure phylogenetic variance
@@ -194,10 +194,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
 
         pure_phylogenetic_variance_t1 <- mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait1, ".animal")] -     # VAR(u1)
           (
-            mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variable, ".animal")] /                  # COV(UE,u1)
-              mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")]  # VAR(uE)
+            mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variables, ".animal")] /                  # COV(UE,u1)
+              mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")]  # VAR(uE)
           )^2 *
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")]      # VAR(uE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")]      # VAR(uE)
 
         if(showCorrelations){
           pure_phylogenetic_variance_t1 <- pure_phylogenetic_variance_t1 / total_variance_t1
@@ -209,10 +209,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
 
         pure_phylogenetic_variance_t2 <- mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", trait2, ".animal")] -     # VAR(u1)
           (
-            mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variable, ".animal")] /                  # COV(UE,u1)
-              mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")]  # VAR(uE)
+            mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variables, ".animal")] /                  # COV(UE,u1)
+              mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")]  # VAR(uE)
           )^2 *
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")]      # VAR(uE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")]      # VAR(uE)
 
         if(showCorrelations){
           pure_phylogenetic_variance_t2 <- pure_phylogenetic_variance_t2 / total_variance_t2
@@ -226,10 +226,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         # Trait 1
 
         environmental_phylogenetic_variance_t1 <- (
-          mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variable, ".animal")] /                # COV(UE,u1)
-            mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")]  # VAR(uE)
+          mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variables, ".animal")] /                # COV(UE,u1)
+            mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")]  # VAR(uE)
         )^2 *
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")]  # VAR(uE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")]  # VAR(uE)
 
         if(showCorrelations){
           environmental_phylogenetic_variance_t1 <- environmental_phylogenetic_variance_t1 / total_variance_t1
@@ -240,10 +240,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         # Trait 2
 
         environmental_phylogenetic_variance_t2 <- (
-          mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variable, ".animal")] /                  # COV(UE,u2)
-            mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")]  # VAR(uE)
+          mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variables, ".animal")] /                  # COV(UE,u2)
+            mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")]  # VAR(uE)
         )^2 *
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")]    # VAR(uE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")]    # VAR(uE)
 
         if(showCorrelations){
           environmental_phylogenetic_variance_t2 <- environmental_phylogenetic_variance_t2 / total_variance_t2
@@ -257,10 +257,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         # Trait 1
 
         pure_environmental_variance_t1 <- (
-          mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variable, ".units")] /                  # COV(eE,e1)
-            mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")]  # VAR(eE)
+          mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variables, ".units")] /                  # COV(eE,e1)
+            mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")]  # VAR(eE)
         )^2 *
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")]    # VAR(eE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")]    # VAR(eE)
 
         if(showCorrelations){
           pure_environmental_variance_t1 <- pure_environmental_variance_t1 / total_variance_t1
@@ -271,10 +271,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         # Trait 2
 
         pure_environmental_variance_t2 <- (
-          mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variable, ".units")] /                  # COV(eE,e2)
-            mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")]  # VAR(eE)
+          mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variables, ".units")] /                  # COV(eE,e2)
+            mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")]  # VAR(eE)
         )^2 *
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")]    # VAR(eE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")]    # VAR(eE)
 
         if(showCorrelations){
           pure_environmental_variance_t2 <- pure_environmental_variance_t2 / total_variance_t2
@@ -289,10 +289,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
 
         pure_residual_variance_t1 <- mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait1, ".units")] -         # VAR(e1)
           (
-            mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variable, ".units")] /                  # COV(eE,e1)
-              mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")]  # VAR(eE)
+            mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variables, ".units")] /                  # COV(eE,e1)
+              mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")]  # VAR(eE)
           )^2 *
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")]      # VAR(eE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")]      # VAR(eE)
 
         if(showCorrelations){
           pure_residual_variance_t1 <- pure_residual_variance_t1 / total_variance_t1
@@ -304,10 +304,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
 
         pure_residual_variance_t2 <- mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", trait2, ".units")] -         # VAR(e2)
           (
-            mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variable, ".units")] /                  # COV(eE,e1)
-              mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")]  # VAR(eE)
+            mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variables, ".units")] /                  # COV(eE,e1)
+              mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")]  # VAR(eE)
           )^2 *
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")]      # VAR(eE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")]      # VAR(eE)
 
         if(showCorrelations){
           pure_residual_variance_t2 <- pure_residual_variance_t2 / total_variance_t2
@@ -351,17 +351,17 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
       total_non_phylogenetic_covariance_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_non_phylogenetic_covariance))) # Pvalue
 
 
-      if(!is.null(environmental.variable)){
+      if(!is.null(environmental.variables)){
 
         ## Pure phylogenetic covariance
 
         pure_phylogenetic_covariance <- mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait2, ".animal")] -                               # COV(u1, u2)
           (
             (
-              mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variable, ".animal")] *               # COV(u1, uE)
-                mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variable, ".animal")]                 # COV(u2, uE)
+              mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variables, ".animal")] *               # COV(u1, uE)
+                mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variables, ".animal")]                 # COV(u2, uE)
             )/
-              mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")] # var(uE)
+              mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")] # var(uE)
           )
 
         if(showCorrelations){
@@ -374,10 +374,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         ## Environmental phylogenetic covariance
 
         environmental_phylogenetic_covariance <- (
-          mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variable, ".animal")] *               # COV(u1, uE)
-            mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variable, ".animal")]                 # COV(u2, uE)
+          mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variables, ".animal")] *               # COV(u1, uE)
+            mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variables, ".animal")]                 # COV(u2, uE)
         )/
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".animal")] # var(uE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".animal")] # var(uE)
 
         if(showCorrelations){
           environmental_phylogenetic_covariance <- environmental_phylogenetic_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
@@ -389,10 +389,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         ## Pure environmental covariance
 
         pure_environmental_covariance <- (
-          mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variable, ".units")] *               # COV(e1, eE)
-            mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variable, ".units")]                 # COV(e2, eE)
+          mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variables, ".units")] *               # COV(e1, eE)
+            mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variables, ".units")]                 # COV(e2, eE)
         )/
-          mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")] # var(eE)
+          mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")] # var(eE)
 
         if(showCorrelations){
           pure_environmental_covariance <- pure_environmental_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
@@ -406,10 +406,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         pure_residual_covariance <- mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait2, ".units")] -                               # COV(e1, e2)
           (
             (
-              mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variable, ".units")] *               # COV(e1, eE)
-                mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variable, ".units")]                 # COV(e2, eE)
+              mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", environmental.variables, ".units")] *               # COV(e1, eE)
+                mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", environmental.variables, ".units")]                 # COV(e2, eE)
             )/
-              mdlPhyloEnv$VCV[, paste0("trait", environmental.variable, ":trait", environmental.variable, ".units")] # var(eE)
+              mdlPhyloEnv$VCV[, paste0("trait", environmental.variables, ":trait", environmental.variables, ".units")] # var(eE)
           )
 
         if(showCorrelations){
@@ -439,9 +439,9 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         VCVPartitionResults$variancePartitionDistributions[[paste0("Total_phylogenetic_conservatism_", trait1)]] <- total_phylogenetic_variance_t1
         VCVPartitionResults$variancePartitionDistributions[[paste0("Total_non_phylogenetic_", trait1)]] <- total_non_phylogenetic_variance_t1
 
-        if(!is.null(environmental.variable)){
+        if(!is.null(environmental.variables)){
           VCVPartitionResults$variancePartition <- cbind(VCVPartitionResults$variancePartition,
-                                                         "Environmental_variables" = paste0(environmental.variable, collapse = ", "),
+                                                         "Environmental_variables" = paste0(environmental.variables, collapse = ", "),
                                                          "Pure_phylogenetic_conservatism" = mean(pure_phylogenetic_variance_t1),
                                                          "Phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_variance_t1),
                                                          "Pure_environmental" = mean(pure_environmental_variance_t1),
@@ -468,9 +468,9 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         VCVPartitionResults$variancePartitionDistributions[[paste0("Total_phylogenetic_conservatism_", trait2)]] <- total_phylogenetic_variance_t2
         VCVPartitionResults$variancePartitionDistributions[[paste0("Total_non_phylogenetic_", trait2)]] <- total_non_phylogenetic_variance_t2
 
-        if(!is.null(environmental.variable)){
+        if(!is.null(environmental.variables)){
           variancePartition_t2 <- cbind(variancePartition_t2,
-                                        "Environmental_variables" = paste0(environmental.variable, collapse = ", "),
+                                        "Environmental_variables" = paste0(environmental.variables, collapse = ", "),
                                         "Pure_phylogenetic_conservatism" = mean(pure_phylogenetic_variance_t2),
                                         "Phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_variance_t2),
                                         "Pure_environmental" = mean(pure_environmental_variance_t2),
@@ -510,9 +510,9 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
                                                                    "Total_coordinated_radiation" = total_non_phylogenetic_covariance)
 
 
-      if(!is.null(environmental.variable)){
+      if(!is.null(environmental.variables)){
         VCVPartitionResults$covariancePartition <-  cbind(VCVPartitionResults$covariancePartition,
-                                                          "Environmental_variables" = paste0(environmental.variable, collapse = ", "),
+                                                          "Environmental_variables" = paste0(environmental.variables, collapse = ", "),
                                                           "Pure_coordinated_phylogenetic_conservatism" = mean(pure_phylogenetic_covariance),
                                                           "Coordinated_phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_covariance),
                                                           "Pure_environmental_coordination" = mean(pure_environmental_covariance),
@@ -558,9 +558,9 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
   # save results
 
   if(save){
-    if(!is.null(environmental.variable)){
-      assign(paste0("traitsVCVPartitionResults_", environmental.variable), traitsVCVPartitionResults)
-      save(list = paste0("traitsVCVPartitionResults_", environmental.variable), file = results.file)
+    if(!is.null(environmental.variables)){
+      assign(paste0("traitsVCVPartitionResults_", environmental.variables), traitsVCVPartitionResults)
+      save(list = paste0("traitsVCVPartitionResults_", environmental.variables), file = results.file)
       print(results.file)
     } else{
       save(list = paste0("traitsVCVPartitionResults"), file = results.file)
