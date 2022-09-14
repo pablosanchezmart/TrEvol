@@ -1,3 +1,4 @@
+
 #' Variance partition including (or not) environment
 #'
 #' @param traits (character) Name of the trait or list of traits. It  must be contained in the dataset.
@@ -126,7 +127,7 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
       # Trait 1
 
       total_variance_t1 <- abs(mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait1, ".animal")] +
-        mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait1, ".units")])
+                                 mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait1, ".units")])
 
       total_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_variance_t1))) # Pvalue
 
@@ -459,9 +460,9 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         # Trait 2
 
         variancePartition_t2 <- data.frame("Trait" = trait2,
-                                "N" = length(modellingData$dta$animal),
-                                "Total_phylogenetic_conservatism" = mean(total_phylogenetic_variance_t2),
-                                "Total_non_phylogenetic" = mean(total_non_phylogenetic_variance_t2)
+                                           "N" = length(modellingData$dta$animal),
+                                           "Total_phylogenetic_conservatism" = mean(total_phylogenetic_variance_t2),
+                                           "Total_non_phylogenetic" = mean(total_non_phylogenetic_variance_t2)
         )
 
         VCVPartitionResults$variancePartitionDistributions[[paste0("Total_phylogenetic_conservatism_", trait2)]] <- total_phylogenetic_variance_t2
@@ -469,11 +470,11 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
 
         if(!is.null(environmental.variable)){
           variancePartition_t2 <- cbind(variancePartition_t2,
-                                                         "Environmental_variables" = paste0(environmental.variable, collapse = ", "),
-                                                         "Pure_phylogenetic_conservatism" = mean(pure_phylogenetic_variance_t2),
-                                                         "Phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_variance_t2),
-                                                         "Pure_environmental" = mean(pure_environmental_variance_t2),
-                                                         "Residual" = mean(pure_residual_variance_t2)
+                                        "Environmental_variables" = paste0(environmental.variable, collapse = ", "),
+                                        "Pure_phylogenetic_conservatism" = mean(pure_phylogenetic_variance_t2),
+                                        "Phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_variance_t2),
+                                        "Pure_environmental" = mean(pure_environmental_variance_t2),
+                                        "Residual" = mean(pure_residual_variance_t2)
           )
 
           VCVPartitionResults$variancePartitionDistributions[[paste0("Pure_phylogenetic_conservatism_", trait2)]] <- pure_phylogenetic_variance_t2
@@ -483,7 +484,7 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         }
 
         if(!trait1 %in% traitsVCVPartitionResults$varianceResults$Trait){
-        VCVPartitionResults$variancePartition <- rbind(VCVPartitionResults$variancePartition, variancePartition_t2)
+          VCVPartitionResults$variancePartition <- rbind(VCVPartitionResults$variancePartition, variancePartition_t2)
         } else {
           VCVPartitionResults$variancePartition <- variancePartition_t2
         }
@@ -505,22 +506,22 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
       )
 
       VCVPartitionResults$covariancePartitionDistributions <- list("totalCoordination" = total_correlation,
-                                                                          "totalCoordinatedPhylogeneticConservatism" = total_phylogenetic_covariance,
-                                                                          "Total_coordinated_radiation" = total_non_phylogenetic_covariance)
+                                                                   "totalCoordinatedPhylogeneticConservatism" = total_phylogenetic_covariance,
+                                                                   "Total_coordinated_radiation" = total_non_phylogenetic_covariance)
 
 
       if(!is.null(environmental.variable)){
         VCVPartitionResults$covariancePartition <-  cbind(VCVPartitionResults$covariancePartition,
-                                                                 "Environmental_variables" = paste0(environmental.variable, collapse = ", "),
-                                                                 "Pure_coordinated_phylogenetic_conservatism" = mean(pure_phylogenetic_covariance),
-                                                                 "Coordinated_phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_covariance),
-                                                                 "Pure_environmental_coordination" = mean(pure_environmental_covariance),
-                                                                 "Residual_coordination" = mean(pure_residual_covariance),
+                                                          "Environmental_variables" = paste0(environmental.variable, collapse = ", "),
+                                                          "Pure_coordinated_phylogenetic_conservatism" = mean(pure_phylogenetic_covariance),
+                                                          "Coordinated_phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_covariance),
+                                                          "Pure_environmental_coordination" = mean(pure_environmental_covariance),
+                                                          "Residual_coordination" = mean(pure_residual_covariance),
 
-                                                                 "Pvalue_Pure_coordinated_phylogenetic_conservatism" = pure_phylogenetic_covariance_pvalue,
-                                                                 "Pvalue_Coordinated_phylogenetic_niche_conservatism" = environmental_phylogenetic_covariance_pvalue,
-                                                                 "Pvalue_Pure_environmental_coordination" = pure_environmental_covariance_pvalue,
-                                                                 "Pvalue_Residual_coordination" = pure_residual_covariance_pvalue
+                                                          "Pvalue_Pure_coordinated_phylogenetic_conservatism" = pure_phylogenetic_covariance_pvalue,
+                                                          "Pvalue_Coordinated_phylogenetic_niche_conservatism" = environmental_phylogenetic_covariance_pvalue,
+                                                          "Pvalue_Pure_environmental_coordination" = pure_environmental_covariance_pvalue,
+                                                          "Pvalue_Residual_coordination" = pure_residual_covariance_pvalue
         )
 
         VCVPartitionResults$covariancePartitionDistributions[["pureCoordinatedPhylogeneticConservatism"]] <- pure_phylogenetic_covariance
@@ -529,23 +530,23 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
         VCVPartitionResults$covariancePartitionDistributions[["residualCoordination"]] <- pure_residual_covariance
       }
 
-        VCVPartitionResults$modelPhyloEnv <- mdlPhyloEnv
-        VCVPartitionResults$model.diagnostics <- model.diagnostics
+      VCVPartitionResults$modelPhyloEnv <- mdlPhyloEnv
+      VCVPartitionResults$model.diagnostics <- model.diagnostics
 
-        # add to all traits results
-        traitsVCVPartitionResults$covarianceResults <- rbind(traitsVCVPartitionResults$covarianceResults,
-                                                                    VCVPartitionResults$covariancePartition)
+      # add to all traits results
+      traitsVCVPartitionResults$covarianceResults <- rbind(traitsVCVPartitionResults$covarianceResults,
+                                                           VCVPartitionResults$covariancePartition)
 
-        traitsVCVPartitionResults$varianceResults <-  rbind(traitsVCVPartitionResults$varianceResults,
-                                                            VCVPartitionResults$variancePartition)
+      traitsVCVPartitionResults$varianceResults <-  rbind(traitsVCVPartitionResults$varianceResults,
+                                                          VCVPartitionResults$variancePartition)
 
-        traitsVCVPartitionResults$models.diagnostics <- rbind(traitsVCVPartitionResults$models.diagnostics,
-                                                                     VCVPartitionResults$model.diagnostics)
-        traitsVCVPartitionResults$individual.models.results[[model]] <- VCVPartitionResults
+      traitsVCVPartitionResults$models.diagnostics <- rbind(traitsVCVPartitionResults$models.diagnostics,
+                                                            VCVPartitionResults$model.diagnostics)
+      traitsVCVPartitionResults$individual.models.results[[model]] <- VCVPartitionResults
 
-      } # end evaluation if model already exists in results
+    } # end evaluation if model already exists in results
 
-    } # end bucle for all traits
+  } # end bucle for all traits
 
   print("Model structure used:")
   print(multi_mdls.str)
