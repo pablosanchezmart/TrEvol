@@ -557,16 +557,34 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
 
   # save results
 
+  # Variance
+
   if(save){
     if(!is.null(environmental.variables)){
-      assign(paste0("traitsVCVPartitionResults_", environmental.variables), traitsVCVPartitionResults)
-      save(list = paste0("traitsVCVPartitionResults_", environmental.variables), file = results.file)
+      assign(paste0("traitsVariancePartitionResults_", environmental.variables), traitsVCVPartitionResults$varianceResults)
+      save(list = paste0("traitsVariancePartitionResults_", environmental.variables), file = results.file)
       print(results.file)
     } else{
-      save(list = paste0("traitsVCVPartitionResults"), file = results.file)
+      assign(paste0("traitsVariancePartitionResults", environmental.variables), traitsVCVPartitionResults$varianceResults)
+      save(list = paste0("traitsVariancePartitionResults"), file = results.file)
       print(results.file)
     }
   }
+
+  # Covariance
+
+  if(save){
+    if(!is.null(environmental.variables)){
+      assign(paste0("traitsCovariancePartitionResults_", environmental.variables), traitsVCVPartitionResults$covarianceResults)
+      save(list = paste0("traitsCovariancePartitionResults_", environmental.variables), file = results.file)
+      print(results.file)
+    } else{
+      assign(paste0("traitsCovariancePartitionResults"), traitsVCVPartitionResults$covarianceResults)
+      save(list = paste0("traitsCovariancePartitionResults"), file = results.file)
+      print(results.file)
+    }
+  }
+
   return(traitsVCVPartitionResults)
 
 }
