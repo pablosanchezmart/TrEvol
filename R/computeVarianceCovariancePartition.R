@@ -505,7 +505,7 @@ computeVarianceCovariancePartition <- function(traits, environmental.variable = 
                                                              "Pvalue_Total_coordinated_radiation" = total_non_phylogenetic_covariance_pvalue
       )
 
-      VCVPartitionResults$covariancePartitionDistributions <- list("totalCoordination" = total_correlation,
+      VCVPartitionResults$covariancePartitionDistributions <- list("totalCoordination" = total_covariance,
                                                                    "totalCoordinatedPhylogeneticConservatism" = total_phylogenetic_covariance,
                                                                    "Total_coordinated_radiation" = total_non_phylogenetic_covariance)
 
