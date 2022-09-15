@@ -58,10 +58,10 @@
 #
 # ### compute variance covariance partition ####
 #
-# varcovResults <- computeVarianceCovariancePartition(traits = TRAITS, environmental.variable = "phylo_G1_envPred", dataset = df$data,
-#                                                     phylogeny = tr, model.specifications = specifications, force.run = T, save = F, showCorrelations = T)
+# varcovResults <- computeVarianceCovariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_envPred", dataset = df$data,
+#                                                     phylogeny = tr, model.specifications = specifications, force.run = T, save = T, showCorrelations = T)
 #
-#
+# varcovResults$covarianceResults
 # # ### plot results ####
 #
 # plotData(phylogeny = tr, dataset = df$data, variables = TRAITS)

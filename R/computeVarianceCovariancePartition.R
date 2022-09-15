@@ -55,12 +55,6 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
 
   ### RUN MODELS ####
 
-  if(!is.null(environmental.variables)){
-    results.file <- paste0(outputs.dir, "/models_outputs/traitsVCVPartitionResults", environmental.variables, ".RData")
-  } else {
-    results.file <- paste0(outputs.dir, "/models_outputs/traitsVCVPartitionResults.RData")
-  }
-
   if (file.exists(results.file) && isFALSE(force.run)) {
     print("loanding previous results")
     load(file = results.file)
@@ -562,11 +556,17 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
   if(save){
     if(!is.null(environmental.variables)){
       assign(paste0("traitsVariancePartitionResults_", environmental.variables), traitsVCVPartitionResults$varianceResults)
-      save(list = paste0("traitsVariancePartitionResults_", environmental.variables), file = results.file)
+
+      results.file <- paste0(outputs.dir, "/models_outputs/")
+      save(list = paste0("traitsVariancePartitionResults_", environmental.variables),
+           file = paste0(results.file, paste0("traitsVariancePartitionResults_", environmental.variables, ".RData")))
       print(results.file)
     } else{
-      assign(paste0("traitsVariancePartitionResults", environmental.variables), traitsVCVPartitionResults$varianceResults)
-      save(list = paste0("traitsVariancePartitionResults"), file = results.file)
+      assign(paste0("traitsVariancePartitionResults"), traitsVCVPartitionResults$varianceResults)
+
+      results.file <- paste0(outputs.dir, "/models_outputs/")
+      save(list = paste0("traitsVariancePartitionResults"),
+           file = paste0(results.file, paste0("traitsVariancePartitionResults.RData")))
       print(results.file)
     }
   }
@@ -576,15 +576,19 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
   if(save){
     if(!is.null(environmental.variables)){
       assign(paste0("traitsCovariancePartitionResults_", environmental.variables), traitsVCVPartitionResults$covarianceResults)
-      save(list = paste0("traitsCovariancePartitionResults_", environmental.variables), file = results.file)
+
+      results.file <- paste0(outputs.dir, "/models_outputs/")
+      save(list = paste0("traitsCovariancePartitionResults_", environmental.variables),
+           file = paste0(results.file, paste0("traitsCovariancePartitionResults_", environmental.variables, ".RData")))
       print(results.file)
     } else{
       assign(paste0("traitsCovariancePartitionResults"), traitsVCVPartitionResults$covarianceResults)
-      save(list = paste0("traitsCovariancePartitionResults"), file = results.file)
+
+      save(list = paste0("traitsCovariancePartitionResults"),
+           file = paste0(results.file, paste0("traitsCovariancePartitionResults.RData")))
       print(results.file)
     }
   }
 
   return(traitsVCVPartitionResults)
-
 }
