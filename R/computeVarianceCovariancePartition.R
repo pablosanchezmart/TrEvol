@@ -1,4 +1,3 @@
-
 #' Variance partition including (or not) environment
 #'
 #' @param traits (character) Name of the trait or list of traits. It  must be contained in the dataset.
