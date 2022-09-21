@@ -9,14 +9,14 @@
 #' @export
 #'
 #' @examples
-completePhyloData <- function(phylogeny, dataset, traits) {
+completePhyloData <- function(phylogeny, dataset, traits, taxonName = "animal") {
   phyData <- list()
   completeVec <- stats::complete.cases(dataset[, traits])
   completeData <- dataset[completeVec, ]
 
-  phylo <- ape::keep.tip(phylogeny, phylogeny$tip.label[phylogeny$tip.label %in% completeData$animal])
-  phyData$dta <- as.data.frame(completeData[completeData$animal %in% phylo$tip.label, ])
-  rownames(phyData$dta) <- phyData$dta$animal
+  phylo <- ape::keep.tip(phylogeny, phylogeny$tip.label[phylogeny$tip.label %in% completeData[, taxonName]])
+  phyData$dta <- as.data.frame(completeData[completeData[, taxonName] %in% phylo$tip.label, ])
+  rownames(phyData$dta) <- phyData$dta[, taxonName]
   phyData$dta <- phyData$dta[phylo$tip.label, ]
   phyData$phylo <- phylo
 

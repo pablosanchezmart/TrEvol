@@ -1,10 +1,10 @@
 #' Impute traits using the evolutionary (or genetic) correlations.
 #'
-#' @param imputationVariables (character) Names of the variables with NA where imputations will be implemented. If more than one, covariation among vimputation variables is considered.
 #' @param dataset (data frame) dataset containing the variable of interest and a column named taxon describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) phylogeny with tip labels contained in dataset$taxon
 #' @param correlationsTraitsResults (list) Results from computeCovariancePartition() function.
-#' @param varianceResults (lis)Results from computeVariancePartition() function.
+#' @param  varianceResults (lis)Results from computeVariancePartition() function.
+#' @param imputationVariables (character) Names of the variables with NA where imputations will be implemented. If more than one, covariation among vimputation variables is considered.
 #' @param orderCriterium (character) Name of the correlation to be used as ordering criterium (one of teh columns of correlationsTraitsResults)
 #' @param numberOfPhyloCoordinates (number) Number of phylogenetic axis to include
 #' @param predictors (character) Names of the variables without NAs used as predictors.
@@ -18,9 +18,9 @@
 #' @export
 #'
 #' @examples
-imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTraitsResults = NULL, varianceResults = NULL, orderCriterium = "Total_covariation",
-                         numberOfPhyloCoordinates = 5, predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T,
-                         parallelization = T, specifications = NULL){
+imputeTraits <- function(dataset, phylogeny, correlationsTraitsResults, varianceResults = NULL, imputationVariables, orderCriterium = NULL,
+                         numberOfPhyloCoordinates = 5,predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T,
+                         parallelization = T){
 
 
   ## only include variables that present a relatively high relationship with the variable to be predicted
@@ -84,33 +84,10 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
   imputationResults <- list()
 
-  #### VARIANCE COVARIANCE RESULTS --------------------------------------------- ####
-
-  if(is.null(varianceResults) | is.null(correlationsTraitsResults)){
-
-    if(is.null(specifications)){
-      specifications <- defineModelsSpecifications()
-    }
-
-    dataset$animal <- dataset$taxon
-    vcvResults <- computeVarianceCovariancePartition(traits = imputationVariables, environmental.variables = predictors, dataset = dataset,
-                                       phylogeny = tr, model.specifications = specifications, force.run = T, save = F,
-                                       showRelativeResults = T, verbose = F)
-
-    if(is.null(varianceResults)){
-      varianceResults <- vcvResults$varianceResults
-    }
-
-    if(is.null(correlationsTraitsResults)){
-
-      correlationsTraitsResults <- vcvResults$covarianceResults
-    }
-  }
-
-
 
   #### PHYLOGENETIC PRNCIPAL COMPONENTS ------------------------------------------ ####
 
+  ### Phylogenetic principal coordinates ####
 
   if (!file.exists(paste0(outputs.dir, "phylo_eigenvectors.csv")) | isTRUE(forceRun)) {
     mat <- ape::cophenetic.phylo(phylogeny)
@@ -134,6 +111,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
   # From highest phylogenetic variance to lowest
 
+  # Order the first two traits according to their phylogenetic variance
   if(!is.null(varianceResults)){
     imputation.variables_1 <-  varianceResults %>%
       dplyr::arrange(dplyr::desc(abs(Total_phylogenetic_conservatism))) %>%
@@ -376,4 +354,3 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
   return(imputationResults)
 }
-

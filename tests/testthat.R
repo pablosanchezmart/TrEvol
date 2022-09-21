@@ -1,3 +1,5 @@
+# remove(list = ls())
+#
 # library(testthat)
 # library(TrEvol)
 #
@@ -10,7 +12,7 @@
 #
 # devtools::load_all()
 #
-# nObs <- 1000
+# nObs <- 100
 #
 # tr <- phytools::pbtree(n = nObs)
 #
@@ -21,17 +23,18 @@
 #                                                                         0.1, 0.1, 0.1, -0.9, 1, 0.8,
 #                                                                         0.2, 0.2, 0.2, -0.8, 0.8, 1), ncol = 6))
 #
-# specifications <- defineModelsSpecifications(number.iterations = 1000000, burning = 1000, thinning = 10)
+# # specifications <- defineModelsSpecifications(number.iterations = 1000000, burning = 1000, thinning = 10)
+# specifications <- defineModelsSpecifications(number.iterations = 100, burning = 10, thinning = 2)
 #
 # specifications <- defineModelsSpecifications()
 #
 # initializeTrEvo()
 #
 # TRAITS <- names(df$data)[!is.na(stringr::str_extract(names(df$data), "trait"))]
-# # TRAITS <- c("nonPhylo_G2_trait1", "phylo_G1_trait1")
+# TRAITS <- TRAITS[1:2]
 #
 # ENVIRONMENTALVARIABLES <- names(df$data)[!is.na(stringr::str_extract(names(df$data), "Pred"))]
-# # ENVIRONMENTALVARIABLES <- c("phylo_G1_envPred")
+# ENVIRONMENTALVARIABLES <- ENVIRONMENTALVARIABLES[1]
 #
 # ### compute variance partition ####
 #
@@ -59,9 +62,10 @@
 # ### compute variance covariance partition ####
 #
 # varcovResults <- computeVarianceCovariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_envPred", dataset = df$data,
-#                                                     phylogeny = tr, model.specifications = specifications, force.run = T, save = T, showCorrelations = T)
+#                                                     phylogeny = tr, model.specifications = specifications, force.run = T, save = T, showRelativeResults = T)
 #
 # varcovResults$covarianceResults
+#
 # # ### plot results ####
 #
 # plotData(phylogeny = tr, dataset = df$data, variables = TRAITS)
@@ -116,35 +120,35 @@
 # ### Phylogeny as predictor ####
 #
 # # tr_pred <- read.tree("data/treevol_phylogeny_genus_lvl_2021.tre")
+# df <- df$data
 #
 # df_pred <- df %>% dplyr::filter(animal %in% tr$tip.label)
 # df_pred <- df_pred %>% dplyr::rename(taxon = animal)
 #
 # tr_pred <- ape::keep.tip(tr, tr$tip.label[tr$tip.label %in% df_pred$taxon])
 #
-# predictors <- c("BM_HC_predictor", "nonBM_HC_predictor")
+# predictors <- ENVIRONMENTALVARIABLES
 #
 # for(predictor in predictors){
 #     df_pred <- df_pred %>% dplyr::filter(!is.na(predictor))
 # }
 #
-# variablesToImpute <- c("nonBM_HC_1", "nonBM_HC_2", "BM_HC_1", "BM_HC_2", "nonBM_LC_1", "nonBM_LC_2", "BM_LC_1", "BM_LC_2")
+#
 # imputationPredictors <- NULL
 # propNA <- 0
 # numberIterations <- 10
 # forceRunImputation <- T
 #
+# # TRAITS <- TRAITS[1:2]
+#
 # df_pred[1:10, 2] <- NA
 # df_pred[1:10, 3] <- NA
 #
-# variablesToImpute <- c("BM_HC_1", "BM_HC_2")
-#
 # ## Evolutionary order
 #
-# df_imp <- imputeTraits(dataset = df_pred, phylogeny = tr_pred, predictors = ENVIRONMENTALVARIABLES, correlationsTraitsResults = covarianceResults$covarianceResults,
-#                        varianceResults = varianceResults_BM_HC_predictor$varianceResults,
-#                        orderCriterium = "Total_coordinated_phylogenetic_conservatism",
-#                        imputationVariables = variablesToImpute, numberOfPhyloCoordinates = 5, prodNAs = propNA,
+# df_imp <- imputeTraits(imputationVariables = TRAITS, dataset = df_pred, phylogeny = tr_pred, predictors = ENVIRONMENTALVARIABLES,
+#                        orderCriterium = "Total_coordination",
+#                        numberOfPhyloCoordinates = 5, prodNAs = propNA,
 #                        IterationsNumber = numberIterations, parallelization = T, clustersNumber = 2,
 #                        forceRun = forceRunImputation)
 #

@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @examples
-diagnoseModels <- function(model){
+diagnoseModels <- function(model, verbose = T){
 
   model$autocFix <- coda::autocorr.diag(model$Sol)
   model$autocRan <- coda::autocorr.diag(model$VCV)
@@ -20,10 +20,15 @@ diagnoseModels <- function(model){
 
   # Autocorrelation
   if(any(abs(model$autocFix[-1, ]) > 0.1)){
-    cat(name, " autocFix Failed. Increase thinning. \n")
+    if(verbose){
+      cat(name, " autocFix Failed. Increase thinning. \n")
+    }
     mdlDiagn$AutcorrFix <- "F"
   }
   if(any(abs(model$autocRan[-1, ]) > 0.1)){
+    if(verbose){
+      cat(name, " autocRan Failed. Increase thinning. \n")
+    }
     cat(name, " autocRan Failed. Increase thinning. \n")
     mdlDiagn$AutcorrRan <- "F"
   }
@@ -31,22 +36,30 @@ diagnoseModels <- function(model){
   i <- length(summary(model)$solutions)/5
   heidelFix <- model$heidelFix[1:i, 1:3]
   if(any(heidelFix == 0)){
-    cat(name, " heidelFix Failed. Increase iterations/burning. \n")
+    if(verbose){
+      cat(name, " heidelFix Failed. Increase iterations/burning. \n")
+    }
     mdlDiagn$HeidFix <- "F"
   }
   i <- (length(summary(model)$Gcovariances)/4) + 1
   heidelRan <- model$heidelRan[1:i, 1:3]
   if(any(heidelRan == 0)){
-    cat(name, " heidelRan Failed. Increase iterations/burning. \n")
+    if(verbose){
+      cat(name, " heidelFix Failed. Increase iterations/burning. \n")
+    }
     mdlDiagn$heidRan <- "F"
   }
   # Effect size
   if(any(model$effSizeFix < 1000)){
-    cat(name, " EffSizeFix Failed. Increase iterations. \n")
+    if(verbose){
+      cat(name, " EffSizeFix Failed. Increase iterations. \n")
+    }
     mdlDiagn$effSizeFix <- "F"
   }
   if(any(model$effSizeRan < 1000)){
-    cat(name, " EffSizeRan Failed. Increase iterations.  \n")
+    if(verbose){
+      cat(name, " EffSizeRan Failed. Increase iterations.  \n")
+    }
     mdlDiagn$effSizeRan <- "F"
   }
   return(mdlDiagn)
