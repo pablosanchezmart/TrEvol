@@ -152,6 +152,9 @@
 #                        IterationsNumber = numberIterations, parallelization = T, clustersNumber = 2,
 #                        forceRun = forceRunImputation)
 #
+# df_imp$ximp2
+# head(df_imp$ximp)
+#
 # df_imp$predictivePerformance
 #
 # errors <- rbind(cbind("type" = "imputation1", df_imp$predictivePerformance_all_iterations[, c("Variable", "NRMSE", "R2")]),

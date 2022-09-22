@@ -18,7 +18,7 @@
 #' @export
 #'
 #' @examples
-imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTraitsResults = NULL, varianceResults = NULL, orderCriterium = "Total_covariation",
+imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTraitsResults = NULL, varianceResults = NULL, orderCriterium = "Total_coordination",
                          numberOfPhyloCoordinates = 5, predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T,
                          parallelization = T, specifications = NULL){
 
