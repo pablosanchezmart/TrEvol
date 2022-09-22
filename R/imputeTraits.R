@@ -3,7 +3,7 @@
 #' @param imputationVariables (character) Names of the variables with NA where imputations will be implemented. If more than one, covariation among vimputation variables is considered.
 #' @param dataset (data frame) dataset containing the variable of interest and a column named taxon describing terminal taxa of phylogeny.
 #' @param phylogeny (phylo) phylogeny with tip labels contained in dataset$taxon
-#' @param correlationsTraitsResults (list) Results from computeCovariancePartition() function.
+#' @param correlationsTraitsResults (list) Results from computeCovariancePartition() function or NULL to compute it internally.
 #' @param varianceResults (lis)Results from computeVariancePartition() function.
 #' @param orderCriterium (character) Name of the correlation to be used as ordering criterium (one of teh columns of correlationsTraitsResults)
 #' @param numberOfPhyloCoordinates (number) Number of phylogenetic axis to include
@@ -109,7 +109,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
 
 
-  #### PHYLOGENETIC PRNCIPAL COMPONENTS ------------------------------------------ ####
+  #### PHYLOGENETIC PRNCIPAL COMPONENTS ---------------------------------------- ####
 
 
   if (!file.exists(paste0(outputs.dir, "phylo_eigenvectors.csv")) | isTRUE(forceRun)) {
@@ -181,7 +181,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
   imputedVariables <- character() # to store which variables has been imputed already
 
-  ### IMPUTATION 1. Run models to impute variables following the previously determined order ####
+  ### IMPUTATION 1. Run models to impute variables following the previously determined order using phylogenetic and environmental data ####
 
   for(imputationVariable in imputation.variables_1){
 
@@ -279,7 +279,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
   }
 
 
-  ### IMPUTATION 2. Run models to impute variables following the previously determined order using imputed traits (except for the one being imputed) ####
+  ### IMPUTATION 2. Run models to impute variables following the previously determined order also including imputed traits  ####
 
   ximp2 <- as.data.frame(imputationResults$ximp)
   ximp2 <- merge(ximp2, data[, -which(names(data) %in% imputationVariables)], by = "taxon")
