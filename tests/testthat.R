@@ -135,14 +135,14 @@
 #
 #
 # imputationPredictors <- NULL
-# propNA <- 0
+# propNA <- 0.2
 # numberIterations <- 10
 # forceRunImputation <- T
 #
-# # TRAITS <- TRAITS[1:2]
+# TRAITS <- TRAITS[1:2]
 #
-# df_pred[1:10, 2] <- NA
-# df_pred[1:10, 3] <- NA
+# # df_pred[1:10, 2] <- NA
+# # df_pred[1:10, 3] <- NA
 #
 # ## Evolutionary order
 #
