@@ -99,9 +99,10 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
     }
 
     dataset$animal <- dataset$taxon
-    vcvResults <- computeVarianceCovariancePartition(traits = imputationVariables, environmental.variables = predictors, dataset = dataset,
-                                       phylogeny = tr, model.specifications = specifications, force.run = T, save = F,
-                                       showRelativeResults = T, verbose = F)
+
+    vcvResults <- computeVarianceCovariancePartition(traits = c(imputationVariables, predictors), dataset = dataset,
+                                                     phylogeny = phylogeny, model.specifications = specifications, force.run = T, save = F,
+                                                     showRelativeResults = T, verbose = F)
 
     if(is.null(varianceResults)){
       varianceResults <- vcvResults$varianceResults
