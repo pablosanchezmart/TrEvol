@@ -69,6 +69,12 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
 
     predictiveVariables <- c(imputedSuitableVariables, phyloPreds, suitablePredictors)
+
+    if(length(predictiveVariables) < 1){
+      warning("No strong relationships with phylogeny or environment. Including phylogeny to predict.")
+      predictiveVariables <- c(paste0("Phylo_axis_", 1:numberOfPhyloCoordinates))
+    }
+
     return(predictiveVariables)
   }
 
