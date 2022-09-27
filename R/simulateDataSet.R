@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-simulateDataSet <- function(phylogeny = NULL, nObs = 100, trait.names = c("G1_trait1", "G1_trait2", "G1_envPred", "G2_trait1", "G2_trait2", "G2_envPred"),
+simulateDataSet <- function(phylogeny = NULL, nObs = 100, trait.names = c("G1_trait1", "G1_trait2", "G1_env", "G2_trait1", "G2_trait2", "G2_env"),
                                                                vcvMatrix = matrix(c(1, 0.9, 0.8, 0, 0.1, 0.2,
                                                                                     0.9, 1, 0.8, 0, 0.1, 0.2,
                                                                                     0.8, 0.8, 1, 0, 0.1, 0.2,
