@@ -150,15 +150,17 @@
 #                        orderCriterium = "Total_coordination",
 #                        numberOfPhyloCoordinates = 5, prodNAs = propNA,
 #                        IterationsNumber = numberIterations, parallelization = T, clustersNumber = 2,
-#                        forceRun = forceRunImputation)
+#                        forceRun = forceRunImputation, numberOfImputationRounds = 4)
 #
-# df_imp$ximp2
-# head(df_imp$ximp)
+# df_imp$round3$ximp
+# head(df_imp$round1$ximp)
 #
-# df_imp$predictivePerformance
+# df_imp$round3$ximp
 #
-# errors <- rbind(cbind("type" = "imputation1", df_imp$predictivePerformance_all_iterations[, c("Variable", "NRMSE", "R2")]),
-#                 cbind("type" = "imputation2", df_imp$predictivePerformance_all_iterations2[, c("Variable", "NRMSE", "R2")]))
+# errors <- rbind(cbind("type" = "imputation1", df_imp$round1$predictivePerformance[, c("Variable", "NRMSE", "R2")]),
+#                 cbind("type" = "imputation2", df_imp$round2$predictivePerformance[, c("Variable", "NRMSE", "R2")]),
+#                 cbind("type" = "imputation3", df_imp$round3$predictivePerformance[, c("Variable", "NRMSE", "R2")]),
+#                 cbind("type" = "imputation4", df_imp$round4$predictivePerformance[, c("Variable", "NRMSE", "R2")]))
 #
 # pNRMSE <- ggplot2::ggplot(errors, ggplot2::aes(x = Variable, y = NRMSE, color = type)) +
 #   ggplot2::geom_abline(intercept = 1, slope = 0, linetype = "dashed") +
