@@ -29,7 +29,7 @@ completePhyloData <- function(phylogeny, dataset, traits, taxonName = "animal") 
     phyData$dta <- phyData$dta %>% dplyr::rename(Family = family)
     print("renaming family column to Family to avoid problems with MCMCglmm")
   }
-  phyData$dta <- dplyr::left_join(taxon_ordered, phyData$dta, by= taxonName)
+  phyData$dta <- as.data.frame(dplyr::left_join(taxon_ordered, phyData$dta, by= taxonName))
   phyData$phylo <- phylo
 
   return(phyData)
