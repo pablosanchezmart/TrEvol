@@ -26,7 +26,8 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
   ## only include variables that present a relatively high relationship with the variable to be predicted
 
-  filterVariablesToBeIncludedAsPredictors <- function(imputationVariable, imputedVariables = "", potentialPredictors = NULL, includePhylo = T){
+  filterVariablesToBeIncludedAsPredictors <- function(imputationVariable, imputedVariables = "", potentialPredictors = NULL, includePhylo = T,
+                                                      nPhyloCoords = numberOfPhyloCoordinates){
 
     # Traits
     suitableTraits_1 <- phyloCov_order[phyloCov_order$Trait_1 == imputationVariable, c("Trait_2", orderCriterium)] %>% dplyr::rename(trait = Trait_2)
@@ -45,7 +46,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
       # only for conserved traits
 
       if(varianceResults[varianceResults$Trait == imputationVariable, "Total_phylogenetic_conservatism"] > 0.4)
-        phyloPreds <- c(paste0("Phylo_axis_", 1:numberOfPhyloCoordinates))
+        phyloPreds <- c(paste0("Phylo_axis_", 1:nPhyloCoords))
     }
 
     # Environemntal variables
@@ -125,7 +126,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
     mat <- as.data.frame(mat)
     pCordA <- ape::pcoa(mat)
     phyloEigenV <- as.data.frame(pCordA$vectors)
-    phyloEigenV <- phyloEigenV[dataset$taxon, c(1:50)]
+    phyloEigenV <- phyloEigenV[dataset$taxon, ] #c(1:50)
     phyloEigenV$taxon <- rownames(phyloEigenV)
     data <- merge(dataset, phyloEigenV, by = "taxon", all.x = T)
     names(data) <- stringr::str_replace_all(names(data), "Axis.", "Phylo_axis_")
@@ -195,7 +196,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
     if(!is.null(varianceResults)){
       predictiveVariables <- filterVariablesToBeIncludedAsPredictors(imputationVariable = imputationVariable, potentialPredictors = predictors,
-                                                                     includePhylo = T)
+                                                                     includePhylo = T, nPhyloCoords = length(unique(dataset$taxon)) -1)
     } else{
       predictiveVariables <- c(predictors, c(paste0("Phylo_axis_", 1:numberOfPhyloCoordinates)))
     }
@@ -273,7 +274,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
   imputationResults[["round1"]]$ximp <- stats::aggregate(ximp.all[, -which(names(ximp.all) == "taxon")], by = list(ximp.all$taxon), FUN = mean) %>% dplyr::rename(taxon = Group.1)
   imputationResults[["round1"]]$predictivePerformance <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"))],
-                                                              by = list(predictivePerformance.all$Variable), FUN = meanOrMode) %>%
+                                                                          by = list(predictivePerformance.all$Variable), FUN = meanOrMode) %>%
     dplyr::rename(Variable = Group.1)
 
   if (IterationsNumber > 1) {
@@ -281,7 +282,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
       dplyr::rename(taxon = Group.1)
 
     imputationResults[["round1"]]$predictivePerformance_sd <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"), which(names(predictivePerformance.all) == "Model"))],
-                                                                   by = list(predictivePerformance.all$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1)
+                                                                               by = list(predictivePerformance.all$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1)
     imputationResults[["round1"]]$ximp_all_iterations <- ximp.all
     imputationResults[["round1"]]$predictivePerformance_all_iterations <- predictivePerformance.all
   }
@@ -297,7 +298,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
       if(!is.null(correlationsTraitsResults)){
         predictiveVariables <- filterVariablesToBeIncludedAsPredictors(imputationVariable = imputationVariable, imputedVariables = imputation.variables_2,
-                                                                       potentialPredictors = predictors, includePhylo = T)
+                                                                       potentialPredictors = predictors, includePhylo = T, nPhyloCoords = numberOfPhyloCoordinates)
 
         # predictiveVariables <- filterVariablesToBeIncludedAsPredictors(imputationVariable = imputationVariable, imputedVariables = imputation.variables_2,
         #                                                                includePhylo = F)
@@ -387,4 +388,3 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
   return(imputationResults)
 }
-

@@ -33,7 +33,7 @@
 # TRAITS <- names(df$data)[!is.na(stringr::str_extract(names(df$data), "trait"))]
 # TRAITS <- TRAITS[1:2]
 #
-# ENVIRONMENTALVARIABLES <- names(df$data)[!is.na(stringr::str_extract(names(df$data), "Pred"))]
+# ENVIRONMENTALVARIABLES <- names(df$data)[!is.na(stringr::str_extract(names(df$data), "env"))]
 # ENVIRONMENTALVARIABLES <- ENVIRONMENTALVARIABLES[1]
 #
 # ### compute variance partition ####
