@@ -196,7 +196,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
     if(!is.null(varianceResults)){
       predictiveVariables <- filterVariablesToBeIncludedAsPredictors(imputationVariable = imputationVariable, potentialPredictors = predictors,
-                                                                     includePhylo = T, nPhyloCoords = length(unique(dataset$taxon)) -1)
+                                                                     includePhylo = T, nPhyloCoords = numberOfPhyloCoordinates)
     } else{
       predictiveVariables <- c(predictors, c(paste0("Phylo_axis_", 1:numberOfPhyloCoordinates)))
     }
@@ -299,9 +299,6 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
       if(!is.null(correlationsTraitsResults)){
         predictiveVariables <- filterVariablesToBeIncludedAsPredictors(imputationVariable = imputationVariable, imputedVariables = imputation.variables_2,
                                                                        potentialPredictors = predictors, includePhylo = T, nPhyloCoords = numberOfPhyloCoordinates)
-
-        # predictiveVariables <- filterVariablesToBeIncludedAsPredictors(imputationVariable = imputationVariable, imputedVariables = imputation.variables_2,
-        #                                                                includePhylo = F)
 
       } else{
         predictiveVariables <- c(sample(imputation.variables_2), predictors, c(paste0("Phylo_axis_", 1:numberOfPhyloCoordinates)))
