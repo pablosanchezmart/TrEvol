@@ -271,7 +271,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
   }
 
   ### Results aggregation (for all iterations)
-
+  imputationResults[["round1"]]$modelFormula <- modelName
   imputationResults[["round1"]]$ximp <- stats::aggregate(ximp.all[, -which(names(ximp.all) == "taxon")], by = list(ximp.all$taxon), FUN = mean) %>% dplyr::rename(taxon = Group.1)
   imputationResults[["round1"]]$predictivePerformance <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"))],
                                                                           by = list(predictivePerformance.all$Variable), FUN = meanOrMode) %>%
@@ -364,6 +364,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
     }
 
     ### Results aggregation (for all iterations)
+    imputationResults[[paste0("round", nround)]]$modelFormula <- modelName
 
     imputationResults[[paste0("round", nround)]]$ximp <- stats::aggregate(ximp.all[, -which(names(ximp.all) == "taxon")], by = list(ximp.all$taxon), FUN = mean) %>%
       dplyr::rename(taxon = Group.1)
