@@ -29,24 +29,15 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
   filterVariablesToBeIncludedAsPredictors <- function(imputationVariable, imputedVariables = "", potentialPredictors = NULL, includePhylo = T,
                                                       nPhyloCoords = numberOfPhyloCoordinates){
 
-    # Traits
-    suitableTraits_1 <- phyloCov_order[phyloCov_order$Trait_1 == imputationVariable, c("Trait_2", orderCriterium)] %>% dplyr::rename(trait = Trait_2)
-    suitableTraits_2 <- phyloCov_order[phyloCov_order$Trait_2 == imputationVariable, c("Trait_1", orderCriterium)] %>% dplyr::rename(trait = Trait_1)
-    suitableTraits <- rbind(suitableTraits_1, suitableTraits_2)
-
-    threshold <- summary(abs(suitableTraits[, orderCriterium]))[5]
-    suitableVariables <- suitableTraits[suitableTraits[, orderCriterium] >= threshold | suitableTraits[, orderCriterium] <= -threshold, "trait"]
-
-    imputedSuitableVariables <- suitableVariables[suitableVariables %in% imputedVariables]
-
     # Phylogeny
 
     if(includePhylo){
-      phyloPreds <- NULL
-      # only for conserved traits
+      phyloPreds <- character()
 
-      if(varianceResults[varianceResults$Trait == imputationVariable, "Total_phylogenetic_conservatism"] > 0.4)
+      # only for phylogenetically traits
+      if(varianceResults[varianceResults$Trait == imputationVariable, "Pvalue_Total_phylogenetic_conservatism"] < 0.05){
         phyloPreds <- c(paste0("Phylo_axis_", 1:nPhyloCoords))
+      }
     }
 
     # Environemntal variables
@@ -56,24 +47,49 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
       correlationsTraitsResults$order <- abs(correlationsTraitsResults[, "Total_coordination"])
       predictors_order <- correlationsTraitsResults %>%
         dplyr::arrange(dplyr::desc(order)) %>%
-        dplyr::select(c(Trait_1, Trait_2, "Total_coordination")) %>%
+        dplyr::select(c(Trait_1, Trait_2, Total_coordination, Pvalue_Total_coordination)) %>%
         dplyr::filter(Trait_1 == imputationVariable | Trait_2 == imputationVariable) %>%
-        dplyr::filter(Trait_1 %in% potentialPredictors | Trait_2 %in% potentialPredictors)
+        dplyr::filter(Trait_1 %in% potentialPredictors | Trait_2 %in% potentialPredictors) %>%
+        dplyr::filter(Pvalue_Total_coordination < 0.05)
 
-      threshold <- summary(abs(predictors_order[, "Total_coordination"]))[5]
-
-      predictors_order <- predictors_order[predictors_order[, "Total_coordination"] >= threshold | predictors_order[, "Total_coordination"] <= -threshold, ]
+      # if(length(predictors_order) < 1){
+      # print("not significant effects, selecting those with the highest correlation as predictors (|corr| > Q3)")
+      #   threshold <- summary(abs(predictors_order[, "Total_coordination"]))[5]
+      #
+      #   predictors_order <- predictors_order[predictors_order[, "Total_coordination"] >= threshold | predictors_order[, "Total_coordination"] <= -threshold, ]
+      # }
 
       suitablePredictors <- c(predictors_order$Trait_1, predictors_order$Trait_2)
       suitablePredictors <- unlist(predictors_order[predictors_order %in% potentialPredictors])
       names(suitablePredictors) <- NULL
+    } else{
+      suitablePredictors <- character()
     }
 
+
+    # Traits
+    suitableTraits_1 <- phyloCov_order[phyloCov_order$Trait_1 == imputationVariable, c("Trait_2", orderCriterium,  paste0("Pvalue_", orderCriterium))] %>%
+      dplyr::rename(trait = Trait_2)
+    suitableTraits_2 <- phyloCov_order[phyloCov_order$Trait_2 == imputationVariable, c("Trait_1", orderCriterium,  paste0("Pvalue_", orderCriterium))] %>%
+      dplyr::rename(trait = Trait_1)
+    suitableTraits <- rbind(suitableTraits_1, suitableTraits_2)
+
+    suitableVariables <- character()
+    suitableVariables <- suitableTraits[suitableTraits[, paste0("Pvalue_", orderCriterium)] <= 0.5, "trait"]
+
+    # if(length(suitableVariables) < 1){
+    #   print("not significant effects, selecting those with the highest correlation as predictors (|corr| > Q3)")
+    #   threshold <- summary(abs(suitableTraits[, orderCriterium]))[5]
+    #   suitableVariables <- suitableTraits[suitableTraits[, orderCriterium] >= threshold | suitableTraits[, orderCriterium] <= -threshold, "trait"]
+    #   suitableVariables <- suitableTraits[suitableTraits[, orderCriterium] >= threshold | suitableTraits[, orderCriterium] <= -threshold, "trait"]
+    # }
+
+    imputedSuitableVariables <- suitableVariables[suitableVariables %in% imputedVariables]
 
     predictiveVariables <- c(imputedSuitableVariables, phyloPreds, suitablePredictors)
 
     if(length(predictiveVariables) < 1){
-      warning("No strong relationships with phylogeny or environment. Including phylogeny to predict.")
+      warning("No strong relationships with phylogeny or environment. Using phylogeny to predict.")
       predictiveVariables <- c(paste0("Phylo_axis_", 1:numberOfPhyloCoordinates))
     }
 
@@ -161,7 +177,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
     correlationsTraitsResults$order <- abs(correlationsTraitsResults[, orderCriterium])
     phyloCov_order <- correlationsTraitsResults %>%
       dplyr::arrange(dplyr::desc(order)) %>%
-      dplyr::select(c(Trait_1, Trait_2, orderCriterium)) %>%
+      dplyr::select(c(Trait_1, Trait_2, orderCriterium, paste0("Pvalue_", orderCriterium))) %>%
       dplyr::filter(Trait_1 %in% imputationVariables, Trait_2 %in% imputationVariables)
 
     imputation.variables_2 <- character()
@@ -171,6 +187,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
       impVars <- impVars[!impVars %in% imputation.variables_2]
       imputation.variables_2 <- c(imputation.variables_2, impVars)
     }
+
     # Order the first two traits according to their phylogenetic variance
     if(!is.null(varianceResults)){
       firstTwoOrder <-  varianceResults %>%

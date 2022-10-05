@@ -153,7 +153,7 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
         total_phylogenetic_variance_t2 <- total_phylogenetic_variance_t2 / total_variance_t2
       }
 
-      total_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_phylogenetic_variance_t2))) # Pvalue
+      total_phylogenetic_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_phylogenetic_variance_t2))) # Pvalue
 
 
       ## Total non-phylogenetic variance
@@ -427,7 +427,8 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
         VCVPartitionResults$variancePartition <- data.frame("Trait" = trait1,
                                                             "N" = length(modellingData$dta$animal),
                                                             "Total_phylogenetic_conservatism" = mean(total_phylogenetic_variance_t1),
-                                                            "Total_non_phylogenetic" = mean(total_non_phylogenetic_variance_t1)
+                                                            "Total_non_phylogenetic" = mean(total_non_phylogenetic_variance_t1),
+                                                            "Pvalue_Total_phylogenetic_conservatism" = total_phylogenetic_variance_t1_pvalue
         )
 
         VCVPartitionResults$variancePartitionDistributions[[paste0("Total_phylogenetic_conservatism_", trait1)]] <- total_phylogenetic_variance_t1
@@ -439,7 +440,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
                                                          "Pure_phylogenetic_conservatism" = mean(pure_phylogenetic_variance_t1),
                                                          "Phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_variance_t1),
                                                          "Pure_environmental" = mean(pure_environmental_variance_t1),
-                                                         "Residual" = mean(pure_residual_variance_t1)
+                                                         "Residual" = mean(pure_residual_variance_t1),
+                                                         "Pvalue_Pure_phylogenetic_conservatism" = pure_phylogenetic_variance_t1_pvalue,
+                                                         "Pvalue_Phylogenetic_niche_conservatism" = environmental_phylogenetic_variance_t1_pvalue,
+                                                         "Pvalue_Pure_environmental" = environmental_phylogenetic_variance_t1_pvalue
           )
 
           VCVPartitionResults$variancePartitionDistributions[[paste0("Pure_phylogenetic_conservatism", trait1)]] <- pure_phylogenetic_variance_t1
@@ -456,7 +460,8 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
         variancePartition_t2 <- data.frame("Trait" = trait2,
                                            "N" = length(modellingData$dta$animal),
                                            "Total_phylogenetic_conservatism" = mean(total_phylogenetic_variance_t2),
-                                           "Total_non_phylogenetic" = mean(total_non_phylogenetic_variance_t2)
+                                           "Total_non_phylogenetic" = mean(total_non_phylogenetic_variance_t2),
+                                           "Pvalue_Total_phylogenetic_conservatism" = total_phylogenetic_variance_t2_pvalue
         )
 
         VCVPartitionResults$variancePartitionDistributions[[paste0("Total_phylogenetic_conservatism_", trait2)]] <- total_phylogenetic_variance_t2
@@ -468,7 +473,10 @@ computeVarianceCovariancePartition <- function(traits, environmental.variables =
                                         "Pure_phylogenetic_conservatism" = mean(pure_phylogenetic_variance_t2),
                                         "Phylogenetic_niche_conservatism" = mean(environmental_phylogenetic_variance_t2),
                                         "Pure_environmental" = mean(pure_environmental_variance_t2),
-                                        "Residual" = mean(pure_residual_variance_t2)
+                                        "Residual" = mean(pure_residual_variance_t2),
+                                        "Pvalue_Pure_phylogenetic_conservatism" = pure_phylogenetic_variance_t2_pvalue,
+                                        "Pvalue_Phylogenetic_niche_conservatism" = environmental_phylogenetic_variance_t2_pvalue,
+                                        "Pvalue_Pure_environmental" = environmental_phylogenetic_variance_t2_pvalue
           )
 
           VCVPartitionResults$variancePartitionDistributions[[paste0("Pure_phylogenetic_conservatism_", trait2)]] <- pure_phylogenetic_variance_t2
