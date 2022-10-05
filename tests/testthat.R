@@ -147,8 +147,7 @@
 # ## Evolutionary order
 #
 # df_imp <- imputeTraits(imputationVariables = TRAITS[1:2], dataset = df_pred, phylogeny = tr_pred, predictors = ENVIRONMENTALVARIABLES,
-#                        orderCriterium = "Total_coordination",
-#                        numberOfPhyloCoordinates = 5, prodNAs = propNA,
+#                        orderCriterium = "Total_coordination", prodNAs = propNA,
 #                        IterationsNumber = numberIterations, parallelization = T, clustersNumber = 2,
 #                        forceRun = forceRunImputation, numberOfImputationRounds = 4)
 #

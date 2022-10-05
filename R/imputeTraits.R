@@ -20,7 +20,7 @@
 #'
 #' @examples
 imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTraitsResults = NULL, varianceResults = NULL, orderCriterium = "Total_coordination",
-                         numberOfPhyloCoordinates = 5, predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T,
+                         numberOfPhyloCoordinates = NULL, predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T,
                          parallelization = T, specifications = NULL, numberOfImputationRounds = 3){
 
 
@@ -142,7 +142,12 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
     mat <- as.data.frame(mat)
     pCordA <- ape::pcoa(mat)
     phyloEigenV <- as.data.frame(pCordA$vectors)
-    phyloEigenV <- phyloEigenV[dataset$taxon, ] #c(1:50)
+
+    if(is.null(numberOfPhyloCoordinates)){
+      numberOfPhyloCoordinates <- max(which(pCordA$values$Relative_eig > 0.01))
+    }
+
+    phyloEigenV <- phyloEigenV[dataset$taxon, 1:numberOfPhyloCoordinates] #c(1:50)
     phyloEigenV$taxon <- rownames(phyloEigenV)
     data <- merge(dataset, phyloEigenV, by = "taxon", all.x = T)
     names(data) <- stringr::str_replace_all(names(data), "Axis.", "Phylo_axis_")
@@ -152,7 +157,16 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
   } else {
     data <- utils::read.csv(paste0(outputs.dir, "phylo_eigenvectors.csv"),
                             header = T)
+
+    if(is.null(numberOfPhyloCoordinates)){
+      numberOfPhyloCoordinates <- length(colnames(data)[stringr::str_detect(colnames(data), "Phylo_axis_")])
+    }
+
     print("loading previously calculated phylogenetic eigenvectors")
+  }
+
+  if(numberOfPhyloCoordinates > length(colnames(data)[stringr::str_detect(colnames(data), "Phylo_axis_")])){
+    stop("numberOfPhyloCoordinates > phylogenetic coordinates explaining > 1% of the variance. Decrease numberOfPhyloCoordinates")
   }
 
   ### Imputation order according to variance ####
