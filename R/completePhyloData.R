@@ -11,6 +11,9 @@
 #' @examples
 completePhyloData <- function(phylogeny, dataset, traits, taxonName = "animal") {
   phyData <- list()
+
+  dataset <- as.data.frame(dataset)
+
   completeVec <- stats::complete.cases(dataset[, traits])
   completeData <- dataset[completeVec, ]
 
