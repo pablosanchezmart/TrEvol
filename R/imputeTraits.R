@@ -21,7 +21,8 @@
 #' @examples
 imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTraitsResults = NULL, varianceResults = NULL, orderCriterium = "Total_coordination",
                          numberOfPhyloCoordinates = NULL, predictors = NULL, prodNAs = 0, IterationsNumber = 10, clustersNumber = 2, forceRun = T,
-                         parallelization = T, specifications = NULL, numberOfImputationRounds = 3){
+                         parallelization = T, specifications = NULL, numberOfImputationRounds = 3,
+                         outputs.dir = ""){
 
 
   ## only include variables that present a relatively high relationship with the variable to be predicted
@@ -137,7 +138,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
   #### PHYLOGENETIC PRNCIPAL COMPONENTS ---------------------------------------- ####
 
 
-  # if (!file.exists(paste0(outputs.dir, "phylo_eigenvectors.csv")) | isTRUE(forceRun)) {
+  if (!file.exists(paste0(outputs.dir, "phylo_eigenvectors.csv")) | isTRUE(forceRun)) {
     mat <- ape::cophenetic.phylo(phylogeny)
     mat <- as.data.frame(mat)
     pCordA <- ape::pcoa(mat)
@@ -154,16 +155,16 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
     utils::write.csv(data, paste0(outputs.dir, "phylo_eigenvectors.csv"),
                      row.names = F)
     print(paste0(outputs.dir, "phylo_eigenvectors.csv"))
-  # } else {
-  #   data <- utils::read.csv(paste0(outputs.dir, "phylo_eigenvectors.csv"),
-  #                           header = T)
-  #
-  #   if(is.null(numberOfPhyloCoordinates)){
-  #     numberOfPhyloCoordinates <- length(colnames(data)[stringr::str_detect(colnames(data), "Phylo_axis_")])
-  #   }
-  #
-  #   print("loading previously calculated phylogenetic eigenvectors")
-  # }
+  } else {
+    data <- utils::read.csv(paste0(outputs.dir, "phylo_eigenvectors.csv"),
+                            header = T)
+
+    if(is.null(numberOfPhyloCoordinates)){
+      numberOfPhyloCoordinates <- length(colnames(data)[stringr::str_detect(colnames(data), "Phylo_axis_")])
+    }
+
+    print("loading previously calculated phylogenetic eigenvectors")
+  }
 
   if(numberOfPhyloCoordinates > length(colnames(data)[stringr::str_detect(colnames(data), "Phylo_axis_")])){
     stop("numberOfPhyloCoordinates > phylogenetic coordinates explaining > 1% of the variance. Decrease numberOfPhyloCoordinates")
