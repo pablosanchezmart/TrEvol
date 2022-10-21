@@ -268,7 +268,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
                                             N = length(imp.dataset[, 1]),
                                             N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                             N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
-                                            NRMSE = rfImp.res$error[1:length(imputationVariable)],
+                                            NRMSE = rfImp.res[[2]][1:length(imputationVariable)],
                                             R2 = r2.var,
                                             Model = modelName)
       } else {
@@ -284,7 +284,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
                                             N = length(imp.dataset[, 1]),
                                             N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                             N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
-                                            NRMSE = rfImp.res$OOBerror[1:length(imputationVariable)],
+                                            NRMSE = rfImp.res[[2]][1:length(imputationVariable)],
                                             Model = modelName)
       }
       parallel::stopCluster(cl)
@@ -368,7 +368,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
                                               N = length(ximp[, 1]),
                                               N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                               N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
-                                              NRMSE = rfImp.res$error[1:length(imputationVariable)],
+                                              NRMSE = rfImp.res[[2]][1:length(imputationVariable)],
                                               R2 = r2.var,
                                               Model = modelName)
         } else {
@@ -379,7 +379,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
                                               N = length(imp.dataset[, 1]),
                                               N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                               N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
-                                              NRMSE = rfImp.res$OOBerror[1:length(imputationVariable)],
+                                              NRMSE = rfImp.res[[2]][1:length(imputationVariable)],
                                               Model = modelName)
         }
         parallel::stopCluster(cl)
