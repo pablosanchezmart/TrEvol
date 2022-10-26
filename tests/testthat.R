@@ -31,7 +31,7 @@
 # initializeTrEvo()
 #
 # TRAITS <- names(df$data)[!is.na(stringr::str_extract(names(df$data), "trait"))]
-# TRAITS <- TRAITS[1:2]
+# # TRAITS <- TRAITS[1:2]
 #
 # ENVIRONMENTALVARIABLES <- names(df$data)[!is.na(stringr::str_extract(names(df$data), "env"))]
 # ENVIRONMENTALVARIABLES <- ENVIRONMENTALVARIABLES[1]
@@ -61,7 +61,7 @@
 #
 # ### compute variance covariance partition ####
 #
-# varcovResults <- computeVarianceCovariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_envPred", dataset = df$data,
+# varcovResults <- computeVarianceCovariancePartition(traits = TRAITS, dataset = df$data,
 #                                                     phylogeny = tr, model.specifications = specifications, force.run = T, save = T, showRelativeResults = T)
 #
 # varcovResults$covarianceResults
@@ -84,7 +84,7 @@
 #
 # plotNetwork(covariance.results = varcovResults$covarianceResults, variance.results = varcovResults$varianceResults,
 #             variance.type = "Total_phylogenetic_conservatism", covariance.type =  "Total_coordinated_phylogenetic_conservatism",
-#             only.significant = T, threshold = 0.1, layout = "circular")
+#             only.significant = T, threshold = 0.1, layout = "circular", displayDegreeAsNodeSize = T)
 #
 # varcovResults$covarianceResults %>% dplyr::select(Trait_1, Trait_2, Total_coordinated_phylogenetic_conservatism) %>% head()
 #

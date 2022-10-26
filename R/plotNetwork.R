@@ -13,6 +13,8 @@
 #' @param threshold (numeric) correlations to be shown (e.g., those with a absolute value higher than 0.1)
 #' @param label.size (numeric) size of the node labels
 #' @param node.label (data frame) character vector as long as the number of variables indicating the variable name in the first column and the new name, which will be shown in the plot.
+#' @param networkMetrixTextSize (numeric) Size of the text reporting network metrics
+#' @param displayDegreeAsNodeSize (logical) If true, node size is proportional to its degree.
 #'
 #' @return
 #' @export
@@ -21,8 +23,12 @@
 plotNetwork <- function (covariance.results, variance.results = NULL, variance.type = NULL,
                          covariance.type, group.variables = NULL, order.variables = NULL, edge.label = F,
                          layout = "spring", only.significant = T, not.show.variables = NULL,
-                         threshold = 0, label.size = 0.8, node.label = NULL, plot.metrics = T)
+                         threshold = 0, label.size = 0.8, node.label = NULL, plot.metrics = T,
+                         networkMetrixTextSize = 1, displayDegreeAsNodeSize = T)
 {
+
+  ### Data preparation ####
+
   # set non significant values to zero if needed
   if (only.significant) {
     covariance.results[which(covariance.results[, paste0("Pvalue_", covariance.type)] > 0.05), covariance.type] <- 0
@@ -66,19 +72,51 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
       stop("Not all variables of interest are included in order.variables argument.")
     }
   }
+
+  ### Network metrics ####
+
+  ## Graph
   corGraph <- igraph::graph.adjacency(abs(as.matrix(correlation.matrix)),
                                       mode = "lower", weighted = T)
-  diameter <- round(igraph::diameter(corGraph, directed = F),
-                    3)
-  beta_connectivity <- round(igraph::ecount(corGraph)/igraph::vcount(corGraph),
-                             3)
-  transitivity <- round(igraph::transitivity(corGraph, isolates = "zero",
-                                             type = "global"), 3)
+
+  ## Edge density (ED)
+  # ED describes the density of the connected edges between nodes in a network, that is, the proportion of actual connections
+  # among traits out of all possible connections.
+
+  EdgeDensity <- (2* igraph::ecount(corGraph)) / (igraph::vcount(corGraph) * (igraph::vcount(corGraph) -1))
+
+  ## Diameter (D) and average path length (AL)
+  # D is the maximum shortest distance between any two connected node traits in the network, and AL is the mean shortest path between all node traits
+  # in the network. PTNs with higher D and AL have greater overall independence among traits.
+
+  diameter <- round(igraph::diameter(corGraph, directed = F), 3)
+  averagePathLength <- igraph::mean_distance(corGraph)
+
+  ## Average clustering (AC)
+  # AC is the average of the clustering coefficients of all traits in PTNs. PTNs with higher AC are more extensively divided into
+  # several different components.
+
+  averageClusteringCoefficient <- mean(round(igraph::transitivity(corGraph, isolates = "zero", type = "local"), 3))
+
+  ## Node degree (k)
+
+  # k is the number of edges that connect a focal node trait to other nodes. Plant traits that have a high k can be considered as
+  # overall hub traits.
+
+  degree <- igraph::degree(corGraph)
+
+
   networkMetrics <- data.frame(correlation_type = covariance.type,
-                               diameter = diameter, beta_connectivity = beta_connectivity,
-                               transtiivity = transitivity)
+                               EdgeDensity = EdgeDensity,
+                               diameter = diameter,
+                               averagePathLength = averagePathLength,
+                               averageClusteringCoefficient = averageClusteringCoefficient)
+
   rownames(node.label) <- node.label[, 1]
   node.label <- node.label[vars, 2]
+
+  ### Variance results (node pie chart) ####
+
   if (!is.null(variance.results)) {
     rownames(variance.results) <- variance.results[, 1]
     if (!is.null(variance.results) && all(vars %in% rownames(variance.results))) {
@@ -91,19 +129,32 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
   } else {
     ps.vars <- rep(NULL, length(correlation.matrix[, 1]))
   }
+
+  ### Plot ####
+
+  if(displayDegreeAsNodeSize){
+    nodeSize <- 2 + degree * 2
+    nodeSize <- ifelse(nodeSize > 8, 8, nodeSize)
+    nodeSize <- ifelse(nodeSize < 2, 2, nodeSize)
+  } else {
+    nodeSize <- 8
+  }
+
   p <- qgraph::qgraph(correlation.matrix, layout = layout,
-                      vsize = 5, vsize2 = 1, esize = 10 * max(correlation.matrix),
+                      vsize = nodeSize, vsize2 = nodeSize, esize = 10 * max(correlation.matrix),
                       palette = "pastel", negDashed = T, borders = T, legend = F,
                       vTrans = 180, fade = F, aspect = T, legend.cex = 0.25,
                       edge.labels = edge.label, edge.label.cex = 2 * length(vars)/length(vars),
                       labels = node.label, label.cex = label.size, label.scale = F,
-                      node.label.offset = c(0.5, -2), pie = ps.vars, pieBorder = 1,
+                      node.label.offset = c(0.5, -3), pie = ps.vars, pieBorder = 1,
                       DoNotPlot = F, groups = group.variables[, 2], threshold = threshold)
 
   if(plot.metrics){
-    graphics::text(x = 0.5, y = -1, labels = paste0("Connectivity = ",
-                                                    round(networkMetrics$beta_connectivity, 2), "\n", "Transitivity = ",
-                                                    round(networkMetrics$transtiivity, 2)), adj = 0, cex = 0.6)
+    graphics::text(x = 0.5, y = -1, labels = paste0("ED = ", round(networkMetrics$EdgeDensity, 2), "\n",
+                                                    "D = ", round(networkMetrics$diameter, 2), "\n",
+                                                    "AL = ", round(networkMetrics$averagePathLength, 2), "\n",
+                                                    "AC = ", round(networkMetrics$averageClusteringCoefficient, 2)),
+                   adj = 0, cex = networkMetrixTextSize)
   }
   return(p)
 }
