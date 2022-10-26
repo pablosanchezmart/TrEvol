@@ -133,9 +133,9 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
   ### Plot ####
 
   if(displayDegreeAsNodeSize){
-    nodeSize <- 4 + degree * 2
+    nodeSize <- 5 + degree * 2
     nodeSize <- ifelse(nodeSize > 10, 10, nodeSize)
-    nodeSize <- ifelse(nodeSize < 4, 4, nodeSize)
+    nodeSize <- ifelse(nodeSize < 5, 5, nodeSize)
   } else {
     nodeSize <- 8
   }
