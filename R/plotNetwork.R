@@ -141,7 +141,7 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
   }
 
   p <- qgraph::qgraph(correlation.matrix, layout = layout,
-                      vsize = nodeSize, vsize2 = nodeSize, esize = 10 * max(correlation.matrix),
+                      vsize = nodeSize, vsize2 = nodeSize, esize = 10 * max(abs(correlation.matrix)),
                       palette = "pastel", negDashed = T, borders = T, legend = F,
                       vTrans = 180, fade = F, aspect = T, legend.cex = 0.25,
                       edge.labels = edge.label, edge.label.cex = 2 * length(vars)/length(vars),
