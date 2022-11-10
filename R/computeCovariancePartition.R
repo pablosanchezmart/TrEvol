@@ -50,7 +50,7 @@ computeCovariancePartition <- function(traits, environmental.variables = NULL, d
   # lad previous results, if exist
 
   if(!is.null(environmental.variables)){
-    results.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", environmental.variables, ".RData")
+    results.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults", paste0(environmental.variables, collapse = "_"), ".RData")
   } else {
     results.file <- paste0(outputs.dir, "/models_outputs/traitsCovariancePartitionResults.RData")
   }
