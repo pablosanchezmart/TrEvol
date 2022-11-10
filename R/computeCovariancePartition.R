@@ -311,8 +311,8 @@ computeCovariancePartition <- function(traits, environmental.variables = NULL, d
 
   if(save){
     if(!is.null(environmental.variables)){
-      assign(paste0("traitsCovariancePartitionResults_", environmental.variables), traitsCovariancePartitionResults)
-      save(list = paste0("traitsCovariancePartitionResults_", environmental.variables), file = results.file)
+      assign(paste0("traitsCovariancePartitionResults_", environmental.variables, collapse = "_"), traitsCovariancePartitionResults)
+      save(list = paste0("traitsCovariancePartitionResults_", environmental.variables, collapse = "_"), file = results.file)
       print(results.file)
     } else{
       save(list = paste0("traitsCovariancePartitionResults"), file = results.file)
