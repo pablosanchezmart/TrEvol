@@ -100,14 +100,19 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
   ### Objects to gather results ####
 
   predictivePerformance.all <- data.frame()
-  ximp.all <- data.frame("taxon" = dataset$taxon)
 
-  predictivePerformance.all2 <- data.frame()
-  ximp.all2 <- data.frame("taxon" = dataset$taxon)
+  ## Create an ID column that will be used to aggregate results by row later
+
+  ximp.all <- data.frame("taxon" = rep(dataset$taxon, IterationsNumber),
+                         "ID" = rep(1:dim(dataset)[1], IterationsNumber))
+
+  predictivePerformance.all_copy <- predictivePerformance.all
+  ximp.all_copy <- ximp.all
 
   imp.dataset.list <- list()
 
   imputationResults <- list()
+
 
   #### VARIANCE COVARIANCE RESULTS --------------------------------------------- ####
 
@@ -192,7 +197,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
     correlationsTraitsResults$order <- abs(correlationsTraitsResults[, orderCriterium])
     phyloCov_order <- correlationsTraitsResults %>%
       dplyr::arrange(dplyr::desc(order)) %>%
-      dplyr::select(c(Trait_1, Trait_2, orderCriterium, paste0("Pvalue_", orderCriterium))) %>%
+      dplyr::select(c(Trait_1, Trait_2, all_of(orderCriterium), paste0("Pvalue_", orderCriterium))) %>%
       dplyr::filter(Trait_1 %in% imputationVariables, Trait_2 %in% imputationVariables)
 
     imputation.variables_2 <- character()
@@ -235,13 +240,19 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
     modelName <- paste("(", paste(imputationVariable, collapse = " <-> "), ") <- ", paste(predictiveVariables, collapse = ", "))
 
-    imp.dataset <- data %>% dplyr::select(c(imputationVariable, predictiveVariables))
+    imp.dataset <- data %>% dplyr::select(c(all_of(imputationVariable), all_of(predictiveVariables)))
     xTrue <- imp.dataset
+
+    # Data frames to get imputation variable results
+    ximp <- data.frame()
+    predictivePerformance <- data.frame()
 
     for (n in 1:IterationsNumber) {
 
+      # Produce NAs if prodNAs is not zero
       imp.dataset[, imputationVariable] <- missForest::prodNA(as.data.frame(xTrue[, imputationVariable]), prodNAs)
 
+      # Save variable to be imputed with NAs generated to calculate performance in next iterations round
       imp.dataset.list[[imputationVariable]][[n]] <- imp.dataset
 
       cl <- parallel::makeCluster(clustersNumber)
@@ -280,7 +291,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
         rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
                                         maxiter = 50, ntree = 1000, parallelize = parallelization)
 
-        predictivePerformance <- data.frame(Variable = imputationVariable,
+        predictivePerformance_n <- data.frame(Variable = imputationVariable,
                                             N = length(imp.dataset[, 1]),
                                             N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                             N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
@@ -289,32 +300,43 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
       }
       parallel::stopCluster(cl)
 
-      row.names(predictivePerformance) <- NULL
-      print(predictivePerformance)
+      row.names(predictivePerformance_n) <- NULL
+      print(predictivePerformance_n)
 
       ## Results of the first round of imputation (gap filling) per iteration
 
-      ximp <- as.data.frame(rfImp.res$ximp)
-      ximp$taxon <- dataset$taxon
-      predictivePerformance.all <- rbind(predictivePerformance.all, predictivePerformance)
-      ximp.all[, imputationVariable] <- ximp[, imputationVariable]
+      ximp <- rbind(ximp, as.data.frame(rfImp.res$ximp))
+      predictivePerformance <- rbind(predictivePerformance, predictivePerformance_n)
     }
 
+    # Add imputed variable results to the general output
+    ximp.all[, imputationVariable] <- ximp[, imputationVariable]
+    predictivePerformance.all <- rbind(predictivePerformance.all, predictivePerformance)
   }
 
   ### Results aggregation (for all iterations)
   imputationResults[["round1"]]$modelFormula <- modelName
-  imputationResults[["round1"]]$ximp <- stats::aggregate(ximp.all[, -which(names(ximp.all) == "taxon")], by = list(ximp.all$taxon), FUN = mean) %>% dplyr::rename(taxon = Group.1)
+
+  ximp_1 <- stats::aggregate(ximp.all[, imputationVariables], by = list(ximp.all$ID), FUN = mean) %>% dplyr::rename(ID = Group.1)
+  imputationResults[["round1"]]$ximp <- merge(ximp.all[1:dim(data)[1], c("taxon", "ID")], ximp_1, by = "ID", all.x = T) %>%
+    dplyr::select(taxon, all_of(imputationVariables)) %>%
+    dplyr::arrange(taxon)
+
   imputationResults[["round1"]]$predictivePerformance <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"))],
                                                                           by = list(predictivePerformance.all$Variable), FUN = meanOrMode) %>%
-    dplyr::rename(Variable = Group.1)
+    dplyr::rename(Variable = Group.1) %>%
+    dplyr::mutate(Model = modelName)
 
   if (IterationsNumber > 1) {
-    imputationResults[["round1"]]$ximp_sd <- stats::aggregate(ximp.all[, -which(names(ximp.all) == "taxon")], by = list(ximp.all$taxon), FUN = stats::sd) %>%
-      dplyr::rename(taxon = Group.1)
+    ximp_1_sd <- stats::aggregate(ximp.all[, imputationVariables], by = list(ximp.all$ID), FUN = sd) %>% dplyr::rename(ID = Group.1)
+
+    imputationResults[["round1"]]$ximp_sd <- merge(ximp.all[1:dim(data)[1], c("taxon", "ID")], ximp_1_sd, by = "ID", all.x = T) %>%
+      dplyr::select(taxon, all_of(imputationVariables)) %>% dplyr::arrange(taxon)
 
     imputationResults[["round1"]]$predictivePerformance_sd <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"), which(names(predictivePerformance.all) == "Model"))],
-                                                                               by = list(predictivePerformance.all$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1)
+                                                                               by = list(predictivePerformance.all$Variable), FUN = stats::sd) %>%
+      dplyr::rename(Variable = Group.1) %>%
+      dplyr::mutate(Model = modelName)
     imputationResults[["round1"]]$ximp_all_iterations <- ximp.all
     imputationResults[["round1"]]$predictivePerformance_all_iterations <- predictivePerformance.all
   }
@@ -323,8 +345,9 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
   ### IMPUTATION ROUNDS 2:N. Run models to impute variables following the previously determined order also including imputed traits  ####
 
   for(nround in 2:numberOfImputationRounds){
-    ximp <- as.data.frame(imputationResults[[paste0("round", nround - 1)]]$ximp)
-    ximp <- merge(ximp, data[, -which(names(data) %in% imputationVariables)], by = "taxon")
+
+    ximp.all2 <- ximp.all_copy
+    predictivePerformance.all2 <- predictivePerformance.all_copy
 
     for(imputationVariable in imputation.variables_2){
 
@@ -336,15 +359,24 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
         predictiveVariables <- c(sample(imputation.variables_2), predictors, c(paste0("Phylo_axis_", 1:numberOfPhyloCoordinates)))
       }
 
+      ximp <- as.data.frame(imputationResults[[paste0("round", nround - 1)]]$ximp)
+      ximp <- cbind(ximp, data[, -which(names(data) %in% imputationVariables)])
+
       modelName <- paste("(", paste(imputationVariable, collapse = " <-> "), ") <- ", paste(predictiveVariables, collapse = ", "))
 
-      imp.dataset <- ximp %>% dplyr::select(c(imputationVariable, predictiveVariables))
+      imp.dataset <- ximp %>% dplyr::select(c(all_of(imputationVariable), all_of(predictiveVariables)))
+
+
+      # Data frames to get imputation variable results
+      ximp <- data.frame()
+      predictivePerformance <- data.frame()
 
       for(n in 1:IterationsNumber) {
 
+        # select the variable to be imputed from the original dataset
         imp.dataset[, imputationVariable] <- imp.dataset.list[[imputationVariable]][[n]][, imputationVariable] # it already have NAs generated in the previous step (if needed)
 
-        xTrue <- data %>% dplyr::select(c(imputationVariable, predictiveVariables))
+        xTrue <- data %>% dplyr::select(c(all_of(imputationVariable), all_of(predictiveVariables)))
 
         cl <- parallel::makeCluster(clustersNumber)
         doParallel::registerDoParallel(cl)
@@ -364,7 +396,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
           r2.var <- cor(observed, predicted)^2
 
-          predictivePerformance <- data.frame(Variable = imputationVariable,
+          predictivePerformance_n <- data.frame(Variable = imputationVariable,
                                               N = length(ximp[, 1]),
                                               N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                               N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
@@ -375,7 +407,7 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
           rfImp.res <- randomForestImpute(xmis = as.matrix(imp.dataset),
                                           maxiter = 50, ntree = 1000, parallelize = parallelization)
 
-          predictivePerformance <- data.frame(Variable = imputationVariable,
+          predictivePerformance_n <- data.frame(Variable = imputationVariable,
                                               N = length(imp.dataset[, 1]),
                                               N_Obs = length(imp.dataset[which(!is.na(imp.dataset[, imputationVariable])), 1]),
                                               N_NA = length(imp.dataset[which(is.na(imp.dataset[, imputationVariable])), 1]),
@@ -386,33 +418,49 @@ imputeTraits <- function(imputationVariables, dataset, phylogeny, correlationsTr
 
         ## Results of the second round of imputation (gap filling) per iteration
 
-        row.names(predictivePerformance) <- NULL
-        print(predictivePerformance)
+        row.names(predictivePerformance_n) <- NULL
+        print(predictivePerformance_n)
+
+        # add imputed variable to the imputatin dataset (may be considered as predictor)
+
         imp.dataset[, imputationVariable] <- as.data.frame(rfImp.res$ximp[, imputationVariable])
 
-        predictivePerformance.all <- rbind(predictivePerformance.all, predictivePerformance)
-        ximp.all[, imputationVariable] <- imp.dataset[, imputationVariable]
+        ximp <- rbind(ximp, as.data.frame(rfImp.res$ximp))
+        predictivePerformance <- rbind(predictivePerformance, predictivePerformance_n)
+
       }
+
+      # Add imputed variable results to the general output
+      ximp.all2[, imputationVariable] <- ximp[, imputationVariable]
+      predictivePerformance.all2 <- rbind(predictivePerformance.all2, predictivePerformance)
+
     }
 
     ### Results aggregation (for all iterations)
     imputationResults[[paste0("round", nround)]]$modelFormula <- modelName
 
-    imputationResults[[paste0("round", nround)]]$ximp <- stats::aggregate(ximp.all[, -which(names(ximp.all) == "taxon")], by = list(ximp.all$taxon), FUN = mean) %>%
-      dplyr::rename(taxon = Group.1)
-    imputationResults[[paste0("round", nround)]]$predictivePerformance <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"))],
-                                                                                           by = list(predictivePerformance.all$Variable), FUN = meanOrMode) %>%
+
+    ximp_1 <- stats::aggregate(ximp.all2[, imputationVariables], by = list(ximp.all2$ID), FUN = mean) %>% dplyr::rename(ID = Group.1)
+
+    imputationResults[[paste0("round", nround)]]$ximp <- merge(ximp.all2[1:dim(data)[1], c("taxon", "ID")], ximp_1, by = "ID", all.x = T) %>%
+      dplyr::select(taxon, all_of(imputationVariables)) %>%
+      dplyr::arrange(taxon)
+
+    imputationResults[[paste0("round", nround)]]$predictivePerformance <- stats::aggregate(predictivePerformance.all2[, -c(which(names(predictivePerformance.all2) == "Variable"))],
+                                                                                           by = list(predictivePerformance.all2$Variable), FUN = meanOrMode) %>%
       dplyr::rename(Variable = Group.1)
 
     if (IterationsNumber > 1) {
-      imputationResults[[paste0("round", nround)]]$ximp_sd <- stats::aggregate(ximp.all[, -which(names(ximp.all) == "taxon")], by = list(ximp.all$taxon), FUN = stats::sd) %>%
-        dplyr::rename(taxon = Group.1)
+      ximp_1_sd <- stats::aggregate(ximp.all2[, imputationVariables], by = list(ximp.all2$ID), FUN = sd) %>% dplyr::rename(ID = Group.1)
 
-      imputationResults[[paste0("round", nround)]]$predictivePerformance_sd <- stats::aggregate(predictivePerformance.all[, -c(which(names(predictivePerformance.all) == "Variable"), which(names(predictivePerformance.all) == "Model"))],
-                                                                                                by = list(predictivePerformance.all$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1) %>%
+      imputationResults[[paste0("round", nround)]]$ximp_sd <- merge(ximp.all2[1:dim(data)[1], c("taxon", "ID")], ximp_1_sd, by = "ID", all.x = T) %>%
+        dplyr::select(taxon, all_of(imputationVariables)) %>% dplyr::arrange(taxon)
+
+      imputationResults[[paste0("round", nround)]]$predictivePerformance_sd <- stats::aggregate(predictivePerformance.all2[, -c(which(names(predictivePerformance.all2) == "Variable"), which(names(predictivePerformance.all2) == "Model"))],
+                                                                                                by = list(predictivePerformance.all2$Variable), FUN = stats::sd) %>% dplyr::rename(Variable = Group.1) %>%
         dplyr::mutate(Model = modelName)
-      imputationResults[[paste0("round", nround)]]$ximp_all_iterations <- ximp.all
-      imputationResults[[paste0("round", nround)]]$predictivePerformance_all_iterations <- predictivePerformance.all
+      imputationResults[[paste0("round", nround)]]$ximp_all_iterations <- ximp.all2
+      imputationResults[[paste0("round", nround)]]$predictivePerformance_all_iterations <- predictivePerformance.all2
     }
   }
 
