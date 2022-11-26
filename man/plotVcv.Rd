@@ -26,9 +26,6 @@ plotVcv(
 
 \item{triangularFillType}{(pie or "circle) Ow to represent proportional correlation"}
 }
-\value{
-
-}
 \description{
 Plot variance-covariance matrix (phylogenetic signal and relative phylogentic and convergent correlations)
 }

@@ -5,32 +5,29 @@
 \title{Plot data on the phylogeny}
 \usage{
 plotData(
-  phylogeny,
-  dataset,
   variables,
-  colorBy = NULL,
+  dataset,
+  phylogeny,
+  color.by = NULL,
   nameBy = NULL,
-  panelSpace = 4,
-  FontsizeFactor = 0.1
+  panel.space = 4,
+  Fontsize.factor = 0.1
 )
 }
 \arguments{
-\item{phylogeny}{(phylo) Phylogeny with tip labels contained in dataset$animal}
+\item{variables}{(character) Names of the variables. They must be contained in dataset.}
 
 \item{dataset}{(data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.}
 
-\item{variables}{(character) Names of the variables. They must be contained in dataset.}
+\item{phylogeny}{(phylo) Phylogeny with tip labels contained in dataset$animal}
 
-\item{colorBy}{(character) name of the variable to colour the tree by.}
+\item{color.by}{(character) name of the variable to colour the tree by.}
 
 \item{nameBy}{(character) name of the taxonomic variable to name the tree by.}
 
-\item{panelSpace}{(numeric)}
+\item{panel.space}{(numeric)}
 
-\item{FontsizeFactor}{(numeric)}
-}
-\value{
-
+\item{Fontsize.factor}{(numeric)}
 }
 \description{
 Plot data on the phylogeny

@@ -5,50 +5,54 @@
 \title{Plot variance-covariance networks}
 \usage{
 plotNetwork(
-  correlations,
-  phylogenetic.signal = NULL,
-  phyloSignal.name = NULL,
-  correlation.type,
-  gr_vars = NULL,
-  order_vars = NULL,
-  edgeLab = F,
+  covariance.results,
+  variance.results = NULL,
+  variance.type = NULL,
+  covariance.type,
+  group.variables = NULL,
+  order.variables = NULL,
+  edge.label = F,
   layout = "spring",
-  onlySignificant = T,
-  notShowCors = NULL,
+  only.significant = T,
+  not.show.variables = NULL,
   threshold = 0,
-  labelSize = 0.8,
-  nodeLab = NULL
+  label.size = 0.8,
+  node.label = NULL,
+  plot.metrics = T,
+  networkMetrixTextSize = 1,
+  displayDegreeAsNodeSize = T
 )
 }
 \arguments{
-\item{correlations}{(data frame) correlations output of correlationsTraits$correlations.rslts}
+\item{covariance.results}{(data frame) correlations output of computeCovariancePartition()$covarianceResults}
 
-\item{phylogenetic.signal}{(data frame) phylogenetic signal as reported by phylogeneticSignalTraits$phylogenetic.signal.rslts}
+\item{variance.results}{(data frame) phylogenetic signal as reported by computeVariancePartition()$varianceResults}
 
-\item{phyloSignal.name}{(character) variable name of the phylogenetic signal as reported in phylogenetic.signal}
+\item{variance.type}{(character) variable name of the phylogenetic signal as reported in varianceResults}
 
-\item{correlation.type}{(character) variable name of the correlation as reported iun correlations}
+\item{covariance.type}{(character) variable name of the correlation as reported in correlations}
 
-\item{gr_vars}{(data frame) character vector as long as the number of variables indicating the variable name in the first column and the group of the variable in the second.}
+\item{group.variables}{(data frame) character vector as long as the number of variables indicating the variable name in the first column and the group of the variable in the second.}
 
-\item{order_vars}{(character) order of the variables to plot}
+\item{order.variables}{(character) order of the variables to plot}
 
-\item{edgeLab}{(logical) if TRUE, edge labels show correlation coefficients}
+\item{edge.label}{(logical) if TRUE, edge labels show correlation coefficients}
 
 \item{layout}{"spring" or "circular"}
 
-\item{onlySignificant}{(logical) if TRUE, only significant correlations are plotted}
+\item{only.significant}{(logical) if TRUE, only significant correlations are plotted}
 
-\item{notShowCors}{(character) vector of variables present in correlations data but exclued from the plot}
+\item{not.show.variables}{(character) vector of variables present in correlations data but exclued from the plot}
 
 \item{threshold}{(numeric) correlations to be shown (e.g., those with a absolute value higher than 0.1)}
 
-\item{labelSize}{(numeric) size of the node labels}
+\item{label.size}{(numeric) size of the node labels}
 
-\item{nodeLab}{(data frame) character vector as long as the number of variables indicating the variable name in the first column and the new name, which will be shown in the plot.}
-}
-\value{
+\item{node.label}{(data frame) character vector as long as the number of variables indicating the variable name in the first column and the new name, which will be shown in the plot.}
 
+\item{networkMetrixTextSize}{(numeric) Size of the text reporting network metrics}
+
+\item{displayDegreeAsNodeSize}{(logical) If true, node size is proportional to its degree.}
 }
 \description{
 Plot variance-covariance networks

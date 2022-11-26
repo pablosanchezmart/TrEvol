@@ -4,13 +4,10 @@
 \alias{initializeTrEvo}
 \title{Create and define results and outputs folders structure.}
 \usage{
-initializeTrEvo(folderName = "simulations")
+initializeTrEvo(folder.name = "simulations")
 }
 \arguments{
-\item{folderName}{(character) Folder name.}
-}
-\value{
-
+\item{folder.name}{(character) Folder name.}
 }
 \description{
 Create and define results and outputs folders structure.

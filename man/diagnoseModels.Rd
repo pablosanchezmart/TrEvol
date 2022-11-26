@@ -4,7 +4,7 @@
 \alias{diagnoseModels}
 \title{Diangose mcmcglmm model autocorrelation, convergence and effective sample size.}
 \usage{
-diagnoseModels(model)
+diagnoseModels(model, verbose = T)
 }
 \arguments{
 \item{model}{Mcmcglmm model}

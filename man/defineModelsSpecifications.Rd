@@ -5,25 +5,27 @@
 \title{Define mcmcglmm model specifications}
 \usage{
 defineModelsSpecifications(
-  n_itterations = 100,
+  number.iterations = 100,
   burning = 10,
   thinning = 2,
-  uniresponse_prior = list(R = list(V = 1, nu = 0.002), G = list(G1 = list(V = 1, nu =
+  uniresponse.prior = list(R = list(V = 1, nu = 0.002), G = list(G1 = list(V = 1, nu =
     0.002))),
-  multiresponse_prior = list(R = list(V = diag(2)/2, nu = 2), G = list(G1 = list(V =
-    diag(2)/2, nu = 2)))
+  multiresponse.prior = list(R = list(V = diag(2)/2, nu = 2), G = list(G1 = list(V =
+    diag(2)/2, nu = 2))),
+  triresponse.prior = list(R = list(V = diag(3)/2, nu = 2), G = list(G1 = list(V =
+    diag(3)/2, nu = 2)))
 )
 }
 \arguments{
-\item{n_itterations}{(integer) Number of iterations of  Markov Chain Montecarlo.}
+\item{number.iterations}{(integer) Number of iterations of  Markov Chain Montecarlo.}
 
 \item{burning}{(integer) Number of burning iterations.}
 
 \item{thinning}{(integer) Number of thinning iterations.}
 
-\item{uniresponse_prior}{(list) Parameters for the random effects of uniresponse models.}
+\item{uniresponse.prior}{(list) Parameters for the random effects of uniresponse models.}
 
-\item{multiresponse_prior}{(list) Parameters for the random effects of multiresponse models}
+\item{multiresponse.prior}{(list) Parameters for the random effects of multiresponse models}
 }
 \value{
 List of mcmcglmm model specifications.

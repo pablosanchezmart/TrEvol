@@ -7,7 +7,7 @@
 simulateDataSet(
   phylogeny = NULL,
   nObs = 100,
-  traitNames = c("HC_1", "HC_2", "HC_predictor", "LC_1", "LC_2", "LC_predictor"),
+  trait.names = c("G1_trait1", "G1_trait2", "G1_env", "G2_trait1", "G2_trait2", "G2_env"),
   vcvMatrix = matrix(c(1, 0.9, 0.8, 0, 0.1, 0.2, 0.9, 1, 0.8, 0, 0.1, 0.2, 0.8, 0.8, 1,
     0, 0.1, 0.2, 0, 0, 0, 1, 0.9, 0.8, 0.1, 0.1, 0.1, 0.9, 1, 0.8, 0.2, 0.2, 0.2, 0.8,
     0.8, 1), ncol = 6)
@@ -18,12 +18,12 @@ simulateDataSet(
 
 \item{nObs}{Number of observations to simulate if phylogeny is not provided. If provided, the number of terminal taxa of the phylogeny is used.}
 
-\item{traitNames}{Names of the traits to simulate}
+\item{trait.names}{Names of the traits to simulate}
 
-\item{vcvMatrix}{Variance covariance matrix setting the covariance among traits. Ncol have to be the same lenght as traitNames.}
+\item{vcvMatrix}{Variance covariance matrix setting the covariance among traits. Ncol have to be the same lenght as trait.names.}
 }
 \value{
-A data frame with phylogenetically and non-phylogenetically correlated traits.
+A list with a data frame with phylogenetically and non-phylogenetically correlated traits and the variance-covariance matrix used.
 }
 \description{
 Simulate a list of phylogenetically correlated and non-phylogenetically correlated traits given a phylogeny

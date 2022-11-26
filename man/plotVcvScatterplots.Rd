@@ -5,29 +5,26 @@
 \title{Plot scatterplots showing the variance-covariancae related to phylogeny-neutral genetic structure and convergence.}
 \usage{
 plotVcvScatterplots(
-  VARIABLE1,
-  VARIABLE2,
-  PREDICTORS = NA,
-  DATASET,
-  MODEL.SPECIFICATIONS,
-  PHYLOGENY
+  variable1,
+  variable2,
+  environmental.variables = NULL,
+  dataset,
+  model.specifications,
+  phylogeny
 )
 }
 \arguments{
-\item{VARIABLE1}{(character) Name of the first variable. It must be contained in dataset.}
+\item{variable1}{(character) Name of the first variable. It must be contained in dataset.}
 
-\item{VARIABLE2}{(character) Name of the second variable. It must be contained in dataset.}
+\item{variable2}{(character) Name of the second variable. It must be contained in dataset.}
 
-\item{PREDICTORS}{(character) Names of the predictors. They must be contained in dataset.}
+\item{environmental.variables}{(character) Names of the environmental.variables. They must be contained in dataset.}
 
-\item{DATASET}{(data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.}
+\item{dataset}{(data frame) dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.}
 
-\item{MODEL.SPECIFICATIONS}{(list) Mcmcglmm models specifications. See defineModelsSpecification.}
+\item{model.specifications}{(list) Mcmcglmm models specifications. See defineModelsSpecification.}
 
-\item{PHYLOGENY}{(phylo) Phylogeny with tip labels contained in dataset$animal}
-}
-\value{
-
+\item{phylogeny}{(phylo) phylogeny with tip labels contained in dataset$animal}
 }
 \description{
 Plot scatterplots showing the variance-covariancae related to phylogeny-neutral genetic structure and convergence.

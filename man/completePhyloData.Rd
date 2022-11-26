@@ -4,7 +4,7 @@
 \alias{completePhyloData}
 \title{Complete phylogeny and traits data}
 \usage{
-completePhyloData(phylogeny, dataset, traits)
+completePhyloData(phylogeny, dataset, traits, taxonName = "animal")
 }
 \arguments{
 \item{phylogeny}{phylogeny with tip labels naming terminal taxa}

@@ -5,27 +5,38 @@
 \title{Impute traits using the evolutionary (or genetic) correlations.}
 \usage{
 imputeTraits(
-  DATASET,
-  PHYLOGENY,
-  correlationsTraitsResults,
   imputationVariables,
-  PREDICTORS = c(paste0("Phylo_axis_", 1:10)),
+  dataset,
+  phylogeny,
+  covarianceResults = NULL,
+  varianceResults = NULL,
+  orderCriterium = "Total_coordination",
+  numberOfPhyloCoordinates = NULL,
+  predictors = NULL,
   prodNAs = 0,
   IterationsNumber = 10,
   clustersNumber = 2,
-  FORCERUN = T
+  forceRun = T,
+  parallelization = T,
+  specifications = NULL,
+  numberOfImputationRounds = 3,
+  outputs.dir = ""
 )
 }
 \arguments{
-\item{DATASET}{(data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.}
-
-\item{PHYLOGENY}{(phylo) Phylogeny with tip labels contained in dataset$animal}
-
-\item{correlationsTraitsResults}{(list) Results from correlationsTraits() function.}
-
 \item{imputationVariables}{(character) Names of the variables with NA where imputations will be implemented. If more than one, covariation among vimputation variables is considered.}
 
-\item{PREDICTORS}{(character) Names of the variables without NAs used as predictors.}
+\item{dataset}{(data frame) dataset containing the variable of interest and a column named taxon describing terminal taxa of phylogeny.}
+
+\item{phylogeny}{(phylo) phylogeny with tip labels contained in dataset$taxon}
+
+\item{varianceResults}{(lis)Results from computeVariancePartition() function.}
+
+\item{orderCriterium}{(character) Name of the correlation to be used as ordering criterium (one of teh columns of correlationsTraitsResults)}
+
+\item{numberOfPhyloCoordinates}{(number) Number of phylogenetic axis to include}
+
+\item{predictors}{(character) Names of the variables without NAs used as predictors.}
 
 \item{prodNAs}{(numeric) Proportion of artificial NAs to be introduced in a given dataset. For evaluation puposes.}
 
@@ -33,10 +44,13 @@ imputeTraits(
 
 \item{clustersNumber}{(integer) Number of clusters to use in parallelization.}
 
-\item{FORCERUN}{(logical) If false, previously calculated phylogenetic eigenvectors are used.}
-}
-\value{
+\item{forceRun}{(logical) If false, previously calculated phylogenetic eigenvectors are used.}
 
+\item{parallelization}{(logical) If false, no parallelization is conducted.}
+
+\item{numberOfImputationRounds}{(integer) Number of imputation rounds to implement.}
+
+\item{correlationsTraitsResults}{(list) Results from computeCovariancePartition() function or NULL to compute it internally.}
 }
 \description{
 Impute traits using the evolutionary (or genetic) correlations.
