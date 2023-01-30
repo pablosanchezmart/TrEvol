@@ -91,7 +91,10 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
 
   # diameter <- round(igraph::diameter(corGraph, directed = F), 3)
   diameter <- max(abs(correlation.matrix))
-  averagePathLength <- igraph::mean_distance(corGraph)
+
+  mean_path_length_matrix <- correlation.matrix
+  mean_path_length_matrix[mean_path_length_matrix == 0] <- NA
+  # averagePathLength <- igraph::mean_distance(corGraph)
 
   ## Average clustering (AC)
   # AC is the average of the clustering coefficients of all traits in PTNs. PTNs with higher AC are more extensively divided into
