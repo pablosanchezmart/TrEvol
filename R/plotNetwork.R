@@ -89,7 +89,8 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
   # D is the maximum shortest distance between any two connected node traits in the network, and AL is the mean shortest path between all node traits
   # in the network. PTNs with higher D and AL have greater overall independence among traits.
 
-  diameter <- round(igraph::diameter(corGraph, directed = F), 3)
+  # diameter <- round(igraph::diameter(corGraph, directed = F), 3)
+  diameter <- max(abs(correlation.matrix))
   averagePathLength <- igraph::mean_distance(corGraph)
 
   ## Average clustering (AC)
