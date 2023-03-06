@@ -109,10 +109,13 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
   # overall hub traits.
 
   degree <- igraph::degree(corGraph)
+  print("Node degree:")
+  print(degree)
 
   ## number of components
 
-  numberOfComponents <- igraph::count_components(corGraph)
+  numberOfComponents <- igraph::components(corGraph)
+  numberOfComponents <- length(numberOfComponents$csize[numberOfComponents$csize > 1])
 
   ## all metrics
 

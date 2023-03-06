@@ -76,9 +76,9 @@
 #
 # ## Two models approach
 #
-# plotNetwork(covariance.results = covarianceResults_BM_HC_predictor$covarianceResults, variance.results = varianceResults_BM_HC_predictor$varianceResults,
-#             variance.type = "Total_phylogenetic_conservatism", covariance.type =  "Total_coordinated_phylogenetic_conservatism",
-#             only.significant = T, threshold = 0.1, layout = "circular")
+# # plotNetwork(covariance.results = covarianceResults_BM_HC_predictor$covarianceResults, variance.results = varianceResults_BM_HC_predictor$varianceResults,
+# #             variance.type = "Total_phylogenetic_conservatism", covariance.type =  "Total_coordinated_phylogenetic_conservatism",
+# #             only.significant = T, threshold = 0.1, layout = "circular")
 #
 # ## One model approach
 #
