@@ -37,27 +37,27 @@
 # ENVIRONMENTALVARIABLES <- ENVIRONMENTALVARIABLES[1]
 #
 # ### compute variance partition ####
-#
-# varianceResults_BM_HC_predictor <- computeVariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_envPred", dataset = df$data,
-#                                             phylogeny = tr, model.specifications = specifications, force.run = T, save = F)
-#
-# varianceResults_BM_HC_predictor$varianceResults
-#
-#
-# ### compute covariance partition ####
-#
-# covarianceResults <- computeCovariancePartition(traits = c(TRAITS, ENVIRONMENTALVARIABLES), dataset = df$data,
-#                  phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
-#
-# covarianceResults_BM_HC_predictor <- computeCovariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_envPred", dataset = df$data,
-#                                                                 phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
-#
-#
-# covarianceResults_BM_HC_predictor$covarianceResults
-#
-# covarianceResults_BM_HC_predictor$covarianceResults$Total_coordination
-#
-# covarianceResults_BM_HC_predictor$covarianceResults$Pure_coordinated_phylogenetic_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Coordinated_phylogenetic_niche_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Pure_environmental_coordination + covarianceResults_BM_HC_predictor$covarianceResults$Residual_coordination
+# #
+# # varianceResults_BM_HC_predictor <- computeVariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_env", dataset = df$data,
+# #                                             phylogeny = tr, model.specifications = specifications, force.run = T, save = F)
+# #
+# # varianceResults_BM_HC_predictor$varianceResults
+# #
+# #
+# # ### compute covariance partition ####
+# #
+# # covarianceResults <- computeCovariancePartition(traits = c(TRAITS, ENVIRONMENTALVARIABLES), dataset = df$data,
+# #                  phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
+# #
+# # covarianceResults_BM_HC_predictor <- computeCovariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_env", dataset = df$data,
+# #                                                                 phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
+# #
+# #
+# # covarianceResults_BM_HC_predictor$covarianceResults
+# #
+# # covarianceResults_BM_HC_predictor$covarianceResults$Total_coordination
+# #
+# # covarianceResults_BM_HC_predictor$covarianceResults$Pure_coordinated_phylogenetic_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Coordinated_phylogenetic_niche_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Pure_environmental_coordination + covarianceResults_BM_HC_predictor$covarianceResults$Residual_coordination
 #
 # ### compute variance covariance partition ####
 #

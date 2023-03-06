@@ -22,7 +22,7 @@
 #' @examples
 plotNetwork <- function (covariance.results, variance.results = NULL, variance.type = NULL,
                          covariance.type, group.variables = NULL, order.variables = NULL, edge.label = F,
-                         layout = "spring", only.significant = T, not.show.variables = NULL,
+                         layout = "circular", only.significant = T, not.show.variables = NULL,
                          threshold = 0, label.size = 0.8, node.label = NULL, plot.metrics = T,
                          networkMetrixTextSize = 1, displayDegreeAsNodeSize = T)
 {
@@ -114,7 +114,6 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
 
   numberOfComponents <- igraph::count_components(corGraph)
 
-
   ## all metrics
 
   networkMetrics <- data.frame(correlation_type = covariance.type,
@@ -163,6 +162,7 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
 
   if(plot.metrics){
     graphics::text(x = 0.5, y = -1, labels = paste0("ED = ", round(networkMetrics$EdgeDensity, 2), "\n",
+                                                    "NC = ", round(networkMetrics$numberOfComponents, 2), "\n",
                                                     "AC = ", round(networkMetrics$averageClusteringCoefficient, 2), "\n",
                                                     "AL = ", round(networkMetrics$averagePathLength, 2), "\n",
                                                     "D = ", round(networkMetrics$diameter, 2)),
