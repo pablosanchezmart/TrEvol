@@ -110,11 +110,18 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
 
   degree <- igraph::degree(corGraph)
 
+  ## number of components
+
+  numberOfComponents <- igraph::count_components(corGraph)
+
+
+  ## all metrics
 
   networkMetrics <- data.frame(correlation_type = covariance.type,
                                EdgeDensity = EdgeDensity,
                                diameter = diameter,
                                averagePathLength = averagePathLength,
+                               numberOfComponents = numberOfComponents,
                                averageClusteringCoefficient = averageClusteringCoefficient)
 
   rownames(node.label) <- node.label[, 1]
