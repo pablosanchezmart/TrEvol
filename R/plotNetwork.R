@@ -165,10 +165,10 @@ plotNetwork <- function (covariance.results, variance.results = NULL, variance.t
 
   if(plot.metrics){
     graphics::text(x = 0.5, y = -1, labels = paste0("ED = ", round(networkMetrics$EdgeDensity, 2), "\n",
-                                                    "NC = ", round(networkMetrics$numberOfComponents, 2), "\n",
+                                                    "NM = ", round(networkMetrics$numberOfComponents, 2), "\n",
                                                     "AC = ", round(networkMetrics$averageClusteringCoefficient, 2), "\n",
-                                                    "AL = ", round(networkMetrics$averagePathLength, 2), "\n",
-                                                    "D = ", round(networkMetrics$diameter, 2)),
+                                                    "|r|mean = ", round(networkMetrics$averagePathLength, 2), "\n",
+                                                    "|r|max = ", round(networkMetrics$diameter, 2)),
                    adj = 0, cex = networkMetrixTextSize)
   }
   return(p)
