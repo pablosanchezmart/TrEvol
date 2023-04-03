@@ -12,11 +12,13 @@
 #' @export
 #'
 #' @examples
-plotData <- function (variables, dataset, phylogeny, color.by = NULL, nameBy = NULL,
+plotData <- function (variables, dataset, phylogeny, terminal.taxon = "species", color.by = NULL, nameBy = NULL,
                       panel.space = 4, Fontsize.factor = 0.1) {
   if (!requireNamespace("ggtree", quietly = TRUE)) {
     BiocManager::install("ggtree", update = F, ask = F)
   }
+
+  dataset$animal <- terminal.taxon[, terminal.taxon]
 
   dataset <- dataset[stats::complete.cases(dataset[, variables]), ]
   phylogeny <- ape::drop.tip(phylogeny, phylogeny$tip.label[!phylogeny$tip.label %in% dataset$animal])
