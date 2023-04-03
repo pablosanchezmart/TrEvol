@@ -18,7 +18,7 @@ plotData <- function (variables, dataset, phylogeny, terminal.taxon = "species",
     BiocManager::install("ggtree", update = F, ask = F)
   }
 
-  dataset$animal <- terminal.taxon[, terminal.taxon]
+  dataset$animal <- dataset[, terminal.taxon]
 
   dataset <- dataset[stats::complete.cases(dataset[, variables]), ]
   phylogeny <- ape::drop.tip(phylogeny, phylogeny$tip.label[!phylogeny$tip.label %in% dataset$animal])
