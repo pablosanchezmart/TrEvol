@@ -2,20 +2,44 @@
 % Please edit documentation in R/completePhyloData.R
 \name{completePhyloData}
 \alias{completePhyloData}
-\title{Complete phylogeny and traits data}
+\title{Return complete data for phylogeny and tabular data}
 \usage{
-completePhyloData(phylogeny, dataset, traits, taxonName = "animal")
+completePhyloData(phylogeny, dataset, traits, taxon_name = "animal")
 }
 \arguments{
-\item{phylogeny}{phylogeny with tip labels naming terminal taxa}
+\item{phylogeny}{(\emph{phylo}). Phylogeny with tip labels naming terminal taxa.}
 
-\item{dataset}{dataframe with a column including taxa named "animal" equivalent to tip labels in phylogeny}
+\item{dataset}{(\emph{dataframe}). Data frame with a column representing the terminal taxon names equivalent to tip labels in phylogeny (e.g., species names if working at the species level)}
 
-\item{traits}{character vector}
+\item{traits}{(\emph{character}). Name of the variables of interest. Complete data for these columns will be returned. It is important
+that the traits specified match column names in the dataset.}
 }
 \value{
-List with phylogeny and traits data including taxa with both information a
+List containing a phylogeny and a data frame including the variables of interest with observations for these variables and
+also present in the phylogeny.
 }
 \description{
-Complete phylogeny and traits data
+Return observations present in a data set and also in a phylogeny. Taxon name (e.g., species names) need to be present in the data frame provided.
+The data frame can contain multiple observations per taxon.
+}
+\examples{
+\dontrun{
+# Get phylogenetic and traits complete data for an example obtained simulating data
+
+# Simulate example data
+simulatedTraits.data <- simulateDataSet()
+
+# Get complete data and phylogeny
+complete.data <- completePhyloData(phylogeny = simulatedTraits.data$phylogeny,
+dataset = simulatedTraits.data$data,
+traits = colnames(simulatedTraits.data$data),
+taxon_name = "animal")
+
+# Data frame with complete data for the specified traits
+phyData$dta
+
+# Phylogeny for the complete data
+
+phyData$phylo
+}
 }
