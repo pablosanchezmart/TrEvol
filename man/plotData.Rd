@@ -8,6 +8,7 @@ plotData(
   variables,
   dataset,
   phylogeny,
+  terminal.taxon = "species",
   color.by = NULL,
   nameBy = NULL,
   panel.space = 4,

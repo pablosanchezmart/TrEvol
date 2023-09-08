@@ -8,7 +8,7 @@ imputeTraits(
   imputationVariables,
   dataset,
   phylogeny,
-  covarianceResults = NULL,
+  correlationsTraitsResults = NULL,
   varianceResults = NULL,
   orderCriterium = "Total_coordination",
   numberOfPhyloCoordinates = NULL,
@@ -30,6 +30,8 @@ imputeTraits(
 
 \item{phylogeny}{(phylo) phylogeny with tip labels contained in dataset$taxon}
 
+\item{correlationsTraitsResults}{(list) Results from computeCovariancePartition() function or NULL to compute it internally.}
+
 \item{varianceResults}{(lis)Results from computeVariancePartition() function.}
 
 \item{orderCriterium}{(character) Name of the correlation to be used as ordering criterium (one of teh columns of correlationsTraitsResults)}
@@ -49,8 +51,6 @@ imputeTraits(
 \item{parallelization}{(logical) If false, no parallelization is conducted.}
 
 \item{numberOfImputationRounds}{(integer) Number of imputation rounds to implement.}
-
-\item{correlationsTraitsResults}{(list) Results from computeCovariancePartition() function or NULL to compute it internally.}
 }
 \description{
 Impute traits using the evolutionary (or genetic) correlations.

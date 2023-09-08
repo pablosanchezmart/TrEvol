@@ -12,7 +12,7 @@ plotNetwork(
   group.variables = NULL,
   order.variables = NULL,
   edge.label = F,
-  layout = "spring",
+  layout = "circular",
   only.significant = T,
   not.show.variables = NULL,
   threshold = 0,
