@@ -8,25 +8,25 @@ simulateDataSet(
   phylogeny = NULL,
   number_observations = 100,
   trait_names = c("G1_trait1", "G1_trait2", "G1_env", "G2_trait1", "G2_trait2", "G2_env"),
-  vcvMatrix = matrix(c(1, 0.9, 0.8, 0, 0.1, 0.2, 0.9, 1, 0.8, 0, 0.1, 0.2, 0.8, 0.8, 1,
+  vcv_matrix = matrix(c(1, 0.9, 0.8, 0, 0.1, 0.2, 0.9, 1, 0.8, 0, 0.1, 0.2, 0.8, 0.8, 1,
     0, 0.1, 0.2, 0, 0, 0, 1, 0.9, 0.8, 0.1, 0.1, 0.1, 0.9, 1, 0.8, 0.2, 0.2, 0.2, 0.8,
     0.8, 1), ncol = 6)
 )
 }
 \arguments{
-\item{phylogeny}{Phylogeny under which simulate the phylogenetically correlated traits (i.e., phylogenetically conserved traits). If not specified,
+\item{phylogeny}{(\emph{phylo}). Phylogeny under which simulate the phylogenetically correlated traits (i.e., phylogenetically conserved traits). If not specified,
 the function generates a phylogeny using the function simulate_bm_model from the  castor R package. When not specified, the number of observations
 need to be specified in the number_observations argument.}
 
-\item{number_observations}{Number of observations to simulate if phylogeny is not provided. When the phylogeny is provided, the number of terminal taxa of
+\item{number_observations}{(\emph{integer}). Number of observations to simulate if phylogeny is not provided. When the phylogeny is provided, the number of terminal taxa of
 the phylogeny is used, and then, this argument is ignored.}
 
-\item{vcvMatrix}{Variance covariance matrix setting the covariance among traits. The number of rows and colums needs to match the lenght as trait.names.}
+\item{vcv_matrix}{(\emph{matrix}). Variance covariance matrix setting the covariance among traits. The number of rows and colums needs to match the lenght as trait.names.}
 
-\item{trait.names}{Names of the traits to simulate following the variance covariance order (i.e., first name correspond to the first row and column).}
+\item{trait.names}{(\emph{character}). Names of the traits to simulate following the variance covariance order (i.e., first name correspond to the first row and column).}
 }
 \value{
-A list containing a data frame with phylogenetically and non-phylogenetically correlated traits and the variance-covariance matrix used.
+A list containing a data frame with phylogenetically and non-phylogenetically correlated traits, the variance-covariance matrix and the phylogeny used.
 }
 \description{
 Returns a list with a data frame containing the simulated traits and the variance-covariance matrix used. The number of traits simulated doubles the
