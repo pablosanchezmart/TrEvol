@@ -2,16 +2,16 @@
 % Please edit documentation in R/meanOrMode.R
 \name{meanOrMode}
 \alias{meanOrMode}
-\title{Compute mean if variable is numeric or mode if variable is character or factor.}
+\title{Return mean if variable is numeric or mode if variable is character or factor.}
 \usage{
 meanOrMode(x)
 }
 \arguments{
-\item{x}{numeric, character or factor vector.}
+\item{x}{(\emph{numeric}, \emph{character} or \emph{factor}). Vector from which the mean or mode will be computed for.}
 }
 \value{
-mean or mode value
+(\emph{numeric} for mean or \emph{character} for mode). Mean or mode value.
 }
 \description{
-Compute mean if variable is numeric or mode if variable is character or factor.
+Return mean if variable is numeric or mode if variable is character or factor.
 }
