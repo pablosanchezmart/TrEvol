@@ -1,13 +1,21 @@
-#' Diangose mcmcglmm model autocorrelation, convergence and effective sample size.
+#' Diangose *mcmcglmm* model autocorrelation, convergence and effective sample size.
 #'
-#' @param model Mcmcglmm model
+#'Return model diagnostics on posterior distribuion autocorrelation, convergence and effective sample size using functions from the *coda* package.
+#' See *coda* documentation for further information on the procedure.
+#' @param model (*Mcmcglmm model*)
+#' @param verbose (*logical*) If TRUE, the function prompts diagnostics as they are evaluated.
 #'
 #' @return Model diagnostics summary
 #' @export
 #'
 #' @examples
-diagnoseModels <- function(model, verbose = T){
+#' \dontrun{
+#' # Diagnose mcmcglmm model
+#' model_diagnostics <- diagnoseModels(model)
+#' }
+diagnoseModels <- function(model, verbose = F){
 
+  # Model diagnostics using coda package.
   model$autocFix <- coda::autocorr.diag(model$Sol)
   model$autocRan <- coda::autocorr.diag(model$VCV)
   model$heidelFix <- coda::heidel.diag(model$Sol)
@@ -16,7 +24,14 @@ diagnoseModels <- function(model, verbose = T){
   model$effSizeRan <- coda::effectiveSize(model$Sol)
   name <- model$name
 
-  mdlDiagn <- data.frame("model" = name, "AutcorrFix" = "T", "AutcorrRan" = "T", "HeidFix" = "T", "heidRan" = "T", "effSizeFix" = "T", "effSizeRan" = "T")
+  # Return diagnostics
+  mdlDiagn <- data.frame("model" = name,
+                         "AutcorrFix" = "T",
+                         "AutcorrRan" = "T",
+                         "HeidFix" = "T",
+                         "heidRan" = "T",
+                         "effSizeFix" = "T",
+                         "effSizeRan" = "T")
 
   # Autocorrelation
   if(any(abs(model$autocFix[-1, ]) > 0.1)){
@@ -29,9 +44,9 @@ diagnoseModels <- function(model, verbose = T){
     if(verbose){
       cat(name, " autocRan Failed. Increase thinning. \n")
     }
-    cat(name, " autocRan Failed. Increase thinning. \n")
     mdlDiagn$AutcorrRan <- "F"
   }
+
   # Convergence (stationary)
   i <- length(summary(model)$solutions)/5
   heidelFix <- model$heidelFix[1:i, 1:3]
@@ -49,6 +64,7 @@ diagnoseModels <- function(model, verbose = T){
     }
     mdlDiagn$heidRan <- "F"
   }
+
   # Effect size
   if(any(model$effSizeFix < 1000)){
     if(verbose){

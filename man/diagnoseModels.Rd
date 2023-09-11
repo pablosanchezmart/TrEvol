@@ -2,16 +2,25 @@
 % Please edit documentation in R/diagnoseModels.R
 \name{diagnoseModels}
 \alias{diagnoseModels}
-\title{Diangose mcmcglmm model autocorrelation, convergence and effective sample size.}
+\title{Diangose \emph{mcmcglmm} model autocorrelation, convergence and effective sample size.}
 \usage{
-diagnoseModels(model, verbose = T)
+diagnoseModels(model, verbose = F)
 }
 \arguments{
-\item{model}{Mcmcglmm model}
+\item{model}{(\emph{Mcmcglmm model})}
+
+\item{verbose}{(\emph{logical}) If TRUE, the function prompts diagnostics as they are evaluated.}
 }
 \value{
 Model diagnostics summary
 }
 \description{
-Diangose mcmcglmm model autocorrelation, convergence and effective sample size.
+Return model diagnostics on posterior distribuion autocorrelation, convergence and effective sample size using functions from the \emph{coda} package.
+See \emph{coda} documentation for further information on the procedure.
+}
+\examples{
+\dontrun{
+# Diagnose mcmcglmm model
+model_diagnostics <- diagnoseModels(model)
+}
 }
