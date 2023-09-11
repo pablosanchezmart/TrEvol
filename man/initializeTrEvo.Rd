@@ -4,11 +4,28 @@
 \alias{initializeTrEvo}
 \title{Create and define results and outputs folders structure.}
 \usage{
-initializeTrEvo(folder.name = "simulations")
+initializeTrEvo(folder_name = "simulations")
 }
 \arguments{
-\item{folder.name}{(character) Folder name.}
+\item{folder_name}{(\emph{character}) Name that will be given to the folder within which the results and outputs subfolders will be created.}
 }
 \description{
-Create and define results and outputs folders structure.
+Create folders within the working directory where results and outputs of TrEvol functions will be stored if "save" arguments are set to TRUE.
+Note that this function creates directories in your working directory and will assign their location in the objects "output.dir" and "results.dir".
+}
+\examples{
+\dontrun{
+# Create outputs and results folders.
+
+# Simulate example data
+initializeTrEvo(folder_name = "simulations")
+
+# Outputs directory
+outputs.dir
+
+Results directory
+results.dir
+
+}
+
 }

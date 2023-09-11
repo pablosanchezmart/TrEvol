@@ -1,18 +1,33 @@
 #' Create and define results and outputs folders structure.
 #'
-#' @param folder.name (character) Folder name.
+#'Create folders within the working directory where results and outputs of TrEvol functions will be stored if "save" arguments are set to TRUE.
+#'Note that this function creates directories in your working directory and will assign their location in the objects "output.dir" and "results.dir".
+#' @param folder_name (*character*) Name that will be given to the folder within which the results and outputs subfolders will be created.
 #'
 #' @return
-#' @export
+#' @examples
+#' \dontrun{
+#' # Create outputs and results folders.
+#'
+#' # Simulate example data
+#' initializeTrEvo(folder_name = "simulations")
+#'
+#' # Outputs directory
+#' outputs.dir
+#'
+#' Results directory
+#' results.dir
+#'
+#' }
 #'
 #' @examples
-initializeTrEvo <- function(folder.name = "simulations"){
+initializeTrEvo <- function(folder_name = "simulations"){
 
   print("loading workspace ...")
   options(scipen = 999, digits = 3)
   wd <- getwd()
-  outputs.dir <- paste0(wd, "/outputs/outputs_", folder.name)
-  results.dir <- paste0(wd, "/results/results_", folder.name)
+  outputs.dir <- paste0(wd, "/outputs/outputs_", folder_name)
+  results.dir <- paste0(wd, "/results/results_", folder_name)
   dir.create("outputs", showWarnings = F)
   dir.create(outputs.dir, showWarnings = F)
   dir.create(paste0(outputs.dir, "/models_outputs"), showWarnings = F)
