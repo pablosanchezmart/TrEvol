@@ -2,7 +2,7 @@
 % Please edit documentation in R/defineModelsSpecifications.R
 \name{defineModelsSpecifications}
 \alias{defineModelsSpecifications}
-\title{Define mcmcglmm model specifications}
+\title{Define mcmcglmm (Bayesian Phylogenetic Mixed Models) specifications}
 \usage{
 defineModelsSpecifications(
   number.iterations = 100,
@@ -10,26 +10,30 @@ defineModelsSpecifications(
   thinning = 2,
   uniresponse.prior = list(R = list(V = 1, nu = 0.002), G = list(G1 = list(V = 1, nu =
     0.002))),
-  multiresponse.prior = list(R = list(V = diag(2)/2, nu = 2), G = list(G1 = list(V =
+  biresponse.prior = list(R = list(V = diag(2)/2, nu = 2), G = list(G1 = list(V =
     diag(2)/2, nu = 2))),
   triresponse.prior = list(R = list(V = diag(3)/2, nu = 2), G = list(G1 = list(V =
     diag(3)/2, nu = 2)))
 )
 }
 \arguments{
-\item{number.iterations}{(integer) Number of iterations of  Markov Chain Montecarlo.}
+\item{number.iterations}{(\emph{integer}) Number of iterations of  the MCMCglmm model.}
 
-\item{burning}{(integer) Number of burning iterations.}
+\item{burning}{(\emph{integer}) Number of burning iterations. This initial iterations will be excluded from when estimating the posterior distribution. It allows achieving convergence.}
 
-\item{thinning}{(integer) Number of thinning iterations.}
+\item{thinning}{(\emph{integer}) Number of thinning iterations. Number of iterations that will be discarded after a sampled one. It allows to deal with autocorrelation.}
 
-\item{uniresponse.prior}{(list) Parameters for the random effects of uniresponse models.}
+\item{uniresponse.prior}{(\emph{list}) Parameters for the random effects for uni-response models. Default is set to an inverse-Gamma distribution, which is canonical and considered non-informative.}
 
-\item{multiresponse.prior}{(list) Parameters for the random effects of multiresponse models}
+\item{biresponse.prior}{(\emph{list}) Parameters for the random effects of bi-response models. Normally, these are the models including two traits. Default is set to an inverse-Gamma distribution, which is canonical and considered non-informative.}
+
+\item{triresponse.prior}{(\emph{list}) Parameters for the random effects of tri-response models. Normally, these are the models including two traits and one environmental variable. Default is set to an inverse-Gamma distribution, which is canonical and considered non-informative.}
 }
 \value{
 List of mcmcglmm model specifications.
 }
 \description{
-Define mcmcglmm model specifications
+Return an object containing the specifications that can be used as in the argument "model_specifications" of the functions
+computeVariancePartition, computeCovariancePartition and computeVarianceCovariancePartition.
+See "MCMCglmm" R package documentation for further information.
 }
