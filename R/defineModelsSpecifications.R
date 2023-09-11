@@ -1,4 +1,4 @@
-#' Define mcmcglmm (Bayesian Phylogenetic Mixed Models) specifications
+#' Define *mcmcglmm* (Bayesian Phylogenetic Mixed Models) specifications
 #'
 #' Return an object containing the specifications that can be used as in the argument "model_specifications" of the functions
 #' computeVariancePartition, computeCovariancePartition and computeVarianceCovariancePartition.
