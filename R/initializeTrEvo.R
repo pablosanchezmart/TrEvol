@@ -25,15 +25,21 @@ initializeTrEvo <- function(folder_name = "simulations"){
 
   print("loading workspace ...")
   options(scipen = 999, digits = 3)
+
+  # Get user working directory
   wd <- getwd()
+
+  # Create outputs and results dir if not yet created, otherwise, ignored
+
   outputs.dir <- paste0(wd, "/outputs/outputs_", folder_name)
   results.dir <- paste0(wd, "/results/results_", folder_name)
+
   dir.create("outputs", showWarnings = F)
   dir.create(outputs.dir, showWarnings = F)
   dir.create(paste0(outputs.dir, "/models_outputs"), showWarnings = F)
   dir.create(paste0(outputs.dir, "/phylogenetic_variance_covariance"), showWarnings = F)
-
   dir.create(paste0(outputs.dir, "/predictions"), showWarnings = F)
+
   dir.create("results", showWarnings = F)
   dir.create(results.dir, showWarnings = F)
   dir.create(paste0(results.dir, "/figures"), showWarnings = F)
@@ -42,6 +48,7 @@ initializeTrEvo <- function(folder_name = "simulations"){
   dir.create(paste0(results.dir, "/figures/predictions/"), showWarnings = F)
   dir.create(paste0(results.dir, "/tables"), showWarnings = F)
 
+  # Assign directories to objects to further use
   envList <- list("outputs.dir", "results.dir")
   assign("outputs.dir", outputs.dir, envir = .GlobalEnv)
   assign("results.dir", results.dir, envir = .GlobalEnv)
