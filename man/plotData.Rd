@@ -9,27 +9,41 @@ plotData(
   dataset,
   phylogeny,
   terminal.taxon = "species",
-  color.by = NULL,
-  nameBy = NULL,
-  panel.space = 4,
-  Fontsize.factor = 0.1
+  color_by = NULL,
+  name_by = NULL,
+  panel_space = 4,
+  fontsize_factor = 0.1
 )
 }
 \arguments{
-\item{variables}{(character) Names of the variables. They must be contained in dataset.}
+\item{variables}{(\emph{character}). Names of the variable or variables to be ploted as they appear in data.}
 
-\item{dataset}{(data frame) Dataset containing the variable of interest and a column named animal describing terminal taxa of phylogeny.}
+\item{dataset}{(\emph{data frame}). Data containing the variable of interest and a column naming the terminal taxa as it appears in the phylogeny (e.g., species names).}
 
-\item{phylogeny}{(phylo) Phylogeny with tip labels contained in dataset$animal}
+\item{phylogeny}{(\emph{phylo}). Phylogeny with tip labels contained in data.}
 
-\item{color.by}{(character) name of the variable to colour the tree by.}
+\item{color_by}{(\emph{character}). Name of the variable to colour the tree by, if desired.}
 
-\item{nameBy}{(character) name of the taxonomic variable to name the tree by.}
+\item{name_by}{(\emph{character}). Name of the taxonomic variable to display in the phylogeny panel.}
 
-\item{panel.space}{(numeric)}
+\item{panel_space}{(\emph{numeric}). Size of each one of the panels (one for the phylogeny and one per variable included in the "variables" argument).}
 
-\item{Fontsize.factor}{(numeric)}
+\item{fontsize_factor}{(\emph{numeric}). Font size multiplier. It modifies the size of the font.}
 }
 \description{
-Plot data on the phylogeny
+Plot variables as barplots for each tip of the phylogeny with data available. Several variables can be plotted at the same time.
+}
+\examples{
+\dontrun{
+# Simulate example data
+simulated_traits.data <- simulateDataSet()
+
+# Plot G1_trait1 data on simulated phylogeny
+
+plotData(variables = "G1_trait1",
+dataset = simulated_traits.data$data,
+phylogeny = simulatedTraits.data$phylogeny,,
+terminal.taxon = "species"
+)
+}
 }
