@@ -27,5 +27,4 @@ Results directory
 results.dir
 
 }
-
 }

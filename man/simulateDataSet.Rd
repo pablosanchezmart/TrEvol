@@ -38,6 +38,6 @@ and covariances are phylogenetically independent.
 \examples{
 \dontrun{
 # Simulate phylogenetically correlated and phylogenetically independent traits using default parameters
-simulatedTraits.data <- simulateDataSet()
+simulated_traits.data <- simulateDataSet()
 }
 }

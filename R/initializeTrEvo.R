@@ -19,8 +19,6 @@
 #' results.dir
 #'
 #' }
-#'
-#' @examples
 initializeTrEvo <- function(folder_name = "simulations"){
 
   print("loading workspace ...")

@@ -20,7 +20,7 @@
 #' @examples
 #' \dontrun{
 #' # Simulate phylogenetically correlated and phylogenetically independent traits using default parameters
-#' simulatedTraits.data <- simulateDataSet()
+#' simulated_traits.data <- simulateDataSet()
 #' }
 simulateDataSet <- function(phylogeny = NULL,
                             number_observations = 100,

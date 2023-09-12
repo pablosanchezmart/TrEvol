@@ -27,19 +27,20 @@ The data frame can contain multiple observations per taxon.
 # Get phylogenetic and traits complete data for an example obtained simulating data
 
 # Simulate example data
-simulatedTraits.data <- simulateDataSet()
+simulated_traits.data <- simulateDataSet()
 
 # Get complete data and phylogeny
-complete.data <- completePhyloData(phylogeny = simulatedTraits.data$phylogeny,
-dataset = simulatedTraits.data$data,
-traits = colnames(simulatedTraits.data$data),
+complete.data <- completePhyloData(
+phylogeny = simulated_traits.data$phylogeny,
+dataset = simulated_traits.data$data,
+traits = colnames(simulated_traits.data$data),
 taxon_name = "animal")
 
 # Data frame with complete data for the specified traits
-phyData$dta
+complete.data$dta
 
 # Phylogeny for the complete data
 
-phyData$phylo
+complete.data$phylo
 }
 }
