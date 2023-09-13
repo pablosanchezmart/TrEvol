@@ -34,7 +34,24 @@
 #'
 #' complete.data$phylo
 #' }
-completePhyloData <- function(phylogeny, dataset, traits, taxon_name = "animal") {
+completePhyloData <- function(phylogeny = NULL,
+                              dataset = NULL,
+                              traits = NULL,
+                              taxon_name = "animal") {
+
+  # Arguments
+  if(is.null(phylogeny)){
+    stop("Specify phylogeny argument")
+  }
+
+  if(is.null(dataset)){
+    stop("Specify dataset argument")
+  }
+traits
+  if(is.null(traits)){
+    stop("Specify traits argument")
+  }
+
   phyData <- list()
 
   # Make sure dataset is in data.frame format

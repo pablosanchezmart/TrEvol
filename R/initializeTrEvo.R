@@ -19,7 +19,8 @@
 #' results.dir
 #'
 #' }
-initializeTrEvo <- function(folder_name = "simulations"){
+initializeTrEvo <- function(folder_name = "simulations"
+                            ){
 
   print("loading workspace ...")
   options(scipen = 999, digits = 3)

@@ -26,8 +26,24 @@
 #' terminal.taxon = "species"
 #' )
 #' }
-plotData <- function (variables, dataset, phylogeny, terminal.taxon = "species", color_by = NULL, name_by = NULL,
-                      panel_space = 4, fontsize_factor = 0.1) {
+plotData <- function (variables = NULL,
+                      dataset = NULL,
+                      phylogeny = NULL,
+                      terminal.taxon = "species",
+                      color_by = NULL,
+                      name_by = NULL,
+                      panel_space = 4,
+                      fontsize_factor = 0.1) {
+
+  # Arguments
+  if(is.null(variables)){
+    stop("Specify variables argument")
+  }
+
+  if(is.null(dataset)){
+    stop("Specify dataset argument")
+  }
+
 
   # Install ggtree if required
   if (!requireNamespace("ggtree", quietly = TRUE)) {
