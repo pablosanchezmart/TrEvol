@@ -5,9 +5,9 @@
 \title{Plot data on the phylogeny}
 \usage{
 plotData(
-  variables,
-  dataset,
-  phylogeny,
+  variables = NULL,
+  dataset = NULL,
+  phylogeny = NULL,
   terminal.taxon = "species",
   color_by = NULL,
   name_by = NULL,
@@ -40,7 +40,7 @@ simulated_traits.data <- simulateDataSet()
 
 # Plot G1_trait1 data on simulated phylogeny
 
-plotData(variables = "G1_trait1",
+plotData(variables = "phylo_G1_trait1",
 dataset = simulated_traits.data$data,
 phylogeny = simulatedTraits.data$phylogeny,,
 terminal.taxon = "species"

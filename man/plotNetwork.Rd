@@ -5,55 +5,81 @@
 \title{Plot variance-covariance networks}
 \usage{
 plotNetwork(
-  covariance.results,
-  variance.results = NULL,
-  variance.type = NULL,
-  covariance.type,
-  group.variables = NULL,
-  order.variables = NULL,
-  edge.label = F,
+  covariance_results = NULL,
+  variance_results = NULL,
+  variance_type = NULL,
+  correlation_type = NULL,
+  group_variables = NULL,
+  order_variables = NULL,
+  edge_label = F,
   layout = "circular",
-  only.significant = T,
-  not.show.variables = NULL,
-  threshold = 0,
-  label.size = 0.8,
-  node.label = NULL,
-  plot.metrics = T,
-  networkMetrixTextSize = 1,
-  displayDegreeAsNodeSize = T
+  only_significant = T,
+  exclude_variables = NULL,
+  correlation_threshold = 0,
+  label_size = 0.8,
+  node_label = NULL,
+  plot_metrics = T,
+  network_metrics_text_size = 1,
+  degree_as_node_size = T
 )
 }
 \arguments{
-\item{covariance.results}{(data frame) correlations output of computeCovariancePartition()$covarianceResults}
+\item{covariance_results}{(\emph{data frame}). Correlations output of computeVarianceCovariance(). It can be found in "results_object$covarianceResults".}
 
-\item{variance.results}{(data frame) phylogenetic signal as reported by computeVariancePartition()$varianceResults}
+\item{variance_results}{(\emph{data frame}). Variance partition as reported by computeVarianceCovariance(). It can be found in "results_object$varianceResults.}
 
-\item{variance.type}{(character) variable name of the phylogenetic signal as reported in varianceResults}
+\item{variance_type}{(\emph{character}). Name of the portion of variance to report in the nodes of the plot. When environmental variable is not included in computeVarianceCovariance(), it can be set as "phylogenetic_variance" or "non_phylogenetic_variance".
+If environmental variable is included, this argument can be set as "non_attributed_phylogenetic_variance", "environmental_phylogenetic_variance", "labile_environmental_variance" and "residual_variance".}
 
-\item{covariance.type}{(character) variable name of the correlation as reported in correlations}
+\item{correlation_type}{(\emph{character}). Name of the portion of the correlation to report in the edges of the plot. When environmental variable is not included in computeVarianceCovariance(), it can be set as "total_correlation", "phylogenetic_correlation" or "non_phylogenetic_correlation".
+If environmental variable is included, this argument can be set as "non_attributed_phylogenetic_correlation", "environmental_phylogenetic_correlation", "labile_environmental_correlation" and "residual_correlation".}
 
-\item{group.variables}{(data frame) character vector as long as the number of variables indicating the variable name in the first column and the group of the variable in the second.}
+\item{group_variables}{(\emph{data frame}). Data frame wich a first column indicating the variables to be plotted included in covariance_results and varaince_results and the group of the variable in the second column. Variables of the same group will be ploted with the same colour.}
 
-\item{order.variables}{(character) order of the variables to plot}
+\item{order_variables}{(\emph{character}). Character indicating the variables names to be plotted in the desired order. The variables will be plotted in the desired order clockwise, when layout is set to be circular.}
 
-\item{edge.label}{(logical) if TRUE, edge labels show correlation coefficients}
+\item{edge_label}{(\emph{logical}). If TRUE, edge labels show correlation coefficients. Default set to FALSE.}
 
-\item{layout}{"spring" or "circular"}
+\item{layout}{(\emph{"spring"}, or \emph{"circular"}). Network layout (default as circular). See qgraph documentation for further information.}
 
-\item{only.significant}{(logical) if TRUE, only significant correlations are plotted}
+\item{only_significant}{(\emph{logical}). if TRUE (default), only significant correlations are represented.}
 
-\item{not.show.variables}{(character) vector of variables present in correlations data but exclued from the plot}
+\item{exclude_variables}{(\emph{character}). Vector of variables present in correlations data but excluded from the plot. It can be useful to plot subsets of the results.}
 
-\item{threshold}{(numeric) correlations to be shown (e.g., those with a absolute value higher than 0.1)}
+\item{correlation_threshold}{(\emph{numeric}). Only correlation with an absolute value higher than the threshold will be plotted. When set to zero, there is no threshold (default).}
 
-\item{label.size}{(numeric) size of the node labels}
+\item{label_size}{(\emph{numeric}). Control the size of the node labels.}
 
-\item{node.label}{(data frame) character vector as long as the number of variables indicating the variable name in the first column and the new name, which will be shown in the plot.}
+\item{node_label}{(\emph{data frame}). Data frame indicating the variable name in the first column and the new name, which will be shown in the plot, in the second column.}
 
-\item{networkMetrixTextSize}{(numeric) Size of the text reporting network metrics}
+\item{plot_metrics}{(\emph{logical}). If true, network metrics are displayed.}
 
-\item{displayDegreeAsNodeSize}{(logical) If true, node size is proportional to its degree.}
+\item{network_metrics_text_size}{(\emph{numeric}). Size of the text reporting network metrics.}
+
+\item{degree_as_node_size}{(\emph{logical}) If TRUE (default), node size is proportional to the degree of the variable (number of edges connected to a given node representing a variable).}
 }
 \description{
-Plot variance-covariance networks
+Plot variance-covariance partition obtained using the function computeVarianceCovariancePartition of this package.
+}
+\examples{
+\dontrun{
+# Simulate example data
+simulated_traits.data <- simulateDataSet()
+
+# Compute variance-covariance structure for simulated traits using default parameters
+variance_covariance_results <- computeVarianceCovariancePartition(
+traits = c("phylo_G1_trait1", "phylo_G1_trait2"),
+environmental_variable = "phylo_G1_env",
+phylogeny = simulated_traits.data$phylogeny
+)
+
+# plot network
+
+plotNetwork(
+covariance_results = variance_covariance_results$covarianceResults,
+variance_results = variance_covariance_results$varianceResults,
+variance_type = environmental_phylogenetic_variance,
+correlation_type = environmental_phylogenetic_covariance
+)
+}
 }

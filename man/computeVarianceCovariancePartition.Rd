@@ -2,37 +2,59 @@
 % Please edit documentation in R/computeVarianceCovariancePartition.R
 \name{computeVarianceCovariancePartition}
 \alias{computeVarianceCovariancePartition}
-\title{Variance partition including (or not) environment}
+\title{Phylogenetic variance and covariance partition including (or not) environment}
 \usage{
 computeVarianceCovariancePartition(
-  traits,
-  environmental.variables = NULL,
-  dataset,
-  phylogeny,
-  model.specifications = NULL,
-  showRelativeResults = T,
-  force.run = T,
-  save = T,
-  verbose = T
+  traits = NULL,
+  environmental_variable = NULL,
+  dataset = NULL,
+  phylogeny = NULL,
+  model_specifications = NULL,
+  show_relative_variance = T,
+  force_run = T,
+  save = F,
+  verbose = F
 )
 }
 \arguments{
-\item{traits}{(character) Name of the trait or list of traits. It  must be contained in the dataset.}
+\item{traits}{(\emph{character}). Name of the trait or list of traits to calculate variances and covariances. They must be in the dataset.}
 
-\item{environmental.variables}{(character) Names of the environmental variables They must be contained in dataset.}
+\item{environmental_variable}{(\emph{character}). Names of the environmental variables They must be contained in dataset.}
 
-\item{dataset}{(data frame) Dataset containing the trait of interest and a column named "animal" describing terminal taxa of phylogeny.}
+\item{dataset}{(\emph{data frame}). Data frame containing the trait of interest and a column describing terminal appearing as tip labels of the phylogeny.}
 
-\item{phylogeny}{(phylo) Phylogeny with tip labels contained in dataset$animal}
+\item{phylogeny}{(\emph{phylo}) Phylogeny with tip labels contained in dataset$animal}
 
-\item{model.specifications}{(list) Mcmcglmm models specifications. See defineModelsSpecification.}
+\item{model_specifications}{(\emph{list}). Mcmcglmm models specifications as specified by the defineModelsSpecification of this package. If not defined, the function internally uses the default in defineModelsSpecification function.}
 
-\item{force.run}{(logical) If false, models already run are not runned again.}
+\item{show_relative_variance}{(\emph{logical}). If true, variance is shown relative to the total variance (recommended when using different variables). Otherwise, absolute variances are reported.}
 
-\item{save}{(logical) If false, resulta re not saved.}
+\item{force_run}{(\emph{logical}) If false, models already run and saved in outputs folder are not run again.}
 
-\item{verbose}{(logical) If false, function runs quietly.}
+\item{save}{(\emph{logical}) If false, results are not saved in the outputs folder.}
+
+\item{verbose}{(\emph{logical}) If false, function runs quietly. Otherwise, iterations and diagnostics are shown while running.}
+
+\item{terminal.taxon}{(\emph{character}). Terminal taxon as named in the dataset (e.g., species).}
 }
 \description{
-Variance partition including (or not) environment
+Compute total variance and covariance and separate it into its phylogenetic and non-phylogenetic components.
+If environmental variable is included, four variance and covariance is separated into four components: non-attributed phylogenetic variance-covariance, environmental
+phylogenetic variance-covariance, non-phylogenetic (labile) environmental variance-covariance and residual variance-covariance.
+}
+\details{
+The function can automaticallys save results. For that, first run initializeTrEvol to create the folders and subfolders structure.
+}
+\examples{
+\dontrun{
+# Simulate example data
+simulated_traits.data <- simulateDataSet()
+
+# Compute variance-covariance structure for simulated traits using default parameters
+variance_covariance_results <- computeVarianceCovariancePartition(
+traits = c("phylo_G1_trait1", "phylo_G1_trait2"),
+environmental_variable = "phylo_G1_env",
+phylogeny = simulated_traits.data$phylogeny
+)
+}
 }
