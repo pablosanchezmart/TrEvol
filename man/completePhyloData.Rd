@@ -4,7 +4,12 @@
 \alias{completePhyloData}
 \title{Return complete data for phylogeny and tabular data}
 \usage{
-completePhyloData(phylogeny, dataset, traits, taxon_name = "animal")
+completePhyloData(
+  phylogeny = NULL,
+  dataset = NULL,
+  traits = NULL,
+  taxon_name = "animal"
+)
 }
 \arguments{
 \item{phylogeny}{(\emph{phylo}). Phylogeny with tip labels naming terminal taxa.}
