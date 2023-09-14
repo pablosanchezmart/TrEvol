@@ -20,7 +20,7 @@
 #'
 #' # Plot G1_trait1 data on simulated phylogeny
 #'
-#' plotData(variables = "G1_trait1",
+#' plotData(variables = "phylo_G1_trait1",
 #' dataset = simulated_traits.data$data,
 #' phylogeny = simulatedTraits.data$phylogeny,,
 #' terminal.taxon = "species"
