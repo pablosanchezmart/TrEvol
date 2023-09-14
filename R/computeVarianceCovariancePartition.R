@@ -21,6 +21,17 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # Simulate example data
+#' simulated_traits.data <- simulateDataSet()
+#'
+#' # Compute variance-covariance structure for simulated traits using default parameters
+#' variance_covariance_results <- computeVarianceCovariancePartition(
+#' traits = c("phylo_G1_trait1", "phylo_G1_trait2"),
+#' environmental_variable = "phylo_G1_env",
+#' phylogeny = simulated_traits.data$phylogeny
+#' )
+#' }
 computeVarianceCovariancePartition <- function(traits = NULL,
                                                environmental_variable = NULL,
                                                dataset = NULL,
@@ -465,13 +476,13 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
         VCVPartitionResults$variancePartition <- data.frame("trait" = trait1,
                                                             "number_observations" = length(modellingData$dta$animal),
-                                                            "total_phylogenetic_conservatism" = mean(total_phylogenetic_variance_t1),
-                                                            "total_non_phylogenetic" = mean(total_non_phylogenetic_variance_t1),
-                                                            "p_value_total_phylogenetic_conservatism" = total_phylogenetic_variance_t1_pvalue
+                                                            "phylogenetic_variance" = mean(total_phylogenetic_variance_t1),
+                                                            "non_phylogenetic_variance" = mean(total_non_phylogenetic_variance_t1),
+                                                            "p_value_phylogenetic_variance" = total_phylogenetic_variance_t1_pvalue
         )
 
-        VCVPartitionResults$variancePartitionDistributions[[paste0("total_phylogenetic_conservatism_", trait1)]] <- total_phylogenetic_variance_t1
-        VCVPartitionResults$variancePartitionDistributions[[paste0("total_non_phylogenetic_", trait1)]] <- total_non_phylogenetic_variance_t1
+        VCVPartitionResults$variancePartitionDistributions[[paste0("phylogenetic_variance_", trait1)]] <- total_phylogenetic_variance_t1
+        VCVPartitionResults$variancePartitionDistributions[[paste0("non_phylogenetic_variance_", trait1)]] <- total_non_phylogenetic_variance_t1
 
         if(!is.null(environmental_variable)){
           VCVPartitionResults$variancePartition <- cbind(VCVPartitionResults$variancePartition,
@@ -498,13 +509,13 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
         variancePartition_t2 <- data.frame("trait" = trait2,
                                            "number_observations" = length(modellingData$dta$animal),
-                                           "total_phylogenetic_conservatism" = mean(total_phylogenetic_variance_t2),
-                                           "total_non_phylogenetic" = mean(total_non_phylogenetic_variance_t2),
-                                           "p_value_total_phylogenetic_conservatism" = total_phylogenetic_variance_t2_pvalue
+                                           "phylogenetic_variance" = mean(total_phylogenetic_variance_t2),
+                                           "non_phylogenetic_variance" = mean(total_non_phylogenetic_variance_t2),
+                                           "p_value_phylogenetic_variance" = total_phylogenetic_variance_t2_pvalue
         )
 
-        VCVPartitionResults$variancePartitionDistributions[[paste0("total_phylogenetic_conservatism_", trait2)]] <- total_phylogenetic_variance_t2
-        VCVPartitionResults$variancePartitionDistributions[[paste0("total_non_phylogenetic_", trait2)]] <- total_non_phylogenetic_variance_t2
+        VCVPartitionResults$variancePartitionDistributions[[paste0("phylogenetic_variance_", trait2)]] <- total_phylogenetic_variance_t2
+        VCVPartitionResults$variancePartitionDistributions[[paste0("non_phylogenetic_variance_", trait2)]] <- total_non_phylogenetic_variance_t2
 
         if(!is.null(environmental_variable)){
           variancePartition_t2 <- cbind(variancePartition_t2,
