@@ -11,8 +11,8 @@
 #' need to be specified in the number_observations argument.
 #' @param number_observations (*integer*). Number of observations to simulate if phylogeny is not provided. When the phylogeny is provided, the number of terminal taxa of
 #' the phylogeny is used, and then, this argument is ignored.
-#' @param trait.names (*character*). Names of the traits to simulate following the variance covariance order (i.e., first name correspond to the first row and column).
-#' @param vcv_matrix (*matrix*). Variance covariance matrix setting the covariance among traits. The number of rows and colums needs to match the lenght as trait.names.
+#' @param trait_names (*character*). Names of the traits to simulate following the variance covariance order (i.e., first name correspond to the first row and column).
+#' @param vcv_matrix (*matrix*). Variance covariance matrix setting the covariance among traits. The number of rows and colums needs to match the lenght as trait_names.
 #'
 #' @return A list containing a data frame with phylogenetically and non-phylogenetically correlated traits, the variance-covariance matrix and the phylogeny used.
 #' @export
@@ -42,31 +42,31 @@ simulateDataSet <- function(phylogeny = NULL,
   if(!is.matrix(vcv_matrix)){
     stop("Please provide a symmetric variance covariance matrix object in the vcv_matrix. is.matrix(vcv_matrix) needs to be TRUE.")
   } else{
-    if(isSymmetric.matrix(vcv_matrix)){
+    if(!isSymmetric.matrix(vcv_matrix)){
       stop("Please provide a symmetric variance covariance matrix object in the vcv_matrix. isSymmetric.matrix(vcv_matrix) needs to be TRUE.")
     }
   }
 
-  # Check whether the trait.names exist and if it is the same length as the number of rows and columns in the variance-covariance matrix
+  # Check whether the trait_names exist and if it is the same length as the number of rows and columns in the variance-covariance matrix
 
-  if(length(trait.names) != dim(vcv_matrix)){
+  if(isFALSE(length(trait_names) != dim(vcv_matrix))){
     stop("Please provide a vector with trait names. The length of the vector needs to be equal to the number of columns and rows of the variance covariance matrix.")
   }
 
   # Create phylogenetically correlated and independent names
-  BM_trait.names <- paste0("phylo_", trait.names)
-  nonBM_trait.names <- paste0("nonPhylo_", trait.names)
+  BM_trait_names <- paste0("phylo_", trait_names)
+  nonBM_trait_names <- paste0("nonPhylo_", trait_names)
 
   # Name the matrix
   diffMat <- vcv_matrix
-  colnames(diffMat) <- BM_trait.names
-  rownames(diffMat) <- BM_trait.names
+  colnames(diffMat) <- BM_trait_names
+  rownames(diffMat) <- BM_trait_names
 
   # Simulate phylogenetically correlated traits (under a Brownian motion model of evolution)
   BM.df = as.data.frame(castor::simulate_bm_model(phylogeny, diffusivity=diffMat)$tip_states)
 
   # Name simulated traits
-  colnames(BM.df) <- BM_trait.names
+  colnames(BM.df) <- BM_trait_names
 
   # Add the terminal taxa names as a column and row names to match phylogeny and data
   BM.df <- cbind("animal" = phylogeny$tip.label, BM.df)
@@ -77,7 +77,7 @@ simulateDataSet <- function(phylogeny = NULL,
                           mu = c(0, 0, 0, 0, 0, 0),
                           sd = c(1, 1, 1, 1, 1, 1),
                           r = vcv_matrix,
-                          varnames = nonBM_trait.names,
+                          varnames = nonBM_trait_names,
                           empirical = FALSE)
 
   # Add terminal taxa names
@@ -87,14 +87,16 @@ simulateDataSet <- function(phylogeny = NULL,
   # Merge phylogenetically and non-phylogenetically correlated traits
   df <- merge(BM.df, nonBM.df, by = "animal")
 
-  # Print the variance-covariance matrix used
-  print(diffMat)
-
   # Report results
   rslts <- list()
 
+  # Give names to vcv matrix to report as results
+
+  colnames(vcv_matrix) <- trait_names
+  rownames(vcv_matrix) <- trait_names
+
   rslts$data <- df
-  rslts$vcv_matrix <- diffMat
+  rslts$vcv_matrix <- vcv_matrix
   rslts$phylogeny <- phylogeny
   return(rslts)
 }

@@ -36,13 +36,13 @@ diagnoseModels <- function(model, verbose = F){
   # Autocorrelation
   if(any(abs(model$autocFix[-1, ]) > 0.1)){
     if(verbose){
-      cat(name, " autocFix Failed. Increase thinning. \n")
+      # print(name, " autocFix Failed. Increase thinning. \n")
     }
     mdlDiagn$AutcorrFix <- "F"
   }
   if(any(abs(model$autocRan[-1, ]) > 0.1)){
     if(verbose){
-      cat(name, " autocRan Failed. Increase thinning. \n")
+      # cat(name, " autocRan Failed. Increase thinning. \n")
     }
     mdlDiagn$AutcorrRan <- "F"
   }
@@ -52,7 +52,7 @@ diagnoseModels <- function(model, verbose = F){
   heidelFix <- model$heidelFix[1:i, 1:3]
   if(any(heidelFix == 0)){
     if(verbose){
-      cat(name, " heidelFix Failed. Increase iterations/burning. \n")
+      # cat(name, " heidelFix Failed. Increase iterations/burning. \n")
     }
     mdlDiagn$HeidFix <- "F"
   }
@@ -60,7 +60,7 @@ diagnoseModels <- function(model, verbose = F){
   heidelRan <- model$heidelRan[1:i, 1:3]
   if(any(heidelRan == 0)){
     if(verbose){
-      cat(name, " heidelFix Failed. Increase iterations/burning. \n")
+      # cat(name, " heidelFix Failed. Increase iterations/burning. \n")
     }
     mdlDiagn$heidRan <- "F"
   }
@@ -68,13 +68,13 @@ diagnoseModels <- function(model, verbose = F){
   # Effect size
   if(any(model$effSizeFix < 1000)){
     if(verbose){
-      cat(name, " EffSizeFix Failed. Increase iterations. \n")
+      # cat(name, " EffSizeFix Failed. Increase iterations. \n")
     }
     mdlDiagn$effSizeFix <- "F"
   }
   if(any(model$effSizeRan < 1000)){
     if(verbose){
-      cat(name, " EffSizeRan Failed. Increase iterations.  \n")
+      # cat(name, " EffSizeRan Failed. Increase iterations.  \n")
     }
     mdlDiagn$effSizeRan <- "F"
   }

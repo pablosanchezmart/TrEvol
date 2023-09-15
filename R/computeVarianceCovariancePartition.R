@@ -9,7 +9,7 @@
 #' @param traits (*character*). Name of the trait or list of traits to calculate variances and covariances. They must be in the dataset.
 #' @param environmental_variable (*character*). Names of the environmental variables They must be contained in dataset.
 #' @param dataset (*data frame*). Data frame containing the trait of interest and a column describing terminal appearing as tip labels of the phylogeny.
-#' @param terminal.taxon (*character*). Terminal taxon as named in the dataset (e.g., species).
+#' @param terminal_taxa (*character*). Terminal taxon as named in the dataset (e.g., species).
 #' @param phylogeny (*phylo*) Phylogeny with tip labels contained in dataset$animal
 #' @param model_specifications (*list*). Mcmcglmm models specifications as specified by the defineModelsSpecification of this package. If not defined, the function internally uses the default in defineModelsSpecification function.
 #' @param show_relative_variance (*logical*). If true, variance is shown relative to the total variance (recommended when using different variables). Otherwise, absolute variances are reported.
@@ -29,12 +29,14 @@
 #' variance_covariance_results <- computeVarianceCovariancePartition(
 #' traits = c("phylo_G1_trait1", "phylo_G1_trait2"),
 #' environmental_variable = "phylo_G1_env",
+#' data = simulated_traits.data$data
 #' phylogeny = simulated_traits.data$phylogeny
 #' )
 #' }
 computeVarianceCovariancePartition <- function(traits = NULL,
                                                environmental_variable = NULL,
                                                dataset = NULL,
+                                               terminal_taxa = NULL,
                                                phylogeny = NULL,
                                                model_specifications = NULL,
                                                show_relative_variance = T,
@@ -52,6 +54,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
     stop("Specify dataset argument")
   }
 
+  if(is.null(terminal_taxa)){
+    stop("Specify terminal_taxa argument")
+  }
+
   if(is.null(phylogeny)){
     stop("Specify phylogeny argument")
   }
@@ -63,9 +69,14 @@ computeVarianceCovariancePartition <- function(traits = NULL,
     }
   }
 
+  # Make sure that tip nodes are deleted as they can give some problems
+  if(!is.null(phylogeny$tip.nodes)){
+    phylogeny$tip.nodes <- NULL
+  }
+
   # Name a terminal taxon column as animal for MCMCglmm
 
-  dataset$animal <- dataset[, terminal.taxa]
+  dataset$animal <- dataset[, terminal_taxa]
 
   # Results structure
   traitsVCVPartitionResults <- list()
@@ -119,7 +130,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
     # avoid running models already present in results
     if (!model %in% names(traitsVCVPartitionResults$individual.models.results) | force_run) {
 
-      print(paste0("Running covariance calculation: ", model))
+      print(paste0("Running variance-covariance calculation: ", model))
       model.descr <- multi_mdls.str %>%
         dplyr::filter(type == model)
 
@@ -472,7 +483,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
       if(!trait1 %in% traitsVCVPartitionResults$varianceResults$Trait){
 
-        # Trait 1
+        # trait 1
 
         VCVPartitionResults$variancePartition <- data.frame("trait" = trait1,
                                                             "number_observations" = length(modellingData$dta$animal),
@@ -503,9 +514,9 @@ computeVarianceCovariancePartition <- function(traits = NULL,
         }
       }
 
-      if(!trait2 %in% traitsVCVPartitionResults$varianceResults$Trait){
+      if(!trait2 %in% traitsVCVPartitionResults$varianceResults$trait){
 
-        # Trait 2
+        # trait 2
 
         variancePartition_t2 <- data.frame("trait" = trait2,
                                            "number_observations" = length(modellingData$dta$animal),
@@ -535,7 +546,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
           VCVPartitionResults$variancePartitionDistributions[[paste0("residual_variance", trait2)]] <- residual_variance_t2
         }
 
-        if(!trait1 %in% traitsVCVPartitionResults$varianceResults$Trait){
+        if(!trait1 %in% traitsVCVPartitionResults$varianceResults$trait){
           VCVPartitionResults$variancePartition <- rbind(VCVPartitionResults$variancePartition, variancePartition_t2)
         } else {
           VCVPartitionResults$variancePartition <- variancePartition_t2
@@ -596,6 +607,17 @@ computeVarianceCovariancePartition <- function(traits = NULL,
         traitsVCVPartitionResults$varianceResults <-  rbind(traitsVCVPartitionResults$varianceResults,
                                                             VCVPartitionResults$variancePartition)
 
+        # Calculate mean per trait in variance results
+
+        traitsVCVPartitionResults$varianceResults <- stats::aggregate(traitsVCVPartitionResults$varianceResults[, -1],
+                                                               by = list(traitsVCVPartitionResults$varianceResults$trait),
+                                                               FUN = meanOrMode) %>%
+          dplyr::rename(trait = Group.1)
+
+        if(!is.null(environmental_variable)){
+          traitsVCVPartitionResults$varianceResults$environmental_variable <- environmental_variable
+        }
+
         traitsVCVPartitionResults$models.diagnostics <- rbind(traitsVCVPartitionResults$models.diagnostics,
                                                               VCVPartitionResults$model.diagnostics)
         traitsVCVPartitionResults$individual.models.results[[model]] <- VCVPartitionResults
@@ -612,13 +634,13 @@ computeVarianceCovariancePartition <- function(traits = NULL,
   print("Covariance results:")
   print(traitsVCVPartitionResults$covarianceResults)
 
-  # save results
-
-  results.file <- paste0(outputs.dir, "/models_outputs/")
-
   # Variance
 
   if(save){
+
+    # save results
+    results.file <- paste0(outputs.dir, "/models_outputs/")
+
     if(!is.null(environmental_variable)){
       assign(paste0("traits_variance_partition_results_", environmental_variable), traitsVCVPartitionResults$varianceResults)
 

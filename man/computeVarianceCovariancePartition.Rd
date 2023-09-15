@@ -54,6 +54,7 @@ simulated_traits.data <- simulateDataSet()
 variance_covariance_results <- computeVarianceCovariancePartition(
 traits = c("phylo_G1_trait1", "phylo_G1_trait2"),
 environmental_variable = "phylo_G1_env",
+data = simulated_traits.data$data
 phylogeny = simulated_traits.data$phylogeny
 )
 }

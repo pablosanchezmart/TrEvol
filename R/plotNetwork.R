@@ -2,13 +2,13 @@
 #'
 #' Plot variance-covariance partition obtained using the function computeVarianceCovariancePartition of this package.
 #'
-#' @param covariance_results (*data frame*). Correlations output of computeVarianceCovariance(). It can be found in "results_object$covarianceResults".
 #' @param variance_results (*data frame*). Variance partition as reported by computeVarianceCovariance(). It can be found in "results_object$varianceResults.
+#' @param correlation_results (*data frame*). Correlations output of computeVarianceCovariance(). It can be found in "results_object$covarianceResults".
 #' @param variance_type (*character*). Name of the portion of variance to report in the nodes of the plot. When environmental variable is not included in computeVarianceCovariance(), it can be set as "phylogenetic_variance" or "non_phylogenetic_variance".
 #' If environmental variable is included, this argument can be set as "non_attributed_phylogenetic_variance", "environmental_phylogenetic_variance", "labile_environmental_variance" and "residual_variance".
 #' @param correlation_type (*character*). Name of the portion of the correlation to report in the edges of the plot. When environmental variable is not included in computeVarianceCovariance(), it can be set as "total_correlation", "phylogenetic_correlation" or "non_phylogenetic_correlation".
 #' If environmental variable is included, this argument can be set as "non_attributed_phylogenetic_correlation", "environmental_phylogenetic_correlation", "labile_environmental_correlation" and "residual_correlation".
-#' @param group_variables (*data frame*). Data frame wich a first column indicating the variables to be plotted included in covariance_results and varaince_results and the group of the variable in the second column. Variables of the same group will be ploted with the same colour.
+#' @param group_variables (*data frame*). Data frame wich a first column indicating the variables to be plotted included in correlation_results and varaince_results and the group of the variable in the second column. Variables of the same group will be ploted with the same colour.
 #' @param order_variables (*character*). Character indicating the variables names to be plotted in the desired order. The variables will be plotted in the desired order clockwise, when layout is set to be circular.
 #' @param edge_label (*logical*). If TRUE, edge labels show correlation coefficients. Default set to FALSE.
 #' @param layout (*"spring"*, or *"circular"*). Network layout (default as circular). See qgraph documentation for further information.
@@ -30,7 +30,7 @@
 #' simulated_traits.data <- simulateDataSet()
 #'
 #' # Compute variance-covariance structure for simulated traits using default parameters
-#' variance_covariance_results <- computeVarianceCovariancePartition(
+#' variance_correlation_results <- computeVarianceCovariancePartition(
 #' traits = c("phylo_G1_trait1", "phylo_G1_trait2"),
 #' environmental_variable = "phylo_G1_env",
 #' phylogeny = simulated_traits.data$phylogeny
@@ -39,14 +39,14 @@
 #' # plot network
 #'
 #' plotNetwork(
-#' covariance_results = variance_covariance_results$covarianceResults,
-#' variance_results = variance_covariance_results$varianceResults,
+#' correlation_results = variance_correlation_results$covarianceResults,
+#' variance_results = variance_correlation_results$varianceResults,
 #' variance_type = environmental_phylogenetic_variance,
 #' correlation_type = environmental_phylogenetic_covariance
 #' )
 #' }
-plotNetwork <- function (covariance_results = NULL,
-                         variance_results = NULL,
+plotNetwork <- function (variance_results = NULL,
+                         correlation_results = NULL,
                          variance_type = NULL,
                          correlation_type = NULL,
                          group_variables = NULL,
@@ -63,24 +63,45 @@ plotNetwork <- function (covariance_results = NULL,
                          degree_as_node_size = T)
 {
 
+  # Arguments
+  if(is.null(variance_results)){
+    stop("Specify variance_results argument")
+  }
+
+  if(is.null(correlation_results)){
+    stop("Specify correlation_results argument")
+  }
+
+  if(is.null(variance_type)){
+    stop("Specify variance_type argument")
+  }
+
+  if(is.null(correlation_type)){
+    stop("Specify correlation_type argument")
+  }
+
+  if(is.null(correlation_type)){
+    stop("Specify correlation_type argument")
+  }
+
   ### Data preparation ####
 
   # set non significant values to zero if needed
   if (only_significant) {
-    covariance_results[which(covariance_results[, paste0("Pvalue_", correlation_type)] > 0.05), correlation_type] <- 0
+    correlation_results[which(correlation_results[, paste0("p_value_", correlation_type)] > 0.05), correlation_type] <- 0
   }
 
   if (correlation_threshold > 0) {
-    covariance_results[which(abs(covariance_results[, correlation_type]) < correlation_threshold), correlation_type] <- 0
+    correlation_results[which(abs(correlation_results[, correlation_type]) < correlation_threshold), correlation_type] <- 0
   }
-  correlations <- covariance_results[, c("Trait_1", "Trait_2", correlation_type)]
-  vars <- unique(c(correlations$Trait_1, correlations$Trait_2))
+  correlations <- correlation_results[, c("trait_1", "trait_2", correlation_type)]
+  vars <- unique(c(correlations$trait_1, correlations$trait_2))
   correlation.matrix <- matrix(ncol = length(vars), nrow = length(vars), 0)
   colnames(correlation.matrix) <- vars
   rownames(correlation.matrix) <- vars
-  for (i in 1:length(correlations$Trait_1)) {
-    var1 <- correlations$Trait_1[i]
-    var2 <- correlations$Trait_2[i]
+  for (i in 1:length(correlations$trait_1)) {
+    var1 <- correlations$trait_1[i]
+    var2 <- correlations$trait_2[i]
     correlation.matrix[var1, var2] <- correlations[i, correlation_type]
     correlation.matrix[var2, var1] <- correlations[i, correlation_type]
     correlation.matrix[var1, var1] <- 0
@@ -194,10 +215,10 @@ plotNetwork <- function (covariance_results = NULL,
                       vsize = nodeSize, vsize2 = nodeSize, esize = 10 * max(abs(correlation.matrix)),
                       palette = "pastel", negDashed = T, borders = T, legend = F,
                       vTrans = 180, fade = F, aspect = T, legend.cex = 0.25,
-                      edge_labels = edge_label, edge_label.cex = 2 * length(vars)/length(vars),
+                      edge.labels = edge_label, label.cex = 2 * length(vars)/length(vars),
                       labels = node_label, label.cex = label_size, label.scale = F,
                       node.label.offset = c(0.5, -3), pie = ps.vars, pieBorder = 1,
-                      DoNotPlot = F, groups = group_variables[, 2], correlation_threshold = correlation_threshold)
+                      DoNotPlot = F, groups = group_variables[, 2], threshold = correlation_threshold)
 
   if(plot_metrics){
     graphics::text(x = 0.5, y = -1, labels = paste0("ED = ", round(networkMetrics$EdgeDensity, 2), "\n",

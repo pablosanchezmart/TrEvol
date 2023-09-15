@@ -2,56 +2,72 @@
 % Please edit documentation in R/imputeTraits.R
 \name{imputeTraits}
 \alias{imputeTraits}
-\title{Impute traits using the evolutionary (or genetic) correlations.}
+\title{Impute traits using phylogenetic, environmental and traits relationships}
 \usage{
 imputeTraits(
-  imputationVariables,
-  dataset,
-  phylogeny,
-  correlationsTraitsResults = NULL,
-  varianceResults = NULL,
-  orderCriterium = "Total_coordination",
-  numberOfPhyloCoordinates = NULL,
+  variables_to_impute = NULL,
+  dataset = NULL,
+  terminal_taxon = NULL,
+  phylogeny = NULL,
+  correlation_results = NULL,
+  variance_results = NULL,
+  number__of_phylo_axis = NULL,
   predictors = NULL,
-  prodNAs = 0,
-  IterationsNumber = 10,
-  clustersNumber = 2,
-  forceRun = T,
-  parallelization = T,
-  specifications = NULL,
-  numberOfImputationRounds = 3,
-  outputs.dir = ""
+  proportion_NAs = 0,
+  number_iterations = 10,
+  number_clusters = 2,
+  model_specifications = NULL,
+  save = F,
+  force_run = T
 )
 }
 \arguments{
-\item{imputationVariables}{(character) Names of the variables with NA where imputations will be implemented. If more than one, covariation among vimputation variables is considered.}
+\item{variables_to_impute}{(\emph{character}). Names of the variables with NAs where imputations will be implemented.
+If more than one, covariation among imputation variables is considered to decide whether to use them as predictors or not.}
 
-\item{dataset}{(data frame) dataset containing the variable of interest and a column named taxon describing terminal taxa of phylogeny.}
+\item{dataset}{(\emph{data frame}). Data frame containing the variable of interest with missing values and a column describing terminal taxa of phylogeny (e.g., species).}
 
-\item{phylogeny}{(phylo) phylogeny with tip labels contained in dataset$taxon}
+\item{terminal_taxon}{(\emph{character}). Terminal taxon as named in the dataset (e.g., species).}
 
-\item{correlationsTraitsResults}{(list) Results from computeCovariancePartition() function or NULL to compute it internally.}
+\item{phylogeny}{(\emph{phylo}). Phylogeny with tip labels contained in dataset.}
 
-\item{varianceResults}{(lis)Results from computeVariancePartition() function.}
+\item{correlation_results}{(\emph{list}). Correlation results from computeVarianceCovariance() function or NULL to compute it internally for the variables to be imputed using the data and phylogeny provided (default).}
 
-\item{orderCriterium}{(character) Name of the correlation to be used as ordering criterium (one of teh columns of correlationsTraitsResults)}
+\item{variance_results}{(\emph{list}). Variance results from computeVarianceCovariance() function.}
 
-\item{numberOfPhyloCoordinates}{(number) Number of phylogenetic axis to include}
+\item{number__of_phylo_axis}{(\emph{integer}). Number of phylogenetic axis to include as predictors.}
 
-\item{predictors}{(character) Names of the variables without NAs used as predictors.}
+\item{predictors}{(\emph{character}). Names of the variables without NAs that will be considered as potential. These varaibles need to be included in the dataset and need to be complete (no NAs).}
 
-\item{prodNAs}{(numeric) Proportion of artificial NAs to be introduced in a given dataset. For evaluation puposes.}
+\item{proportion_NAs}{(\emph{numeric}). Between 0 and 1. Proportion of artificial NAs to be introduced in a given dataset. For evaluation puposes. Default set to 0, so no extra NAs are produced.}
 
-\item{IterationsNumber}{(integer) Number of iterations of the imputation processs. Results are summarized.}
+\item{number_iterations}{(\emph{integer}). Number of iterations of the imputation process. Results reported are summarized as mean and standard deviation for each variable to be imputed.}
 
-\item{clustersNumber}{(integer) Number of clusters to use in parallelization.}
+\item{number_clusters}{(\emph{integer}). Number of clusters to use in parallelization. If set to one, no paralelization is performed (not recommended). Default is set to 2.}
 
-\item{forceRun}{(logical) If false, previously calculated phylogenetic eigenvectors are used.}
+\item{model_specifications}{(\emph{list}). Mcmcglmm models specifications as specified by the defineModelsSpecification of this package. If not defined,
+the  default of the defineModelsSpecification function is used.}
 
-\item{parallelization}{(logical) If false, no parallelization is conducted.}
+\item{save}{(\emph{logical}) If false, results are not saved in the outputs folder.}
 
-\item{numberOfImputationRounds}{(integer) Number of imputation rounds to implement.}
+\item{force_run}{(\emph{logical}) If false, previously calculated phylogenetic axis (saved internally) are used. This can be useful when using big phylogenies, as the calculation
+of the phylogenetic axis can take some time.}
 }
 \description{
-Impute traits using the evolutionary (or genetic) correlations.
+Predict missing values using phylogeny, environmental and trait data as predictors in random forests when it shows a relationship with the variable
+to be imputed. The methodology implements 3 rounds in which the actualized predicted values are used to predict the rest of the variables to impute.
+}
+\examples{
+\dontrun{
+# Simulate example data
+simulated_traits.data <- simulateDataSet()
+
+# Impute missing values (created within the function)
+imputed.data <- imputeTraits(
+variables_to_impute = c("phylo_G1_trait1", "phylo_G1_trait2"),
+dataset = simulated_traits.data$data,
+phylogeny = simulated_traits.data$phylogeny,
+proportion_NAs = 0.2
+)
+}
 }
