@@ -11,7 +11,7 @@ imputeTraits(
   phylogeny = NULL,
   correlation_results = NULL,
   variance_results = NULL,
-  number__of_phylo_axis = NULL,
+  number_of_phylo_axis = NULL,
   predictors = NULL,
   proportion_NAs = 0,
   number_iterations = 10,
@@ -35,7 +35,7 @@ If more than one, covariation among imputation variables is considered to decide
 
 \item{variance_results}{(\emph{list}). Variance results from computeVarianceCovariance() function.}
 
-\item{number__of_phylo_axis}{(\emph{integer}). Number of phylogenetic axis to include as predictors.}
+\item{number_of_phylo_axis}{(\emph{integer}). Number of phylogenetic axis to include as predictors.}
 
 \item{predictors}{(\emph{character}). Names of the variables without NAs that will be considered as potential. These varaibles need to be included in the dataset and need to be complete (no NAs).}
 
@@ -63,7 +63,7 @@ to be imputed. The methodology implements 3 rounds in which the actualized predi
 simulated_traits.data <- simulateDataSet()
 
 # Impute missing values (created within the function)
-imputed.data <- imputeTraits(
+imputed.data <- imputetraits(
 variables_to_impute = c("phylo_G1_trait1", "phylo_G1_trait2"),
 dataset = simulated_traits.data$data,
 phylogeny = simulated_traits.data$phylogeny,

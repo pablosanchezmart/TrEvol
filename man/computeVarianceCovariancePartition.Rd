@@ -8,6 +8,7 @@ computeVarianceCovariancePartition(
   traits = NULL,
   environmental_variable = NULL,
   dataset = NULL,
+  terminal_taxa = NULL,
   phylogeny = NULL,
   model_specifications = NULL,
   show_relative_variance = T,
@@ -23,6 +24,8 @@ computeVarianceCovariancePartition(
 
 \item{dataset}{(\emph{data frame}). Data frame containing the trait of interest and a column describing terminal appearing as tip labels of the phylogeny.}
 
+\item{terminal_taxa}{(\emph{character}). Terminal taxon as named in the dataset (e.g., species).}
+
 \item{phylogeny}{(\emph{phylo}) Phylogeny with tip labels contained in dataset$animal}
 
 \item{model_specifications}{(\emph{list}). Mcmcglmm models specifications as specified by the defineModelsSpecification of this package. If not defined, the function internally uses the default in defineModelsSpecification function.}
@@ -34,8 +37,6 @@ computeVarianceCovariancePartition(
 \item{save}{(\emph{logical}) If false, results are not saved in the outputs folder.}
 
 \item{verbose}{(\emph{logical}) If false, function runs quietly. Otherwise, iterations and diagnostics are shown while running.}
-
-\item{terminal.taxon}{(\emph{character}). Terminal taxon as named in the dataset (e.g., species).}
 }
 \description{
 Compute total variance and covariance and separate it into its phylogenetic and non-phylogenetic components.

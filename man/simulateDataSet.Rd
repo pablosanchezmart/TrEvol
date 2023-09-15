@@ -21,9 +21,9 @@ need to be specified in the number_observations argument.}
 \item{number_observations}{(\emph{integer}). Number of observations to simulate if phylogeny is not provided. When the phylogeny is provided, the number of terminal taxa of
 the phylogeny is used, and then, this argument is ignored.}
 
-\item{vcv_matrix}{(\emph{matrix}). Variance covariance matrix setting the covariance among traits. The number of rows and colums needs to match the lenght as trait.names.}
+\item{trait_names}{(\emph{character}). Names of the traits to simulate following the variance covariance order (i.e., first name correspond to the first row and column).}
 
-\item{trait.names}{(\emph{character}). Names of the traits to simulate following the variance covariance order (i.e., first name correspond to the first row and column).}
+\item{vcv_matrix}{(\emph{matrix}). Variance covariance matrix setting the covariance among traits. The number of rows and colums needs to match the lenght as trait_names.}
 }
 \value{
 A list containing a data frame with phylogenetically and non-phylogenetically correlated traits, the variance-covariance matrix and the phylogeny used.

@@ -5,8 +5,8 @@
 \title{Plot variance-covariance networks}
 \usage{
 plotNetwork(
-  covariance_results = NULL,
   variance_results = NULL,
+  correlation_results = NULL,
   variance_type = NULL,
   correlation_type = NULL,
   group_variables = NULL,
@@ -24,9 +24,9 @@ plotNetwork(
 )
 }
 \arguments{
-\item{covariance_results}{(\emph{data frame}). Correlations output of computeVarianceCovariance(). It can be found in "results_object$covarianceResults".}
-
 \item{variance_results}{(\emph{data frame}). Variance partition as reported by computeVarianceCovariance(). It can be found in "results_object$varianceResults.}
+
+\item{correlation_results}{(\emph{data frame}). Correlations output of computeVarianceCovariance(). It can be found in "results_object$covarianceResults".}
 
 \item{variance_type}{(\emph{character}). Name of the portion of variance to report in the nodes of the plot. When environmental variable is not included in computeVarianceCovariance(), it can be set as "phylogenetic_variance" or "non_phylogenetic_variance".
 If environmental variable is included, this argument can be set as "non_attributed_phylogenetic_variance", "environmental_phylogenetic_variance", "labile_environmental_variance" and "residual_variance".}
@@ -34,7 +34,7 @@ If environmental variable is included, this argument can be set as "non_attribut
 \item{correlation_type}{(\emph{character}). Name of the portion of the correlation to report in the edges of the plot. When environmental variable is not included in computeVarianceCovariance(), it can be set as "total_correlation", "phylogenetic_correlation" or "non_phylogenetic_correlation".
 If environmental variable is included, this argument can be set as "non_attributed_phylogenetic_correlation", "environmental_phylogenetic_correlation", "labile_environmental_correlation" and "residual_correlation".}
 
-\item{group_variables}{(\emph{data frame}). Data frame wich a first column indicating the variables to be plotted included in covariance_results and varaince_results and the group of the variable in the second column. Variables of the same group will be ploted with the same colour.}
+\item{group_variables}{(\emph{data frame}). Data frame wich a first column indicating the variables to be plotted included in correlation_results and varaince_results and the group of the variable in the second column. Variables of the same group will be ploted with the same colour.}
 
 \item{order_variables}{(\emph{character}). Character indicating the variables names to be plotted in the desired order. The variables will be plotted in the desired order clockwise, when layout is set to be circular.}
 
@@ -67,7 +67,7 @@ Plot variance-covariance partition obtained using the function computeVarianceCo
 simulated_traits.data <- simulateDataSet()
 
 # Compute variance-covariance structure for simulated traits using default parameters
-variance_covariance_results <- computeVarianceCovariancePartition(
+variance_correlation_results <- computeVarianceCovariancePartition(
 traits = c("phylo_G1_trait1", "phylo_G1_trait2"),
 environmental_variable = "phylo_G1_env",
 phylogeny = simulated_traits.data$phylogeny
@@ -76,8 +76,8 @@ phylogeny = simulated_traits.data$phylogeny
 # plot network
 
 plotNetwork(
-covariance_results = variance_covariance_results$covarianceResults,
-variance_results = variance_covariance_results$varianceResults,
+correlation_results = variance_correlation_results$covarianceResults,
+variance_results = variance_correlation_results$varianceResults,
 variance_type = environmental_phylogenetic_variance,
 correlation_type = environmental_phylogenetic_covariance
 )
