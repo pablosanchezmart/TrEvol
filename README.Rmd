@@ -36,9 +36,7 @@ You can install the development version of TrEvol from [GitHub](https://github.c
 devtools::install_github("pablosanchezmart/TrEvol")
 ```
 
-## Example
-
-### Simulate example data
+## Simulate example data
 
 This is a basic example showing how to use the package using simulated data. First of all, let's simulate some data to work with. To do so, we will use the **simulateDataSet** function from the package using the default parameters.
 
@@ -85,7 +83,7 @@ plotData(variables = c("nonPhylo_G1_trait1", "nonPhylo_G1_trait2", "nonPhylo_G1_
 We see how these variables variances and covariances are not phylogenetically conserved.
 
 
-### Compute variances and covariances for simulated data
+## Compute variances and covariances for simulated data
 
 Now we can use the function **computeVarianceCovariancePartition** to report the correlation structure between traits.
 
@@ -139,7 +137,7 @@ plotNetwork(variance_results = variance_covariance_results.list$varianceResults,
 We observe how much of the variance and covariance in the phylo_G1 traits is related to the phylogeny, and that the variances and covariances in nonPhylo_G1 traits are not related to the phylogeny, as expected.
 
 
-### Compute variances and covariances for simulated data including an enviornmental variable
+## Compute variances and covariances for simulated data including an enviornmental variable
 
 Let's now ilustrate how to include an environmental variable. This will allow us to calculate four different variance and covariance components: the *non-attributed phylogenetic variance and covariance*, the *phylogenetic environmental variance and covariance*, the *labile environmental variance and covariance* and the *residual variance and covariance*. Let's use the phylo_G1_env variable as an enviornmental variable, which is expected to be related to variances and covariances of phylo_G1 traits in a phylogenetically conserved manner (i.e., phylogenetic environmental variance and covariance).
 
@@ -175,7 +173,7 @@ plotNetwork(variance_results = variance_covariance_environment_results.list$vari
 ```
 We can see how part of the pattern of variances and covariances of the traits phylo_G1 are attributed to the phylogenetically conserved effect of the environmental variable phylo_G1_env.
 
-### Impute missing values
+## Impute missing values
 
 Now, let's use this information to inform an imputation framework performed by the function **imputeTraits** of this package. As our simulated data does not have NAs, let's first produce some NAs (20%) in a variable to impute. Then, we will run the imputeTraits to perform predictions using the variance-covariance structures reported before to inform the process.
 

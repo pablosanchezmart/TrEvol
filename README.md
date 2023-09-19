@@ -56,9 +56,7 @@ You can install the development version of TrEvol from
 devtools::install_github("pablosanchezmart/TrEvol")
 ```
 
-## Example
-
-### Simulate example data
+## Simulate example data
 
 This is a basic example showing how to use the package using simulated
 data. First of all, let’s simulate some data to work with. To do so, we
@@ -109,26 +107,26 @@ phylo_G1_env environmental variable.
 ``` r
 head(simulated.data$data)
 #>   animal phylo_G1_trait1 phylo_G1_trait2 phylo_G1_env phylo_G2_trait1
-#> 1     t1       6.7056149       4.3714390    4.2409869      -4.3295817
-#> 2    t10      -0.7187816      -0.7794280   -0.1848752      -0.7515719
-#> 3   t100       0.9698969      -0.3729992   -0.4220562      -1.7705796
-#> 4    t11      -8.1921507      -7.9036570   -5.4179821       3.6715388
-#> 5    t12      -6.8151902      -6.2354807   -4.9236833       4.0297853
-#> 6    t13       5.1227655       2.7839965   -0.7544528      -2.2194609
+#> 1     t1      2.83569287       3.5784519   5.15925627      -0.9055044
+#> 2    t10      0.01988534       0.3293684   1.78411002      -3.6064855
+#> 3   t100      0.30868880       1.1886256  -1.94854582      -4.2350166
+#> 4    t11      1.38680507      -0.3226524   0.04940396      -2.3785741
+#> 5    t12      0.47420341       1.4549272  -1.60981599      -3.9457055
+#> 6    t13      0.87811755      -0.2289799   1.82860671       1.9071952
 #>   phylo_G2_trait2 phylo_G2_env nonPhylo_G1_trait1 nonPhylo_G1_trait2
-#> 1      -6.2570886   -2.7613480         0.65624630          0.2749146
-#> 2      -0.8810548   -1.5957439         0.23747458          0.5849324
-#> 3      -3.5535801   -2.1647978        -0.76145472         -0.4045134
-#> 4       2.7472713   -0.7135728         0.79905161          0.4568037
-#> 5       3.0099606    1.9836884        -0.04519136         -0.4181187
-#> 6      -4.8975402   -2.5145352         0.39690857          0.3402024
+#> 1       0.3714268   -1.8444343         -0.4471672         -0.7720925
+#> 2      -1.1111146   -4.2793764          1.3149870          1.2467222
+#> 3      -2.3824668   -3.7698756         -0.7394864          0.0991954
+#> 4      -1.3602870   -3.2604774          1.3968993          1.2233685
+#> 5      -2.5368309   -3.3527166          0.2102929          0.6311535
+#> 6       1.7904643   -0.7320168         -2.0835196         -2.1369207
 #>   nonPhylo_G1_env nonPhylo_G2_trait1 nonPhylo_G2_trait2 nonPhylo_G2_env
-#> 1      0.61856750        -1.30358161        -1.18267511    -0.730151517
-#> 2      0.31561053        -0.50906818        -0.08611124    -0.473420949
-#> 3     -0.09126971         0.08417716         0.55572570    -0.001290057
-#> 4      0.55534859        -0.09578847         0.11519576     0.102301563
-#> 5      0.26945938        -1.40919917        -0.75211615    -0.243613155
-#> 6      0.86802357         0.33457711         0.58499789     0.676467689
+#> 1     -1.64095407         -0.6458856        -0.65334877     -0.82827619
+#> 2      1.42099324         -0.6283133        -0.04520841     -0.60510485
+#> 3     -0.22839588          0.5680749         0.51480651     -0.01322936
+#> 4      0.63844099          0.6960582         0.24112295      0.85966124
+#> 5     -0.02877568         -0.3140729         0.07506147      0.08764462
+#> 6     -1.28750430          0.4565116         0.46011956     -0.99582493
 ```
 
 We can use the function *plotData* to plot some simulated traits. Let’s
@@ -186,7 +184,7 @@ environmental variable.
 see how these variables variances and covariances are not
 phylogenetically conserved.
 
-### Compute variances and covariances for simulated data
+## Compute variances and covariances for simulated data
 
 Now we can use the function **computeVarianceCovariancePartition** to
 report the correlation structure between traits.
@@ -235,43 +233,43 @@ different priors.
     #> 6       cbind(phylo_G1_trait1, phylo_G1_trait2) ~ trait-1 ~ us(trait):animal
     #> [1] "Variance results:"
     #>                trait number_observations phylogenetic_variance
-    #> 1 nonPhylo_G1_trait1                 100             0.2806931
-    #> 2 nonPhylo_G1_trait2                 100             0.1913426
-    #> 3    phylo_G1_trait1                 100             0.9882768
-    #> 4    phylo_G1_trait2                 100             0.9957512
+    #> 1 nonPhylo_G1_trait1                 100             0.1216253
+    #> 2 nonPhylo_G1_trait2                 100             0.2444461
+    #> 3    phylo_G1_trait1                 100             0.9776827
+    #> 4    phylo_G1_trait2                 100             0.9604399
     #>   non_phylogenetic_variance p_value_phylogenetic_variance
-    #> 1               0.719306946                             0
-    #> 2               0.796306787                             0
-    #> 3               0.009402907                             0
-    #> 4              -0.002318771                             0
+    #> 1               0.878374674                             0
+    #> 2               0.751036373                             0
+    #> 3               0.019350253                             0
+    #> 4              -0.008784689                             0
     #> [1] "Covariance results:"
     #>              trait_1            trait_2 number_observations total_correlation
-    #> 1 nonPhylo_G1_trait1 nonPhylo_G1_trait2                 100        0.89560368
-    #> 2 nonPhylo_G1_trait1    phylo_G1_trait1                 100       -0.14074178
-    #> 3 nonPhylo_G1_trait1    phylo_G1_trait2                 100       -0.06525730
-    #> 4 nonPhylo_G1_trait2    phylo_G1_trait1                 100        0.08037902
-    #> 5 nonPhylo_G1_trait2    phylo_G1_trait2                 100       -0.04954784
-    #> 6    phylo_G1_trait1    phylo_G1_trait2                 100        0.83407987
+    #> 1 nonPhylo_G1_trait1 nonPhylo_G1_trait2                 100       0.854371267
+    #> 2 nonPhylo_G1_trait1    phylo_G1_trait1                 100       0.022845219
+    #> 3 nonPhylo_G1_trait1    phylo_G1_trait2                 100       0.337260502
+    #> 4 nonPhylo_G1_trait2    phylo_G1_trait1                 100      -0.028439522
+    #> 5 nonPhylo_G1_trait2    phylo_G1_trait2                 100       0.001228066
+    #> 6    phylo_G1_trait1    phylo_G1_trait2                 100       0.863613407
     #>   phylogenetic_correlation non_phylogenetic_correlation
-    #> 1               0.16493454                  0.730669143
-    #> 2              -0.14229545                  0.001553663
-    #> 3              -0.05939504                 -0.005862255
-    #> 4               0.09292234                 -0.012543316
-    #> 5              -0.04802251                 -0.001525333
-    #> 6               0.81906064                  0.015019230
+    #> 1               0.08103834                  0.773332923
+    #> 2               0.02039136                  0.002453861
+    #> 3               0.35428683                 -0.017026323
+    #> 4              -0.05280336                  0.024363843
+    #> 5               0.01350667                 -0.012278607
+    #> 6               0.82155443                  0.042058973
     #>   p_value_total_correlation p_value_phylogenetic_correlation
-    #> 1                0.00000000                       0.00000000
-    #> 2                0.04444444                       0.04444444
-    #> 3                0.48888889                       0.53333333
-    #> 4                0.35555556                       0.35555556
-    #> 5                0.62222222                       0.53333333
-    #> 6                0.00000000                       0.00000000
+    #> 1                 0.0000000                        0.3111111
+    #> 2                 0.8000000                        0.8444444
+    #> 3                 0.0000000                        0.0000000
+    #> 4                 0.8444444                        0.6666667
+    #> 5                 0.8444444                        0.8888889
+    #> 6                 0.0000000                        0.0000000
     #>   p_value_non_phylogenetic_correlation
     #> 1                            0.0000000
-    #> 2                            0.8888889
-    #> 3                            0.4888889
-    #> 4                            0.3555556
-    #> 5                            0.8444444
+    #> 2                            0.7555556
+    #> 3                            0.3111111
+    #> 4                            0.1777778
+    #> 5                            0.2666667
     #> 6                            0.0000000
 
 We can now explore the variance-covariance results. First, let’s look at
@@ -280,15 +278,15 @@ the variance results.
 ``` r
 variance_covariance_results.list$varianceResults
 #>                trait number_observations phylogenetic_variance
-#> 1 nonPhylo_G1_trait1                 100             0.2806931
-#> 2 nonPhylo_G1_trait2                 100             0.1913426
-#> 3    phylo_G1_trait1                 100             0.9882768
-#> 4    phylo_G1_trait2                 100             0.9957512
+#> 1 nonPhylo_G1_trait1                 100             0.1216253
+#> 2 nonPhylo_G1_trait2                 100             0.2444461
+#> 3    phylo_G1_trait1                 100             0.9776827
+#> 4    phylo_G1_trait2                 100             0.9604399
 #>   non_phylogenetic_variance p_value_phylogenetic_variance
-#> 1               0.719306946                             0
-#> 2               0.796306787                             0
-#> 3               0.009402907                             0
-#> 4              -0.002318771                             0
+#> 1               0.878374674                             0
+#> 2               0.751036373                             0
+#> 3               0.019350253                             0
+#> 4              -0.008784689                             0
 ```
 
 Now, let’s look at the covariance results, which are reported as
@@ -297,32 +295,32 @@ correlation.
 ``` r
 variance_covariance_results.list$covarianceResults
 #>              trait_1            trait_2 number_observations total_correlation
-#> 1 nonPhylo_G1_trait1 nonPhylo_G1_trait2                 100        0.89560368
-#> 2 nonPhylo_G1_trait1    phylo_G1_trait1                 100       -0.14074178
-#> 3 nonPhylo_G1_trait1    phylo_G1_trait2                 100       -0.06525730
-#> 4 nonPhylo_G1_trait2    phylo_G1_trait1                 100        0.08037902
-#> 5 nonPhylo_G1_trait2    phylo_G1_trait2                 100       -0.04954784
-#> 6    phylo_G1_trait1    phylo_G1_trait2                 100        0.83407987
+#> 1 nonPhylo_G1_trait1 nonPhylo_G1_trait2                 100       0.854371267
+#> 2 nonPhylo_G1_trait1    phylo_G1_trait1                 100       0.022845219
+#> 3 nonPhylo_G1_trait1    phylo_G1_trait2                 100       0.337260502
+#> 4 nonPhylo_G1_trait2    phylo_G1_trait1                 100      -0.028439522
+#> 5 nonPhylo_G1_trait2    phylo_G1_trait2                 100       0.001228066
+#> 6    phylo_G1_trait1    phylo_G1_trait2                 100       0.863613407
 #>   phylogenetic_correlation non_phylogenetic_correlation
-#> 1               0.16493454                  0.730669143
-#> 2              -0.14229545                  0.001553663
-#> 3              -0.05939504                 -0.005862255
-#> 4               0.09292234                 -0.012543316
-#> 5              -0.04802251                 -0.001525333
-#> 6               0.81906064                  0.015019230
+#> 1               0.08103834                  0.773332923
+#> 2               0.02039136                  0.002453861
+#> 3               0.35428683                 -0.017026323
+#> 4              -0.05280336                  0.024363843
+#> 5               0.01350667                 -0.012278607
+#> 6               0.82155443                  0.042058973
 #>   p_value_total_correlation p_value_phylogenetic_correlation
-#> 1                0.00000000                       0.00000000
-#> 2                0.04444444                       0.04444444
-#> 3                0.48888889                       0.53333333
-#> 4                0.35555556                       0.35555556
-#> 5                0.62222222                       0.53333333
-#> 6                0.00000000                       0.00000000
+#> 1                 0.0000000                        0.3111111
+#> 2                 0.8000000                        0.8444444
+#> 3                 0.0000000                        0.0000000
+#> 4                 0.8444444                        0.6666667
+#> 5                 0.8444444                        0.8888889
+#> 6                 0.0000000                        0.0000000
 #>   p_value_non_phylogenetic_correlation
 #> 1                            0.0000000
-#> 2                            0.8888889
-#> 3                            0.4888889
-#> 4                            0.3555556
-#> 5                            0.8444444
+#> 2                            0.7555556
+#> 3                            0.3111111
+#> 4                            0.1777778
+#> 5                            0.2666667
 #> 6                            0.0000000
 ```
 
@@ -332,11 +330,12 @@ and covariance.
 
     #> [1] "Node degree:"
     #> nonPhylo_G1_trait1 nonPhylo_G1_trait2    phylo_G1_trait1    phylo_G1_trait2 
-    #>                  0                  0                  1                  1
+    #>                  1                  0                  1                  2
 
 <img src="man/figures/README-unnamed-chunk-9-1.png" width="100%" />
 
     #> From     To  Weight
+    #> 1     ---     4   0.35 
     #> 3     ---     4   0.82
 
 Let’s now plot the non-phylogenetic variances and covariances.
@@ -348,14 +347,14 @@ Let’s now plot the non-phylogenetic variances and covariances.
 <img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
 
     #> From     To  Weight
-    #> 1     ---     2   0.73
+    #> 1     ---     2   0.77
 
 We observe how much of the variance and covariance in the phylo_G1
 traits is related to the phylogeny, and that the variances and
 covariances in nonPhylo_G1 traits are not related to the phylogeny, as
 expected.
 
-### Compute variances and covariances for simulated data including an enviornmental variable
+## Compute variances and covariances for simulated data including an enviornmental variable
 
 Let’s now ilustrate how to include an environmental variable. This will
 allow us to calculate four different variance and covariance components:
@@ -405,30 +404,30 @@ phylogenetic environmental variance and covariance).
     #> 6 ~ us(trait):animal
     #> [1] "Variance results:"
     #>                trait number_observations phylogenetic_variance
-    #> 1 nonPhylo_G1_trait1                 100             0.2229827
-    #> 2 nonPhylo_G1_trait2                 100             0.2768939
-    #> 3    phylo_G1_trait1                 100             0.9787892
-    #> 4    phylo_G1_trait2                 100             0.9766271
+    #> 1 nonPhylo_G1_trait1                 100            0.09822224
+    #> 2 nonPhylo_G1_trait2                 100            0.23110807
+    #> 3    phylo_G1_trait1                 100            0.96849176
+    #> 4    phylo_G1_trait2                 100            0.93944726
     #>   non_phylogenetic_variance p_value_phylogenetic_variance
-    #> 1              7.770173e-01                             0
-    #> 2              7.113694e-01                             0
-    #> 3              9.889198e-03                             0
-    #> 4              3.786607e-05                             0
+    #> 1               0.901777757                             0
+    #> 2               0.762852973                             0
+    #> 3               0.007001850                             0
+    #> 4               0.005015341                             0
     #>   environmental_variable non_attributed_phylogenetic_variance
-    #> 1           phylo_G1_env                            0.1415422
-    #> 2           phylo_G1_env                            0.2327687
-    #> 3           phylo_G1_env                            0.3735428
-    #> 4           phylo_G1_env                            0.3178595
+    #> 1           phylo_G1_env                            0.0955155
+    #> 2           phylo_G1_env                            0.2056510
+    #> 3           phylo_G1_env                            0.4174514
+    #> 4           phylo_G1_env                            0.4011485
     #>   environmental_phylogenetic_variance labile_environmental_variance
-    #> 1                          0.08144052                   0.044926500
-    #> 2                          0.04412520                   0.034603480
-    #> 3                          0.60524635                   0.006453788
-    #> 4                          0.65876760                   0.007670498
+    #> 1                         0.002706738                    0.03750646
+    #> 2                         0.025457029                    0.06767015
+    #> 3                         0.551040397                    0.01348227
+    #> 4                         0.538298792                    0.02474695
     #>   residual_variance p_value_non_attributed_phylogenetic_variance
-    #> 1        0.73209076                                            0
-    #> 2        0.68850259                                            0
-    #> 3        0.01475705                                            0
-    #> 4        0.01570238                                            0
+    #> 1        0.86427130                                            0
+    #> 2        0.70122178                                            0
+    #> 3        0.01802598                                            0
+    #> 4        0.03580579                                            0
     #>   p_value_environmental_phylogenetic_variance
     #> 1                                           0
     #> 2                                           0
@@ -441,98 +440,98 @@ phylogenetic environmental variance and covariance).
     #> 4                                     0
     #> [1] "Covariance results:"
     #>              trait_1            trait_2 number_observations total_correlation
-    #> 1 nonPhylo_G1_trait1 nonPhylo_G1_trait2                 100        0.85941043
-    #> 2 nonPhylo_G1_trait1    phylo_G1_trait1                 100        0.05096598
-    #> 3 nonPhylo_G1_trait1    phylo_G1_trait2                 100       -0.07153979
-    #> 4 nonPhylo_G1_trait2    phylo_G1_trait1                 100        0.13592061
-    #> 5 nonPhylo_G1_trait2    phylo_G1_trait2                 100       -0.15413998
-    #> 6    phylo_G1_trait1    phylo_G1_trait2                 100        0.85699272
+    #> 1 nonPhylo_G1_trait1 nonPhylo_G1_trait2                 100        0.85455142
+    #> 2 nonPhylo_G1_trait1    phylo_G1_trait1                 100        0.22119861
+    #> 3 nonPhylo_G1_trait1    phylo_G1_trait2                 100        0.08292022
+    #> 4 nonPhylo_G1_trait2    phylo_G1_trait1                 100       -0.13356124
+    #> 5 nonPhylo_G1_trait2    phylo_G1_trait2                 100        0.02871787
+    #> 6    phylo_G1_trait1    phylo_G1_trait2                 100        0.89132402
     #>   phylogenetic_correlation non_phylogenetic_correlation
-    #> 1               0.16462414                 0.6947862977
-    #> 2               0.06127690                -0.0103109183
-    #> 3              -0.07199339                 0.0004536005
-    #> 4               0.14752057                -0.0115999560
-    #> 5              -0.16176827                 0.0076282887
-    #> 6               0.84294428                 0.0140484347
+    #> 1               0.06389783                  0.790653586
+    #> 2               0.25175172                 -0.030553111
+    #> 3               0.07298193                  0.009938282
+    #> 4              -0.14277353                  0.009212297
+    #> 5               0.02045923                  0.008258640
+    #> 6               0.86789993                  0.023424092
     #>   p_value_total_correlation p_value_phylogenetic_correlation
-    #> 1                 0.0000000                        0.0000000
-    #> 2                 0.4888889                        0.4888889
-    #> 3                 0.5777778                        0.6666667
-    #> 4                 0.4444444                        0.4000000
-    #> 5                 0.3555556                        0.3555556
-    #> 6                 0.0000000                        0.0000000
+    #> 1                0.00000000                       0.00000000
+    #> 2                0.04444444                       0.00000000
+    #> 3                0.35555556                       0.31111111
+    #> 4                0.04444444                       0.08888889
+    #> 5                0.84444444                       0.97777778
+    #> 6                0.00000000                       0.00000000
     #>   p_value_non_phylogenetic_correlation environmental_variable
     #> 1                            0.0000000           phylo_G1_env
-    #> 2                            0.5777778           phylo_G1_env
-    #> 3                            0.9777778           phylo_G1_env
-    #> 4                            0.5333333           phylo_G1_env
-    #> 5                            0.8444444           phylo_G1_env
+    #> 2                            0.4000000           phylo_G1_env
+    #> 3                            0.8444444           phylo_G1_env
+    #> 4                            0.7555556           phylo_G1_env
+    #> 5                            0.9777778           phylo_G1_env
     #> 6                            0.0000000           phylo_G1_env
     #>   non_attributed_phylogenetic_correlation
-    #> 1                              0.08208926
-    #> 2                              0.06733262
-    #> 3                             -0.18441722
-    #> 4                              0.08448050
-    #> 5                             -0.07971151
-    #> 6                              0.21974229
+    #> 1                              0.06044406
+    #> 2                              0.02493880
+    #> 3                             -0.01485658
+    #> 4                             -0.06908180
+    #> 5                             -0.08376587
+    #> 6                              0.27926576
     #>   environmental_phylogenetic_correlation labile_environmental_correlation
-    #> 1                            0.082534876                     4.700253e-02
-    #> 2                           -0.006055726                    -3.730804e-03
-    #> 3                            0.112423824                    -1.013161e-02
-    #> 4                            0.063040068                    -4.509113e-03
-    #> 5                           -0.082056759                    -9.087947e-05
-    #> 6                            0.623201996                     6.415768e-03
+    #> 1                             0.00345377                      0.037877442
+    #> 2                             0.22681292                     -0.031456348
+    #> 3                             0.08783852                     -0.012218320
+    #> 4                            -0.07369173                     -0.001754469
+    #> 5                             0.10422510                     -0.012466113
+    #> 6                             0.58863417                      0.012702531
     #>   residual_correlation p_value_non_attributed_phylogenetic_correlation
-    #> 1          0.647783770                                      0.00000000
-    #> 2         -0.006580114                                      0.22222222
-    #> 3          0.010585210                                      0.04444444
-    #> 4         -0.007090842                                      0.57777778
-    #> 5          0.007719168                                      0.40000000
-    #> 6          0.007632667                                      0.00000000
+    #> 1         0.7527761447                                       0.0000000
+    #> 2         0.0009032369                                       0.6222222
+    #> 3         0.0221566018                                       0.6222222
+    #> 4         0.0109667660                                       0.1777778
+    #> 5         0.0207247534                                       0.2666667
+    #> 6         0.0107215613                                       0.0000000
     #>   p_value_environmental_phylogenetic_correlation
-    #> 1                                      0.2222222
-    #> 2                                      0.9777778
-    #> 3                                      0.4888889
+    #> 1                                      0.6222222
+    #> 2                                      0.0000000
+    #> 3                                      0.4000000
     #> 4                                      0.5333333
-    #> 5                                      0.6222222
+    #> 5                                      0.1777778
     #> 6                                      0.0000000
     #>   p_value_labile_environmental_correlation p_value_residual_correlation
-    #> 1                               0.35555556                    0.0000000
-    #> 2                               0.84444444                    0.5333333
-    #> 3                               0.57777778                    0.5333333
-    #> 4                               0.75555556                    0.7555556
-    #> 5                               0.93333333                    0.8444444
-    #> 6                               0.08888889                    0.0000000
+    #> 1                                0.2666667                   0.00000000
+    #> 2                                0.2222222                   0.93333333
+    #> 3                                0.4000000                   0.53333333
+    #> 4                                0.9777778                   0.48888889
+    #> 5                                0.4888889                   0.53333333
+    #> 6                                0.8000000                   0.08888889
 
 We can see now these components in both variance and covariance results.
 
 ``` r
 variance_covariance_environment_results.list$varianceResults
 #>                trait number_observations phylogenetic_variance
-#> 1 nonPhylo_G1_trait1                 100             0.2229827
-#> 2 nonPhylo_G1_trait2                 100             0.2768939
-#> 3    phylo_G1_trait1                 100             0.9787892
-#> 4    phylo_G1_trait2                 100             0.9766271
+#> 1 nonPhylo_G1_trait1                 100            0.09822224
+#> 2 nonPhylo_G1_trait2                 100            0.23110807
+#> 3    phylo_G1_trait1                 100            0.96849176
+#> 4    phylo_G1_trait2                 100            0.93944726
 #>   non_phylogenetic_variance p_value_phylogenetic_variance
-#> 1              7.770173e-01                             0
-#> 2              7.113694e-01                             0
-#> 3              9.889198e-03                             0
-#> 4              3.786607e-05                             0
+#> 1               0.901777757                             0
+#> 2               0.762852973                             0
+#> 3               0.007001850                             0
+#> 4               0.005015341                             0
 #>   environmental_variable non_attributed_phylogenetic_variance
-#> 1           phylo_G1_env                            0.1415422
-#> 2           phylo_G1_env                            0.2327687
-#> 3           phylo_G1_env                            0.3735428
-#> 4           phylo_G1_env                            0.3178595
+#> 1           phylo_G1_env                            0.0955155
+#> 2           phylo_G1_env                            0.2056510
+#> 3           phylo_G1_env                            0.4174514
+#> 4           phylo_G1_env                            0.4011485
 #>   environmental_phylogenetic_variance labile_environmental_variance
-#> 1                          0.08144052                   0.044926500
-#> 2                          0.04412520                   0.034603480
-#> 3                          0.60524635                   0.006453788
-#> 4                          0.65876760                   0.007670498
+#> 1                         0.002706738                    0.03750646
+#> 2                         0.025457029                    0.06767015
+#> 3                         0.551040397                    0.01348227
+#> 4                         0.538298792                    0.02474695
 #>   residual_variance p_value_non_attributed_phylogenetic_variance
-#> 1        0.73209076                                            0
-#> 2        0.68850259                                            0
-#> 3        0.01475705                                            0
-#> 4        0.01570238                                            0
+#> 1        0.86427130                                            0
+#> 2        0.70122178                                            0
+#> 3        0.01802598                                            0
+#> 4        0.03580579                                            0
 #>   p_value_environmental_phylogenetic_variance
 #> 1                                           0
 #> 2                                           0
@@ -548,68 +547,68 @@ variance_covariance_environment_results.list$varianceResults
 ``` r
 variance_covariance_environment_results.list$covarianceResults
 #>              trait_1            trait_2 number_observations total_correlation
-#> 1 nonPhylo_G1_trait1 nonPhylo_G1_trait2                 100        0.85941043
-#> 2 nonPhylo_G1_trait1    phylo_G1_trait1                 100        0.05096598
-#> 3 nonPhylo_G1_trait1    phylo_G1_trait2                 100       -0.07153979
-#> 4 nonPhylo_G1_trait2    phylo_G1_trait1                 100        0.13592061
-#> 5 nonPhylo_G1_trait2    phylo_G1_trait2                 100       -0.15413998
-#> 6    phylo_G1_trait1    phylo_G1_trait2                 100        0.85699272
+#> 1 nonPhylo_G1_trait1 nonPhylo_G1_trait2                 100        0.85455142
+#> 2 nonPhylo_G1_trait1    phylo_G1_trait1                 100        0.22119861
+#> 3 nonPhylo_G1_trait1    phylo_G1_trait2                 100        0.08292022
+#> 4 nonPhylo_G1_trait2    phylo_G1_trait1                 100       -0.13356124
+#> 5 nonPhylo_G1_trait2    phylo_G1_trait2                 100        0.02871787
+#> 6    phylo_G1_trait1    phylo_G1_trait2                 100        0.89132402
 #>   phylogenetic_correlation non_phylogenetic_correlation
-#> 1               0.16462414                 0.6947862977
-#> 2               0.06127690                -0.0103109183
-#> 3              -0.07199339                 0.0004536005
-#> 4               0.14752057                -0.0115999560
-#> 5              -0.16176827                 0.0076282887
-#> 6               0.84294428                 0.0140484347
+#> 1               0.06389783                  0.790653586
+#> 2               0.25175172                 -0.030553111
+#> 3               0.07298193                  0.009938282
+#> 4              -0.14277353                  0.009212297
+#> 5               0.02045923                  0.008258640
+#> 6               0.86789993                  0.023424092
 #>   p_value_total_correlation p_value_phylogenetic_correlation
-#> 1                 0.0000000                        0.0000000
-#> 2                 0.4888889                        0.4888889
-#> 3                 0.5777778                        0.6666667
-#> 4                 0.4444444                        0.4000000
-#> 5                 0.3555556                        0.3555556
-#> 6                 0.0000000                        0.0000000
+#> 1                0.00000000                       0.00000000
+#> 2                0.04444444                       0.00000000
+#> 3                0.35555556                       0.31111111
+#> 4                0.04444444                       0.08888889
+#> 5                0.84444444                       0.97777778
+#> 6                0.00000000                       0.00000000
 #>   p_value_non_phylogenetic_correlation environmental_variable
 #> 1                            0.0000000           phylo_G1_env
-#> 2                            0.5777778           phylo_G1_env
-#> 3                            0.9777778           phylo_G1_env
-#> 4                            0.5333333           phylo_G1_env
-#> 5                            0.8444444           phylo_G1_env
+#> 2                            0.4000000           phylo_G1_env
+#> 3                            0.8444444           phylo_G1_env
+#> 4                            0.7555556           phylo_G1_env
+#> 5                            0.9777778           phylo_G1_env
 #> 6                            0.0000000           phylo_G1_env
 #>   non_attributed_phylogenetic_correlation
-#> 1                              0.08208926
-#> 2                              0.06733262
-#> 3                             -0.18441722
-#> 4                              0.08448050
-#> 5                             -0.07971151
-#> 6                              0.21974229
+#> 1                              0.06044406
+#> 2                              0.02493880
+#> 3                             -0.01485658
+#> 4                             -0.06908180
+#> 5                             -0.08376587
+#> 6                              0.27926576
 #>   environmental_phylogenetic_correlation labile_environmental_correlation
-#> 1                            0.082534876                     4.700253e-02
-#> 2                           -0.006055726                    -3.730804e-03
-#> 3                            0.112423824                    -1.013161e-02
-#> 4                            0.063040068                    -4.509113e-03
-#> 5                           -0.082056759                    -9.087947e-05
-#> 6                            0.623201996                     6.415768e-03
+#> 1                             0.00345377                      0.037877442
+#> 2                             0.22681292                     -0.031456348
+#> 3                             0.08783852                     -0.012218320
+#> 4                            -0.07369173                     -0.001754469
+#> 5                             0.10422510                     -0.012466113
+#> 6                             0.58863417                      0.012702531
 #>   residual_correlation p_value_non_attributed_phylogenetic_correlation
-#> 1          0.647783770                                      0.00000000
-#> 2         -0.006580114                                      0.22222222
-#> 3          0.010585210                                      0.04444444
-#> 4         -0.007090842                                      0.57777778
-#> 5          0.007719168                                      0.40000000
-#> 6          0.007632667                                      0.00000000
+#> 1         0.7527761447                                       0.0000000
+#> 2         0.0009032369                                       0.6222222
+#> 3         0.0221566018                                       0.6222222
+#> 4         0.0109667660                                       0.1777778
+#> 5         0.0207247534                                       0.2666667
+#> 6         0.0107215613                                       0.0000000
 #>   p_value_environmental_phylogenetic_correlation
-#> 1                                      0.2222222
-#> 2                                      0.9777778
-#> 3                                      0.4888889
+#> 1                                      0.6222222
+#> 2                                      0.0000000
+#> 3                                      0.4000000
 #> 4                                      0.5333333
-#> 5                                      0.6222222
+#> 5                                      0.1777778
 #> 6                                      0.0000000
 #>   p_value_labile_environmental_correlation p_value_residual_correlation
-#> 1                               0.35555556                    0.0000000
-#> 2                               0.84444444                    0.5333333
-#> 3                               0.57777778                    0.5333333
-#> 4                               0.75555556                    0.7555556
-#> 5                               0.93333333                    0.8444444
-#> 6                               0.08888889                    0.0000000
+#> 1                                0.2666667                   0.00000000
+#> 2                                0.2222222                   0.93333333
+#> 3                                0.4000000                   0.53333333
+#> 4                                0.9777778                   0.48888889
+#> 5                                0.4888889                   0.53333333
+#> 6                                0.8000000                   0.08888889
 ```
 
 Let’s plot the phylogenetic environmental variances and covariances as
@@ -622,13 +621,13 @@ an example.
 <img src="man/figures/README-unnamed-chunk-14-1.png" width="100%" />
 
     #> From     To  Weight
-    #> 3     ---     4   0.62
+    #> 3     ---     4   0.59
 
 We can see how part of the pattern of variances and covariances of the
 traits phylo_G1 are attributed to the phylogenetically conserved effect
 of the environmental variable phylo_G1_env.
 
-### Impute missing values
+## Impute missing values
 
 Now, let’s use this information to inform an imputation framework
 performed by the function **imputeTraits** of this package. As our
@@ -647,16 +646,16 @@ inform the process.
     #> 1 ~ us(trait):animal
     #> [1] "Variance results:"
     #>             trait number_observations phylogenetic_variance
-    #> 1    phylo_G1_env                  80             0.9921964
-    #> 2 phylo_G1_trait1                  80             0.9764975
+    #> 1    phylo_G1_env                  80             0.9794678
+    #> 2 phylo_G1_trait1                  80             0.9616898
     #>   non_phylogenetic_variance p_value_phylogenetic_variance
-    #> 1               0.007803577                             0
-    #> 2               0.012821580                             0
+    #> 1                0.02053223                             0
+    #> 2                0.02246987                             0
     #> [1] "Covariance results:"
     #>        trait_1         trait_2 number_observations total_correlation
-    #> 1 phylo_G1_env phylo_G1_trait1                  80         0.7541053
+    #> 1 phylo_G1_env phylo_G1_trait1                  80         0.6276755
     #>   phylogenetic_correlation non_phylogenetic_correlation
-    #> 1                0.7432015                   0.01090379
+    #> 1                0.6054601                   0.02221536
     #>   p_value_total_correlation p_value_phylogenetic_correlation
     #> 1                         0                                0
     #>   p_value_non_phylogenetic_correlation
@@ -669,135 +668,135 @@ inform the process.
     #> randomForest 4.7-1.1
     #> Type rfNews() to see new features/changes/bug fixes.
     #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.123189
+    #> 1 phylo_G1_trait1 100    80   20 1.223724
     #>                                                                                                                                                                                                             Model
     #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
     #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.130978
+    #> 1 phylo_G1_trait1 100    80   20 1.223307
     #>                                                                                                                                                                                                             Model
     #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
     #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.147844
+    #> 1 phylo_G1_trait1 100    80   20 1.238298
     #>                                                                                                                                                                                                             Model
     #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
     #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.157026
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.159605
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.110604
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.164395
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.109199
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.100836
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.140279
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.167397
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.116503
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.116675
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.182371
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.120062
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.145348
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.092878
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.157411
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.135907
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.111319
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.111213
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.153975
+    #> 1 phylo_G1_trait1 100    80   20 1.211371
     #>                                                                                                                                                                                                             Model
     #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
     #>          Variable   N N_Obs N_NA   NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.10573
+    #> 1 phylo_G1_trait1 100    80   20 1.19276
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.209378
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.247754
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.237416
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.223641
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.230015
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.246626
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.220412
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.209345
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.203584
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.205562
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.202263
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.208889
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.224326
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.208624
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.245801
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.205815
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.234414
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.228487
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA NRMSE
+    #> 1 phylo_G1_trait1 100    80   20  1.23
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.209134
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.215634
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.212565
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.189259
+    #>                                                                                                                                                                                                             Model
+    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
+    #>          Variable   N N_Obs N_NA    NRMSE
+    #> 1 phylo_G1_trait1 100    80   20 1.255474
     #>                                                                                                                                                                                                             Model
     #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
     #>          Variable   N N_Obs N_NA   NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.11178
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.185329
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA  NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.1466
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.120348
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.114945
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA   NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.09509
-    #>                                                                                                                                                                                                             Model
-    #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
-    #>          Variable   N N_Obs N_NA    NRMSE
-    #> 1 phylo_G1_trait1 100    80   20 1.124258
+    #> 1 phylo_G1_trait1 100    80   20 1.22282
     #>                                                                                                                                                                                                             Model
     #> 1 ( phylo_G1_trait1 ) <-  Phylo_axis_1, Phylo_axis_2, Phylo_axis_3, Phylo_axis_4, Phylo_axis_5, Phylo_axis_6, Phylo_axis_7, Phylo_axis_8, Phylo_axis_9, Phylo_axis_10, Phylo_axis_11, Phylo_axis_12, phylo_G1_env
 
 ``` r
 head(imputed.data$round3$ximp)
 #>   animal phylo_G1_trait1
-#> 1     t1       6.7056149
-#> 2    t10      -0.3547771
-#> 3   t100       0.9698969
-#> 4    t11      -8.1921507
-#> 5    t12      -6.8151902
-#> 6    t13       5.1227655
+#> 1     t1      2.83569287
+#> 2    t10      0.01988534
+#> 3   t100      0.30868880
+#> 4    t11      2.61922370
+#> 5    t12      0.47420341
+#> 6    t13      0.87811755
 ```
 
 Let’s assign the imputed data as a new column in the dataset.
@@ -817,7 +816,7 @@ Before imputation:
 ``` r
 summary(imputed.data$phylo_G1_trait1)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#>  -8.192  -1.780   1.734   1.033   3.382   7.124      20
+#> -6.4282 -0.9339  0.7182  0.3193  2.0054  4.8047      20
 ```
 
 After imputation
@@ -825,5 +824,5 @@ After imputation
 ``` r
 summary(imputed.data$phylo_G1_trait1_imputed)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> -8.1922 -1.7804  1.6746  0.9553  3.2451  7.1244
+#> -6.4282 -1.2303  0.6649  0.2981  2.0314  4.8047
 ```
