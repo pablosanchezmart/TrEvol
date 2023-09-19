@@ -211,7 +211,7 @@ Before imputation:
 summary(imputed.data$phylo_G1_trait1)
 ```
 
-After imputation
+After imputation:
 
 ```{r}
 summary(imputed.data$phylo_G1_trait1_imputed)
