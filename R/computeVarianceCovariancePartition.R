@@ -130,7 +130,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
     # avoid running models already present in results
     if (!model %in% names(traitsVCVPartitionResults$individual.models.results) | force_run) {
 
-      print(paste0("Running variance-covariance calculation: ", model))
+      message(paste0("Running variance-covariance calculation: ", model))
       model.descr <- multi_mdls.str %>%
         dplyr::filter(type == model)
 
@@ -140,7 +140,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
       modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait1, trait2, environmental_variable))
 
       if (is.null(model_specifications)) {
-        print("Using default model specificatios. Use defineModelsSpecifications() output on model_specifications argument to set them manually.")
+        warning("Using default model specificatios. Use defineModelsSpecifications() output on model_specifications argument to set them manually.")
         model_specifications <- defineModelsSpecifications()
       }
 
@@ -627,12 +627,12 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
   } # end bucle for all traits
 
-  print("Model structure used:")
-  print(multi_mdls.str)
-  print("Variance results:")
-  print(traitsVCVPartitionResults$varianceResults)
-  print("Covariance results:")
-  print(traitsVCVPartitionResults$covarianceResults)
+  # message("Model structure used:")
+  # message(multi_mdls.str)
+  # print("Variance results:")
+  # print(traitsVCVPartitionResults$varianceResults)
+  # print("Covariance results:")
+  # print(traitsVCVPartitionResults$covarianceResults)
 
   # Variance
 
@@ -646,13 +646,13 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
       save(list = paste0("traits_variance_partition_results_", environmental_variable),
            file = paste0(results.file, paste0("traits_variance_partition_results_", environmental_variable, ".RData")))
-      print(results.file)
+      message(results.file)
     } else{
       assign(paste0("traits_variance_partition_results"), traitsVCVPartitionResults$varianceResults)
 
       save(list = paste0("traits_variance_partition_results"),
            file = paste0(results.file, "traits_variance_partition_results.RData"))
-      print(results.file)
+      message(results.file)
     }
 
   # Covariance
@@ -662,13 +662,13 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
       save(list = paste0("traits_covariance_partition_results_", environmental_variable),
            file = paste0(results.file, paste0("traits_covariance_partition_results_", environmental_variable, ".RData")))
-      print(results.file)
+      message(results.file)
     } else{
       assign(paste0("traits_covariance_partition_results"), traitsVCVPartitionResults$covarianceResults)
 
       save(list = paste0("traits_covariance_partition_results"),
            file = paste0(results.file, "traits_covariance_partition_results.RData"))
-      print(results.file)
+      message(results.file)
     }
   }
 
