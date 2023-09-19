@@ -89,7 +89,7 @@ Now we can use the function **computeVarianceCovariancePartition** to report the
 
 Let's imagine that we are only interested in computing the phylogenetic and non-phylogenetic variances and covariances. So, for now, let's nos include an environmental variable in the function. In this case, phylogenetic variances and correlation and non-phylogenetic variances and correlation will be reported, jointly with total correlation. We will use the default model specifications, but users can modify this by using the defineModelsSpecifications function to create an object that then can be introduced in the *model_specifications* argument of the **computeVarianceCovariancePartition** function. This will be specially needed with complex data, where number of iterations, burning and thinning will need to be increased. Users can also explore using different priors.
 
-```{r, message=FALSE, include=FALSE}
+```{r, message=FALSE, results='hide'}
 variance_covariance_results.list <- computeVarianceCovariancePartition(
   traits =  c("nonPhylo_G1_trait1", "nonPhylo_G1_trait2", "phylo_G1_trait1", "phylo_G1_trait2"),
   dataset = simulated.data$data,
