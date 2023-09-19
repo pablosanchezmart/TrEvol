@@ -269,18 +269,27 @@ imputeTraits <- function(variables_to_impute = NULL,
 
   if(!is.null(correlation_type)){
     correlation_results$order <- abs(correlation_results[, correlation_type])
-    phyloCov_order <- correlation_results %>%
-      dplyr::arrange(dplyr::desc(order)) %>%
-      dplyr::select(c(trait_1, trait_2, all_of(correlation_type), paste0("p_value_", correlation_type))) %>%
-      dplyr::filter(trait_1 %in% variables_to_impute, trait_2 %in% variables_to_impute)
 
-    imputation.variables_2 <- character()
-    for (i in 1:length(phyloCov_order[, 1])) {
-      impVars <- phyloCov_order[i, ] %>% dplyr::select(trait_1, trait_2)
-      impVars <- c(impVars$trait_1, impVars$trait_2)
-      impVars <- impVars[!impVars %in% imputation.variables_2]
-      imputation.variables_2 <- c(imputation.variables_2, impVars)
+    if(length(correlation_results[, correlation_type]) > 1){
+      phyloCov_order <- correlation_results %>%
+        dplyr::arrange(dplyr::desc(order)) %>%
+        dplyr::select(c(trait_1, trait_2, all_of(correlation_type), paste0("p_value_", correlation_type))) %>%
+        dplyr::filter(trait_1 %in% variables_to_impute, trait_2 %in% variables_to_impute)
+
+      imputation.variables_2 <- character()
+      for (i in 1:length(phyloCov_order[, 1])) {
+        impVars <- phyloCov_order[i, ] %>% dplyr::select(trait_1, trait_2)
+        impVars <- c(impVars$trait_1, impVars$trait_2)
+        impVars <- impVars[!impVars %in% imputation.variables_2]
+        imputation.variables_2 <- c(imputation.variables_2, impVars)
+      }
+    } else{
+      phyloCov_order <- correlation_results
+
+      imputation.variables_2 <- c(correlation_results$trait_1, correlation_results$trait_2)
     }
+
+
 
     # Order the first two traits according to their phylogenetic variance
     if(!is.null(variance_results)){
@@ -392,7 +401,8 @@ imputeTraits <- function(variables_to_impute = NULL,
   ### Results aggregation (for all iterations)
   imputationResults[["round1"]]$modelFormula <- modelName
 
-  ximp_1 <- stats::aggregate(ximp.all[, variables_to_impute], by = list(ximp.all$ID), FUN = mean) %>% dplyr::rename(ID = Group.1)
+  ximp_1 <- stats::aggregate(ximp.all[, variables_to_impute, drop = F], by = list(ximp.all$ID), FUN = mean) %>% dplyr::rename(ID = Group.1)
+
   imputationResults[["round1"]]$ximp <- merge(ximp.all[1:dim(data)[1], c("taxon", "ID")], ximp_1, by = "ID", all.x = T) %>%
     dplyr::select(taxon, all_of(variables_to_impute)) %>%
     dplyr::arrange(taxon)
@@ -403,7 +413,7 @@ imputeTraits <- function(variables_to_impute = NULL,
     dplyr::mutate(Model = modelName)
 
   if (number_iterations > 1) {
-    ximp_1_sd <- stats::aggregate(ximp.all[, variables_to_impute], by = list(ximp.all$ID), FUN = sd) %>% dplyr::rename(ID = Group.1)
+    ximp_1_sd <- stats::aggregate(ximp.all[, variables_to_impute, drop = F], by = list(ximp.all$ID), FUN = sd) %>% dplyr::rename(ID = Group.1)
 
     imputationResults[["round1"]]$ximp_sd <- merge(ximp.all[1:dim(data)[1], c("taxon", "ID")], ximp_1_sd, by = "ID", all.x = T) %>%
       dplyr::select(taxon, all_of(variables_to_impute)) %>% dplyr::arrange(taxon)
@@ -515,7 +525,7 @@ imputeTraits <- function(variables_to_impute = NULL,
     imputationResults[[paste0("round", nround)]]$modelFormula <- modelName
 
 
-    ximp_1 <- stats::aggregate(ximp.all2[, variables_to_impute], by = list(ximp.all2$ID), FUN = mean) %>% dplyr::rename(ID = Group.1)
+    ximp_1 <- stats::aggregate(ximp.all2[, variables_to_impute, drop = F], by = list(ximp.all2$ID), FUN = mean) %>% dplyr::rename(ID = Group.1)
 
     imputationResults[[paste0("round", nround)]]$ximp <- merge(ximp.all2[1:dim(data)[1], c("taxon", "ID")], ximp_1, by = "ID", all.x = T) %>%
       dplyr::select(taxon, all_of(variables_to_impute)) %>%
@@ -526,7 +536,7 @@ imputeTraits <- function(variables_to_impute = NULL,
       dplyr::rename(Variable = Group.1)
 
     if (number_iterations > 1) {
-      ximp_1_sd <- stats::aggregate(ximp.all2[, variables_to_impute], by = list(ximp.all2$ID), FUN = sd) %>% dplyr::rename(ID = Group.1)
+      ximp_1_sd <- stats::aggregate(ximp.all2[, variables_to_impute, drop = F], by = list(ximp.all2$ID), FUN = sd) %>% dplyr::rename(ID = Group.1)
 
       imputationResults[[paste0("round", nround)]]$ximp_sd <- merge(ximp.all2[1:dim(data)[1], c("taxon", "ID")], ximp_1_sd, by = "ID", all.x = T) %>%
         dplyr::select(taxon, all_of(variables_to_impute)) %>% dplyr::arrange(taxon)
@@ -538,6 +548,12 @@ imputeTraits <- function(variables_to_impute = NULL,
       imputationResults[[paste0("round", nround)]]$predictivePerformance_all_iterations <- predictivePerformance.all2
     }
   }
+
+  # Rename terminal taxon
+
+  names(imputationResults[["round1"]]$ximp)[1] <- terminal_taxon
+  names(imputationResults[["round2"]]$ximp)[1] <- terminal_taxon
+  names(imputationResults[["round3"]]$ximp)[1] <- terminal_taxon
 
   return(imputationResults)
 }
