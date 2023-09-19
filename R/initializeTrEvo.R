@@ -5,6 +5,7 @@
 #' @param folder_name (*character*) Name that will be given to the folder within which the results and outputs subfolders will be created.
 #'
 #' @return
+#' @export
 #' @examples
 #' \dontrun{
 #' # Create outputs and results folders.
