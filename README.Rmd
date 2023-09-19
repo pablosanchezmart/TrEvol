@@ -119,7 +119,8 @@ plotNetwork(variance_results = variance_covariance_results.list$varianceResults,
             correlation_type = "phylogenetic_correlation", 
             edge_label = T, 
             only_significant = T, 
-            correlation_threshold = 0.3)
+            correlation_threshold = 0.3,
+            label_size = 1)
 ```
 
 Let's now plot the non-phylogenetic variances and covariances.
