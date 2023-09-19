@@ -211,14 +211,29 @@ plotNetwork <- function (variance_results = NULL,
     nodeSize <- 8
   }
 
-  p <- qgraph::qgraph(correlation.matrix, layout = layout,
-                      vsize = nodeSize, vsize2 = nodeSize, esize = 10 * max(abs(correlation.matrix)),
-                      palette = "pastel", negDashed = T, borders = T, legend = F,
-                      vTrans = 180, fade = F, aspect = T, legend.cex = 0.25,
-                      edge.labels = edge_label, label.cex = 2 * length(vars)/length(vars),
-                      labels = node_label, label.cex = label_size, label.scale = F,
-                      node.label.offset = c(0.5, -3), pie = ps.vars, pieBorder = 1,
-                      DoNotPlot = F, groups = group_variables[, 2], threshold = correlation_threshold)
+  p <- qgraph::qgraph(correlation.matrix,
+                      layout = layout,
+                      vsize = nodeSize,
+                      vsize2 = nodeSize,
+                      esize = 10 * max(abs(correlation.matrix)),
+                      palette = "pastel",
+                      negDashed = T,
+                      borders = T,
+                      legend = F,
+                      vTrans = 180,
+                      fade = F,
+                      aspect = T,
+                      legend.cex = 0.25,
+                      edge.labels = edge_label,
+                      # label.cex = 2 * length(vars)/length(vars),
+                      labels = node_label,
+                      label.cex = label_size,
+                      label.scale = F,
+                      node.label.offset = c(0.5, -3),
+                      pie = ps.vars, pieBorder = 1,
+                      DoNotPlot = F,
+                      groups = group_variables[, 2],
+                      threshold = correlation_threshold)
 
   if(plot_metrics){
     graphics::text(x = 0.5, y = -1, labels = paste0("ED = ", round(networkMetrics$EdgeDensity, 2), "\n",
