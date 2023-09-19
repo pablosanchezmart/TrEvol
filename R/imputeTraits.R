@@ -232,7 +232,7 @@ imputeTraits <- function(variables_to_impute = NULL,
     if(save){
       utils::write.csv(data, paste0(outputs.dir, "phylo_eigenvectors.csv"),
                        row.names = F)
-      print(paste0(outputs.dir, "phylo_eigenvectors.csv"))
+      message(paste0(outputs.dir, "phylo_eigenvectors.csv"))
     }
   } else {
     data <- utils::read.csv(paste0(outputs.dir, "phylo_eigenvectors.csv"),
@@ -242,7 +242,7 @@ imputeTraits <- function(variables_to_impute = NULL,
       number_of_phylo_axis <- length(colnames(data)[stringr::str_detect(colnames(data), "Phylo_axis_")])
     }
 
-    print("loading previously calculated phylogenetic eigenvectors")
+    message("loading previously calculated phylogenetic eigenvectors")
   }
 
   if(number_of_phylo_axis > length(colnames(data)[stringr::str_detect(colnames(data), "Phylo_axis_")])){
@@ -385,7 +385,7 @@ imputeTraits <- function(variables_to_impute = NULL,
       parallel::stopCluster(cl)
 
       row.names(predictivePerformance_n) <- NULL
-      print(predictivePerformance_n)
+      # print(predictivePerformance_n)
 
       ## Results of the first round of imputation (gap filling) per iteration
 
@@ -504,7 +504,7 @@ imputeTraits <- function(variables_to_impute = NULL,
         ## Results of the second round of imputation (gap filling) per iteration
 
         row.names(predictivePerformance_n) <- NULL
-        print(predictivePerformance_n)
+        # print(predictivePerformance_n)
 
         # add imputed variable to the imputatin dataset (may be considered as predictor)
 
