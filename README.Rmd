@@ -89,7 +89,7 @@ Now we can use the function **computeVarianceCovariancePartition** to report the
 
 Let's imagine that we are only interested in computing the phylogenetic and non-phylogenetic variances and covariances. So, for now, let's nos include an environmental variable in the function. In this case, phylogenetic variances and correlation and non-phylogenetic variances and correlation will be reported, jointly with total correlation. We will use the default model specifications, but users can modify this by using the defineModelsSpecifications function to create an object that then can be introduced in the *model_specifications* argument of the **computeVarianceCovariancePartition** function. This will be specially needed with complex data, where number of iterations, burning and thinning will need to be increased. Users can also explore using different priors.
 
-```{r, message=FALSE, results='hide'}
+```{r, message=FALSE, warning=FALSE}
 variance_covariance_results.list <- computeVarianceCovariancePartition(
   traits =  c("nonPhylo_G1_trait1", "nonPhylo_G1_trait2", "phylo_G1_trait1", "phylo_G1_trait2"),
   dataset = simulated.data$data,
@@ -142,7 +142,7 @@ We observe how much of the variance and covariance in the phylo_G1 traits is rel
 
 Let's now ilustrate how to include an environmental variable. This will allow us to calculate four different variance and covariance components: the *non-attributed phylogenetic variance and covariance*, the *phylogenetic environmental variance and covariance*, the *labile environmental variance and covariance* and the *residual variance and covariance*. Let's use the phylo_G1_env variable as an enviornmental variable, which is expected to be related to variances and covariances of phylo_G1 traits in a phylogenetically conserved manner (i.e., phylogenetic environmental variance and covariance).
 
-```{r, message=FALSE}
+```{r, warning=FALSE, message=FALSE}
 variance_covariance_environment_results.list <- computeVarianceCovariancePartition(
   traits =  c("nonPhylo_G1_trait1", "nonPhylo_G1_trait2", "phylo_G1_trait1", "phylo_G1_trait2"),
   environmental_variable = "phylo_G1_env",
@@ -178,7 +178,7 @@ We can see how part of the pattern of variances and covariances of the traits ph
 
 Now, let's use this information to inform an imputation framework performed by the function **imputeTraits** of this package. As our simulated data does not have NAs, let's first produce some NAs (20%) in a variable to impute. Then, we will run the imputeTraits to perform predictions using the variance-covariance structures reported before to inform the process.
 
-```{r, message=FALSE}
+```{r, warning=FALSE, message=FALSE}
 to_impute.data <- simulated.data$data
 to_impute.data[, "phylo_G1_trait1"] <- missForest::prodNA(as.data.frame(simulated.data$data[, "phylo_G1_trait1"]), 0.2)
 
