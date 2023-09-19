@@ -100,8 +100,5 @@ plotData <- function (variables = NULL,
   # plot theme
   p <- p + ggplot2::scale_fill_viridis_d() + ggplot2::theme(panel.spacing = ggtree::unit(panel_space, "lines")) + ggplot2::theme(legend.position = "none")
 
-  # plot
-  print(p)
-
   return(p)
 }
