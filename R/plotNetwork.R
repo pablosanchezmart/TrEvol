@@ -69,10 +69,6 @@ plotNetwork <- function (variance_results = NULL,
     stop("Specify correlation_results argument")
   }
 
-  if(is.null(variance_type)){
-    stop("Specify variance_type argument")
-  }
-
   if(is.null(correlation_type)){
     stop("Specify correlation_type argument")
   }
