@@ -36,6 +36,7 @@ Imports:
     phytools,
     qgraph,
     randomForest,
+    RChronoModel,
     rlang,
     stringr
 Suggests: 

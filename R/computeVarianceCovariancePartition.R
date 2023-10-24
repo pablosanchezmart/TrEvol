@@ -137,7 +137,9 @@ computeVarianceCovariancePartition <- function(traits = NULL,
       trait1 <- as.character(model.descr$trait1)
       trait2 <- as.character(model.descr$trait2)
 
-      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait1, trait2, environmental_variable))
+      modellingData <- completePhyloData(phylogeny = phylogeny,
+                                         dataset = dataset,
+                                         traits = c(trait1, trait2, environmental_variable))
 
       if (is.null(model_specifications)) {
         warning("Using default model specificatios. Use defineModelsSpecifications() output on model_specifications argument to set them manually.")
@@ -175,7 +177,8 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
       mdlPhyloEnv$name <- fix.frml
 
-      model.diagnostics <- diagnoseModels(model = mdlPhyloEnv, verbose = verbose)
+      model.diagnostics <- diagnoseModels(model = mdlPhyloEnv,
+                                          verbose = verbose)
 
       #### VARIANCE CALCULATIONS ----------------------------------------------- ####
 
@@ -186,12 +189,19 @@ computeVarianceCovariancePartition <- function(traits = NULL,
       total_variance_t1 <- abs(mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait1, ".animal")] +
                                  mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait1, ".units")])
 
+      # Significance
+      total_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(total_variance_t1)[2])
+      total_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(total_variance_t1)[3])
       total_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_variance_t1))) # Pvalue
 
       # Trait 2
 
       total_variance_t2 <- abs(mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", trait2, ".animal")]) +
         abs(mdlPhyloEnv$VCV[, paste0("trait", trait2, ":trait", trait2, ".units")])
+
+      # Significance
+      total_variance_t2_lCI <- as.numeric(RChronoModel::CredibleInterval(total_variance_t2)[2])
+      total_variance_t2_hCI <- as.numeric(RChronoModel::CredibleInterval(total_variance_t2)[3])
 
       total_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_variance_t2))) # Pvalue
 
@@ -206,6 +216,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
         total_phylogenetic_variance_t1 <- total_phylogenetic_variance_t1 / total_variance_t1
       }
 
+      # Significance
+      total_phylogenetic_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(total_phylogenetic_variance_t1)[2])
+      total_phylogenetic_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(total_phylogenetic_variance_t1)[3])
+
       total_phylogenetic_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_phylogenetic_variance_t1))) # Pvalue
 
       # Trait 2
@@ -215,6 +229,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
       if(show_relative_variance){
         total_phylogenetic_variance_t2 <- total_phylogenetic_variance_t2 / total_variance_t2
       }
+
+      # Significance
+      total_phylogenetic_variance_t2_lCI <- as.numeric(RChronoModel::CredibleInterval(total_phylogenetic_variance_t2)[2])
+      total_phylogenetic_variance_t2_hCI <- as.numeric(RChronoModel::CredibleInterval(total_phylogenetic_variance_t2)[3])
 
       total_phylogenetic_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_phylogenetic_variance_t2))) # Pvalue
 
@@ -229,6 +247,11 @@ computeVarianceCovariancePartition <- function(traits = NULL,
         total_non_phylogenetic_variance_t1 <- total_non_phylogenetic_variance_t1 / total_variance_t1
       }
 
+      # Significance
+      total_non_phylogenetic_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(total_non_phylogenetic_variance_t1)[2])
+      total_non_phylogenetic_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(total_non_phylogenetic_variance_t1)[3])
+
+
       total_non_phylogenetic_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_non_phylogenetic_variance_t1))) # Pvalue
 
       # Trait 2
@@ -238,6 +261,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
       if(show_relative_variance){
         total_non_phylogenetic_variance_t2 <- total_non_phylogenetic_variance_t2 / total_variance_t2
       }
+
+      # Significance
+      total_non_phylogenetic_variance_t2_lCI <- as.numeric(RChronoModel::CredibleInterval(total_non_phylogenetic_variance_t2)[2])
+      total_non_phylogenetic_variance_t2_hCI <- as.numeric(RChronoModel::CredibleInterval(total_non_phylogenetic_variance_t2)[3])
 
       total_non_phylogenetic_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_non_phylogenetic_variance_t2))) # Pvalue
 
@@ -260,6 +287,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
           non_attributed_phylogenetic_variance_t1 <- non_attributed_phylogenetic_variance_t1 / total_variance_t1
         }
 
+        # Significance
+        non_attributed_phylogenetic_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(non_attributed_phylogenetic_variance_t1)[2])
+        non_attributed_phylogenetic_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(non_attributed_phylogenetic_variance_t1)[3])
+
         non_attributed_phylogenetic_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(non_attributed_phylogenetic_variance_t1))) # Pvalue
 
         # Trait 2
@@ -274,6 +305,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
         if(show_relative_variance){
           non_attributed_phylogenetic_variance_t2 <- non_attributed_phylogenetic_variance_t2 / total_variance_t2
         }
+
+        # Significance
+        non_attributed_phylogenetic_variance_t2_lCI <- as.numeric(RChronoModel::CredibleInterval(non_attributed_phylogenetic_variance_t2)[2])
+        non_attributed_phylogenetic_variance_t2_hCI <- as.numeric(RChronoModel::CredibleInterval(non_attributed_phylogenetic_variance_t2)[3])
 
         non_attributed_phylogenetic_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(non_attributed_phylogenetic_variance_t2))) # Pvalue
 
@@ -292,6 +327,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
           environmental_phylogenetic_variance_t1 <- environmental_phylogenetic_variance_t1 / total_variance_t1
         }
 
+        # Significance
+        environmental_phylogenetic_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(environmental_phylogenetic_variance_t1)[2])
+        environmental_phylogenetic_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(environmental_phylogenetic_variance_t1)[3])
+
         environmental_phylogenetic_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(environmental_phylogenetic_variance_t1))) # Pvalue
 
         # Trait 2
@@ -305,6 +344,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
         if(show_relative_variance){
           environmental_phylogenetic_variance_t2 <- environmental_phylogenetic_variance_t2 / total_variance_t2
         }
+
+        # Significance
+        environmental_phylogenetic_variance_t2_lCI <- as.numeric(RChronoModel::CredibleInterval(environmental_phylogenetic_variance_t2)[2])
+        environmental_phylogenetic_variance_t2_hCI <- as.numeric(RChronoModel::CredibleInterval(environmental_phylogenetic_variance_t2)[3])
 
         environmental_phylogenetic_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(environmental_phylogenetic_variance_t2))) # Pvalue
 
@@ -323,6 +366,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
           labile_environmental_variance_t1 <- labile_environmental_variance_t1 / total_variance_t1
         }
 
+        # Significance
+        labile_environmental_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(labile_environmental_variance_t1)[2])
+        labile_environmental_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(labile_environmental_variance_t1)[3])
+
         labile_environmental_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(labile_environmental_variance_t1))) # Pvalue
 
         # Trait 2
@@ -336,6 +383,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
         if(show_relative_variance){
           labile_environmental_variance_t2 <- labile_environmental_variance_t2 / total_variance_t2
         }
+
+        # Significance
+        labile_environmental_variance_t2_lCI <- as.numeric(RChronoModel::CredibleInterval(labile_environmental_variance_t2)[2])
+        labile_environmental_variance_t2_hCI <- as.numeric(RChronoModel::CredibleInterval(labile_environmental_variance_t2)[3])
 
         labile_environmental_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(labile_environmental_variance_t2))) # Pvalue
 
@@ -355,6 +406,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
           residual_variance_t1 <- residual_variance_t1 / total_variance_t1
         }
 
+        # Significance
+        residual_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(residual_variance_t1)[2])
+        residual_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(residual_variance_t1)[3])
+
         residual_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(residual_variance_t1))) # Pvalue
 
         # Trait 2
@@ -370,11 +425,16 @@ computeVarianceCovariancePartition <- function(traits = NULL,
           residual_variance_t2 <- residual_variance_t2 / total_variance_t2
         }
 
+        # Significance
+        residual_variance_t2_lCI <- as.numeric(RChronoModel::CredibleInterval(residual_variance_t2)[2])
+        residual_variance_t2_hCI <- as.numeric(RChronoModel::CredibleInterval(residual_variance_t2)[3])
+
         residual_variance_t2_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(residual_variance_t2))) # Pvalue
       }
 
 
       if(length(traits) >= 2){
+
         #### COVARIANCE CALCULATIONS --------------------------------------------- ####
         ### Total covariance ####
 
@@ -383,6 +443,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
         # Correlation
           total_covariance <- total_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
+
+          # Significance
+          total_covariance_lCI <- as.numeric(RChronoModel::CredibleInterval(total_covariance)[2])
+          total_covariance_hCI <- as.numeric(RChronoModel::CredibleInterval(total_covariance)[3])
 
         total_covariance_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_covariance))) # Pvalue
 
@@ -394,6 +458,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
         # Correlation
           total_phylogenetic_covariance <- total_phylogenetic_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
 
+          # Significance
+          total_phylogenetic_covariance_lCI <- as.numeric(RChronoModel::CredibleInterval(total_phylogenetic_covariance)[2])
+          total_phylogenetic_covariance_hCI <- as.numeric(RChronoModel::CredibleInterval(total_phylogenetic_covariance)[3])
+
         total_phylogenetic_covariance_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_phylogenetic_covariance))) # Pvalue
 
 
@@ -403,6 +471,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
         # Correlation
           total_non_phylogenetic_covariance <- total_non_phylogenetic_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
+
+          # Significance
+          total_non_phylogenetic_covariance_lCI <- as.numeric(RChronoModel::CredibleInterval(total_non_phylogenetic_covariance)[2])
+          total_non_phylogenetic_covariance_hCI <- as.numeric(RChronoModel::CredibleInterval(total_non_phylogenetic_covariance)[3])
 
         total_non_phylogenetic_covariance_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_non_phylogenetic_covariance))) # Pvalue
 
@@ -424,6 +496,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
           # Correlation
             non_attributed_phylogenetic_covariance <- non_attributed_phylogenetic_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
 
+            # Significance
+            non_attributed_phylogenetic_covariance_lCI <- as.numeric(RChronoModel::CredibleInterval(non_attributed_phylogenetic_covariance)[2])
+            non_attributed_phylogenetic_covariance_hCI <- as.numeric(RChronoModel::CredibleInterval(non_attributed_phylogenetic_covariance)[3])
+
           non_attributed_phylogenetic_covariance_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(non_attributed_phylogenetic_covariance))) # Pvalue
 
 
@@ -438,6 +514,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
           # Correlation
             environmental_phylogenetic_covariance <- environmental_phylogenetic_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
 
+            # Significance
+            environmental_phylogenetic_covariance_lCI <- as.numeric(RChronoModel::CredibleInterval(environmental_phylogenetic_covariance)[2])
+            environmental_phylogenetic_covariance_hCI <- as.numeric(RChronoModel::CredibleInterval(environmental_phylogenetic_covariance)[3])
+
           environmental_phylogenetic_covariance_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(environmental_phylogenetic_covariance))) # Pvalue
 
 
@@ -451,6 +531,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
           # Correlation
             labile_environmental_covariance <- labile_environmental_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
+
+            # Significance
+            labile_environmental_covariance_lCI <- as.numeric(RChronoModel::CredibleInterval(labile_environmental_covariance)[2])
+            labile_environmental_covariance_hCI <- as.numeric(RChronoModel::CredibleInterval(labile_environmental_covariance)[3])
 
           labile_environmental_covariance_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(labile_environmental_covariance))) # Pvalue
 
@@ -468,6 +552,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
           # Correlation
             residual_covariance <- residual_covariance  / (sqrt( ((total_variance_t1) * (total_variance_t2)) ) )
+
+            # Significance
+            residual_covariance_lCI <- as.numeric(RChronoModel::CredibleInterval(residual_covariance)[2])
+            residual_covariance_hCI <- as.numeric(RChronoModel::CredibleInterval(residual_covariance)[3])
 
           residual_covariance_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(residual_covariance))) # Pvalue
         }
@@ -489,7 +577,9 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                             "number_observations" = length(modellingData$dta$animal),
                                                             "phylogenetic_variance" = mean(total_phylogenetic_variance_t1),
                                                             "non_phylogenetic_variance" = mean(total_non_phylogenetic_variance_t1),
-                                                            "p_value_phylogenetic_variance" = total_phylogenetic_variance_t1_pvalue
+                                                            "p_value_phylogenetic_variance" = total_phylogenetic_variance_t1_pvalue,
+                                                            "low_CI_phylogenetic_variance" = total_phylogenetic_variance_t1_lCI,
+                                                            "high_CI_phylogenetic_variance" = total_phylogenetic_variance_t1_hCI
         )
 
         VCVPartitionResults$variancePartitionDistributions[[paste0("phylogenetic_variance_", trait1)]] <- total_phylogenetic_variance_t1
@@ -502,9 +592,18 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                          "environmental_phylogenetic_variance" = mean(environmental_phylogenetic_variance_t1),
                                                          "labile_environmental_variance" = mean(labile_environmental_variance_t1),
                                                          "residual_variance" = mean(residual_variance_t1),
+
                                                          "p_value_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_pvalue,
+                                                         "low_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_lCI,
+                                                         "high_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_hCI,
+
                                                          "p_value_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_pvalue,
-                                                         "p_value_labile_environmental_variance" = environmental_phylogenetic_variance_t1_pvalue
+                                                         "low_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_lCI,
+                                                         "high_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_hCI,
+
+                                                         "p_value_labile_environmental_variance" = labile_environmental_variance_t1_pvalue,
+                                                         "low_CI_labile_environmental_variance" = labile_environmental_variance_t1_lCI,
+                                                         "high_CI_labile_environmental_variance" = labile_environmental_variance_t1_hCI
           )
 
           VCVPartitionResults$variancePartitionDistributions[[paste0("non_attributed_phylogenetic_variance", trait1)]] <- non_attributed_phylogenetic_variance_t1
@@ -522,7 +621,10 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                            "number_observations" = length(modellingData$dta$animal),
                                            "phylogenetic_variance" = mean(total_phylogenetic_variance_t2),
                                            "non_phylogenetic_variance" = mean(total_non_phylogenetic_variance_t2),
-                                           "p_value_phylogenetic_variance" = total_phylogenetic_variance_t2_pvalue
+
+                                           "p_value_phylogenetic_variance" = total_phylogenetic_variance_t2_pvalue,
+                                           "low_CI_phylogenetic_variance" = total_phylogenetic_variance_t2_lCI,
+                                           "high_CI_phylogenetic_variance" = total_phylogenetic_variance_t2_hCI
         )
 
         VCVPartitionResults$variancePartitionDistributions[[paste0("phylogenetic_variance_", trait2)]] <- total_phylogenetic_variance_t2
@@ -535,9 +637,18 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                         "environmental_phylogenetic_variance" = mean(environmental_phylogenetic_variance_t2),
                                         "labile_environmental_variance" = mean(labile_environmental_variance_t2),
                                         "residual_variance" = mean(residual_variance_t2),
+
                                         "p_value_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t2_pvalue,
+                                        "low_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t2_lCI,
+                                        "high_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t2_hCI,
+
                                         "p_value_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t2_pvalue,
-                                        "p_value_labile_environmental_variance" = environmental_phylogenetic_variance_t2_pvalue
+                                        "low_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t2_lCI,
+                                        "high_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t2_hCI,
+
+                                        "p_value_labile_environmental_variance" = labile_environmental_variance_t2_pvalue,
+                                        "low_CI_environmental_phylogenetic_variance" = labile_environmental_variance_t2_lCI,
+                                        "high_CI_environmental_phylogenetic_variance" = labile_environmental_variance_t2_hCI
           )
 
           VCVPartitionResults$variancePartitionDistributions[[paste0("non_attributed_phylogenetic_variance", trait2)]] <- non_attributed_phylogenetic_variance_t2
@@ -566,9 +677,18 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                                "total_correlation" = mean(total_covariance),
                                                                "phylogenetic_correlation" = mean(total_phylogenetic_covariance),
                                                                "non_phylogenetic_correlation" = mean(total_non_phylogenetic_covariance),
+
                                                                "p_value_total_correlation" = total_covariance_pvalue,
+                                                               "low_CI_total_correlation" = total_covariance_t2_lCI,
+                                                               "high_CI_total_correlation" = total_covariance_t2_hCI,
+
                                                                "p_value_phylogenetic_correlation" = total_phylogenetic_covariance_pvalue,
-                                                               "p_value_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_pvalue
+                                                               "low_CI_phylogenetic_correlation" = total_phylogenetic_covariance_lCI,
+                                                               "high_CI_phylogenetic_correlation" = total_phylogenetic_covariance_hCI,
+
+                                                               "p_value_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_pvalue,
+                                                               "low_CI_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_lCI,
+                                                               "high_CI_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_hCI
         )
 
         VCVPartitionResults$covariancePartitionDistributions <- list("total_correlation" = total_covariance,
@@ -585,9 +705,20 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                             "residual_correlation" = mean(residual_covariance),
 
                                                             "p_value_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_pvalue,
+                                                            "low_CI_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_lCI,
+                                                            "high_CI_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_hCI,
+
                                                             "p_value_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_pvalue,
+                                                            "low_CI_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_lCI,
+                                                            "high_CI_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_hCI,
+
                                                             "p_value_labile_environmental_correlation" = labile_environmental_covariance_pvalue,
-                                                            "p_value_residual_correlation" = residual_covariance_pvalue
+                                                            "low_CI_labile_environmental_correlation" = labile_environmental_covariance_lCI,
+                                                            "high_CI_labile_environmental_correlation" = labile_environmental_covariance_hCI,
+
+                                                            "p_value_residual_correlation" = residual_covariance_pvalue,
+                                                            "low_CI_residual_correlation" = residual_covariance_lCI,
+                                                            "high_CI_residual_correlation" = residual_covariance_hCI
           )
 
           VCVPartitionResults$covariancePartitionDistributions[["non_attributed_phylogenetic_correlation"]] <- non_attributed_phylogenetic_covariance
