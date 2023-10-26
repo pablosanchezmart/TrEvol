@@ -577,9 +577,11 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                             "number_observations" = length(modellingData$dta$animal),
                                                             "phylogenetic_variance" = mean(total_phylogenetic_variance_t1),
                                                             "non_phylogenetic_variance" = mean(total_non_phylogenetic_variance_t1),
+
                                                             "p_value_phylogenetic_variance" = total_phylogenetic_variance_t1_pvalue,
                                                             "low_CI_phylogenetic_variance" = total_phylogenetic_variance_t1_lCI,
-                                                            "high_CI_phylogenetic_variance" = total_phylogenetic_variance_t1_hCI
+                                                            "high_CI_phylogenetic_variance" = total_phylogenetic_variance_t1_hCI,
+                                                            "CI_significance_phylogenetic_variance" = ifelse(total_phylogenetic_variance_t1_lCI < 0 && total_phylogenetic_variance_t1_hCI > 0, "no", "yes")
         )
 
         VCVPartitionResults$variancePartitionDistributions[[paste0("phylogenetic_variance_", trait1)]] <- total_phylogenetic_variance_t1
@@ -596,14 +598,17 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                          "p_value_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_pvalue,
                                                          "low_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_lCI,
                                                          "high_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_hCI,
+                                                         "CI_significance_non_attributed_phylogenetic_variance" = ifelse(non_attributed_phylogenetic_variance_t1_lCI < 0 && non_attributed_phylogenetic_variance_t1_hCI > 0, "no", "yes"),
 
                                                          "p_value_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_pvalue,
                                                          "low_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_lCI,
                                                          "high_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_hCI,
+                                                         "CI_significance_environmental_phylogenetic_variance" = ifelse(environmental_phylogenetic_variance_t1_lCI < 0 && environmental_phylogenetic_variance_t1_hCI > 0, "no", "yes"),
 
                                                          "p_value_labile_environmental_variance" = labile_environmental_variance_t1_pvalue,
                                                          "low_CI_labile_environmental_variance" = labile_environmental_variance_t1_lCI,
-                                                         "high_CI_labile_environmental_variance" = labile_environmental_variance_t1_hCI
+                                                         "high_CI_labile_environmental_variance" = labile_environmental_variance_t1_hCI,
+                                                         "CI_significance_labile_environmental_variance" = ifelse(labile_environmental_variance_t1_lCI < 0 && labile_environmental_variance_t1_hCI > 0, "no", "yes")
           )
 
           VCVPartitionResults$variancePartitionDistributions[[paste0("non_attributed_phylogenetic_variance", trait1)]] <- non_attributed_phylogenetic_variance_t1
@@ -624,7 +629,8 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
                                            "p_value_phylogenetic_variance" = total_phylogenetic_variance_t2_pvalue,
                                            "low_CI_phylogenetic_variance" = total_phylogenetic_variance_t2_lCI,
-                                           "high_CI_phylogenetic_variance" = total_phylogenetic_variance_t2_hCI
+                                           "high_CI_phylogenetic_variance" = total_phylogenetic_variance_t2_hCI,
+                                           "CI_significance_phylogenetic_variance" = ifelse(total_phylogenetic_variance_t2_lCI < 0 && total_phylogenetic_variance_t2_hCI > 0, "no", "yes")
         )
 
         VCVPartitionResults$variancePartitionDistributions[[paste0("phylogenetic_variance_", trait2)]] <- total_phylogenetic_variance_t2
@@ -641,14 +647,17 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                         "p_value_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t2_pvalue,
                                         "low_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t2_lCI,
                                         "high_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t2_hCI,
+                                        "CI_significance_non_attributed_phylogenetic_variance" = ifelse(non_attributed_phylogenetic_variance_t2_lCI < 0 && non_attributed_phylogenetic_variance_t2_hCI > 0, "no", "yes"),
 
                                         "p_value_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t2_pvalue,
                                         "low_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t2_lCI,
                                         "high_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t2_hCI,
+                                        "CI_significance_environmental_phylogenetic_variance" = ifelse(environmental_phylogenetic_variance_t2_lCI < 0 && environmental_phylogenetic_variance_t2_hCI > 0, "no", "yes"),
 
                                         "p_value_labile_environmental_variance" = labile_environmental_variance_t2_pvalue,
-                                        "low_CI_environmental_phylogenetic_variance" = labile_environmental_variance_t2_lCI,
-                                        "high_CI_environmental_phylogenetic_variance" = labile_environmental_variance_t2_hCI
+                                        "low_CI_labile_environmental_variance" = labile_environmental_variance_t2_lCI,
+                                        "high_CI_labile_environmental_variance" = labile_environmental_variance_t2_hCI,
+                                        "CI_significance_labile_environmental_variance" = ifelse(labile_environmental_variance_t2_lCI < 0 && labile_environmental_variance_t2_hCI > 0, "no", "yes")
           )
 
           VCVPartitionResults$variancePartitionDistributions[[paste0("non_attributed_phylogenetic_variance", trait2)]] <- non_attributed_phylogenetic_variance_t2
@@ -679,16 +688,19 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                                "non_phylogenetic_correlation" = mean(total_non_phylogenetic_covariance),
 
                                                                "p_value_total_correlation" = total_covariance_pvalue,
-                                                               "low_CI_total_correlation" = total_covariance_t2_lCI,
-                                                               "high_CI_total_correlation" = total_covariance_t2_hCI,
+                                                               "low_CI_total_correlation" = total_covariance_lCI,
+                                                               "high_CI_total_correlation" = total_covariance_hCI,
+                                                               "CI_significance_total_correlation" = ifelse(total_covariance_lCI < 0 && total_covariance_hCI > 0, "no", "yes"),
 
                                                                "p_value_phylogenetic_correlation" = total_phylogenetic_covariance_pvalue,
                                                                "low_CI_phylogenetic_correlation" = total_phylogenetic_covariance_lCI,
                                                                "high_CI_phylogenetic_correlation" = total_phylogenetic_covariance_hCI,
+                                                               "CI_significance_phylogenetic_correlation" = ifelse(total_phylogenetic_covariance_lCI < 0 && total_phylogenetic_covariance_hCI > 0, "no", "yes"),
 
                                                                "p_value_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_pvalue,
                                                                "low_CI_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_lCI,
-                                                               "high_CI_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_hCI
+                                                               "high_CI_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_hCI,
+                                                               "CI_significance_non_phylogenetic_correlation" = ifelse(total_non_phylogenetic_covariance_lCI < 0 && total_non_phylogenetic_covariance_hCI > 0, "no", "yes")
         )
 
         VCVPartitionResults$covariancePartitionDistributions <- list("total_correlation" = total_covariance,
@@ -707,18 +719,22 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                             "p_value_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_pvalue,
                                                             "low_CI_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_lCI,
                                                             "high_CI_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_hCI,
+                                                            "CI_non_attributed_phylogenetic_correlation" = ifelse(non_attributed_phylogenetic_covariance_lCI < 0 && non_attributed_phylogenetic_covariance_hCI > 0, "no", "yes"),
 
                                                             "p_value_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_pvalue,
                                                             "low_CI_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_lCI,
                                                             "high_CI_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_hCI,
+                                                            "CI_environmental_phylogenetic_correlation" = ifelse(environmental_phylogenetic_covariance_lCI < 0 && environmental_phylogenetic_covariance_hCI > 0, "no", "yes"),
 
                                                             "p_value_labile_environmental_correlation" = labile_environmental_covariance_pvalue,
                                                             "low_CI_labile_environmental_correlation" = labile_environmental_covariance_lCI,
                                                             "high_CI_labile_environmental_correlation" = labile_environmental_covariance_hCI,
+                                                            "CI_labile_environmental_correlation" = ifelse(labile_environmental_covariance_lCI < 0 && labile_environmental_covariance_hCI > 0, "no", "yes"),
 
                                                             "p_value_residual_correlation" = residual_covariance_pvalue,
                                                             "low_CI_residual_correlation" = residual_covariance_lCI,
-                                                            "high_CI_residual_correlation" = residual_covariance_hCI
+                                                            "high_CI_residual_correlation" = residual_covariance_hCI,
+                                                            "CI_residual_correlation" = ifelse(residual_covariance_lCI < 0 && residual_covariance_hCI > 0, "no", "yes")
           )
 
           VCVPartitionResults$covariancePartitionDistributions[["non_attributed_phylogenetic_correlation"]] <- non_attributed_phylogenetic_covariance
