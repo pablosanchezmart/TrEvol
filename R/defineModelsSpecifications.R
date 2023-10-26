@@ -38,7 +38,9 @@
 #'  G=list(G1=list(V=diag(3)/2,nu=2)))
 # )
 # }
-defineModelsSpecifications <- function(number_iterations = 100, burning = 10, thinning = 2,
+defineModelsSpecifications <- function(number_iterations = 1000,
+                                       burning = 100,
+                                       thinning = 5,
                                           # One response variable, phylogeny and residuals
                                           uniresponse_prior = list(
                                             R = list(V = 1, nu = 0.002),
