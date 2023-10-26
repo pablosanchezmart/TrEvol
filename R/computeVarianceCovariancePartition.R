@@ -719,22 +719,22 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                                             "p_value_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_pvalue,
                                                             "low_CI_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_lCI,
                                                             "high_CI_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_hCI,
-                                                            "CI_non_attributed_phylogenetic_correlation" = ifelse(non_attributed_phylogenetic_covariance_lCI < 0 && non_attributed_phylogenetic_covariance_hCI > 0, "no", "yes"),
+                                                            "CI_significance_non_attributed_phylogenetic_correlation" = ifelse(non_attributed_phylogenetic_covariance_lCI < 0 && non_attributed_phylogenetic_covariance_hCI > 0, "no", "yes"),
 
                                                             "p_value_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_pvalue,
                                                             "low_CI_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_lCI,
                                                             "high_CI_environmental_phylogenetic_correlation" = environmental_phylogenetic_covariance_hCI,
-                                                            "CI_environmental_phylogenetic_correlation" = ifelse(environmental_phylogenetic_covariance_lCI < 0 && environmental_phylogenetic_covariance_hCI > 0, "no", "yes"),
+                                                            "CI_significance_environmental_phylogenetic_correlation" = ifelse(environmental_phylogenetic_covariance_lCI < 0 && environmental_phylogenetic_covariance_hCI > 0, "no", "yes"),
 
                                                             "p_value_labile_environmental_correlation" = labile_environmental_covariance_pvalue,
                                                             "low_CI_labile_environmental_correlation" = labile_environmental_covariance_lCI,
                                                             "high_CI_labile_environmental_correlation" = labile_environmental_covariance_hCI,
-                                                            "CI_labile_environmental_correlation" = ifelse(labile_environmental_covariance_lCI < 0 && labile_environmental_covariance_hCI > 0, "no", "yes"),
+                                                            "CI_significance_labile_environmental_correlation" = ifelse(labile_environmental_covariance_lCI < 0 && labile_environmental_covariance_hCI > 0, "no", "yes"),
 
                                                             "p_value_residual_correlation" = residual_covariance_pvalue,
                                                             "low_CI_residual_correlation" = residual_covariance_lCI,
                                                             "high_CI_residual_correlation" = residual_covariance_hCI,
-                                                            "CI_residual_correlation" = ifelse(residual_covariance_lCI < 0 && residual_covariance_hCI > 0, "no", "yes")
+                                                            "CI_significance_residual_correlation" = ifelse(residual_covariance_lCI < 0 && residual_covariance_hCI > 0, "no", "yes")
           )
 
           VCVPartitionResults$covariancePartitionDistributions[["non_attributed_phylogenetic_correlation"]] <- non_attributed_phylogenetic_covariance
