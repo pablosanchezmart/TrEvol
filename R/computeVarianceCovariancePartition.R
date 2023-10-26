@@ -2,7 +2,9 @@
 #'
 #'Compute total variance and covariance and separate it into its phylogenetic and non-phylogenetic components.
 #' If environmental variable is included, four variance and covariance is separated into four components: non-attributed phylogenetic variance-covariance, environmental
-#'phylogenetic variance-covariance, non-phylogenetic (labile) environmental variance-covariance and residual variance-covariance.
+#'phylogenetic variance-covariance, non-phylogenetic (labile) environmental variance-covariance and residual variance-covariance. Credible intervals for each estimate are reported,
+#'from which statistical significance can be assessed (significant when CI does not contain zero). Significance based on Credible Intervals is displayed for each estimate. P-value related
+#'to statistical significance are also provided as an alternative assessment.
 #'
 #'The function can automaticallys save results. For that, first run initializeTrEvol to create the folders and subfolders structure.
 #'
