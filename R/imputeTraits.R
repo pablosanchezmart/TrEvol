@@ -108,7 +108,7 @@ imputeTraits <- function(variables_to_impute = NULL,
       phyloPreds <- character()
 
       # only for phylogenetically traits
-      if(variance_results[variance_results$trait == imputationVariable, "p_value_phylogenetic_variance"] < 0.05){
+      if(variance_results[variance_results$trait == imputationVariable, "CI_significance_phylogenetic_variance"] == "yes"){
         phyloPreds <- c(paste0("Phylo_axis_", 1:nPhyloCoords))
       }
     }
@@ -120,10 +120,10 @@ imputeTraits <- function(variables_to_impute = NULL,
       correlation_results$order <- abs(correlation_results[, "total_correlation"])
       predictors_order <- correlation_results %>%
         dplyr::arrange(dplyr::desc(order)) %>%
-        dplyr::select(c(trait_1, trait_2, total_correlation, p_value_total_correlation)) %>%
+        dplyr::select(c(trait_1, trait_2, total_correlation, CI_significance_total_correlation)) %>%
         dplyr::filter(trait_1 == imputationVariable | trait_2 == imputationVariable) %>%
         dplyr::filter(trait_1 %in% potentialPredictors | trait_2 %in% potentialPredictors) %>%
-        dplyr::filter(p_value_total_correlation < 0.05)
+        dplyr::filter(CI_significance_total_correlation == "yes")
 
       # if(length(predictors_order) < 1){
       # print("not significant effects, selecting those with the highest correlation as predictors (|corr| > Q3)")
@@ -141,14 +141,14 @@ imputeTraits <- function(variables_to_impute = NULL,
 
 
     # traits
-    suitabletraits_1 <- phyloCov_order[phyloCov_order$trait_1 == imputationVariable, c("trait_2", correlation_type,  paste0("p_value_", correlation_type))] %>%
+    suitabletraits_1 <- phyloCov_order[phyloCov_order$trait_1 == imputationVariable, c("trait_2", correlation_type,  paste0("CI_significance_", correlation_type))] %>%
       dplyr::rename(trait = trait_2)
-    suitabletraits_2 <- phyloCov_order[phyloCov_order$trait_2 == imputationVariable, c("trait_1", correlation_type,  paste0("p_value_", correlation_type))] %>%
+    suitabletraits_2 <- phyloCov_order[phyloCov_order$trait_2 == imputationVariable, c("trait_1", correlation_type,  paste0("CI_significance_", correlation_type))] %>%
       dplyr::rename(trait = trait_1)
     suitabletraits <- rbind(suitabletraits_1, suitabletraits_2)
 
     suitableVariables <- character()
-    suitableVariables <- suitabletraits[suitabletraits[, paste0("p_value_", correlation_type)] <= 0.5, "trait"]
+    suitableVariables <- suitabletraits[suitabletraits[, paste0("CI_significance_", correlation_type)] == "yes", "trait"]
 
     # if(length(suitableVariables) < 1){
     #   print("not significant effects, selecting those with the highest correlation as predictors (|corr| > Q3)")
@@ -273,7 +273,7 @@ imputeTraits <- function(variables_to_impute = NULL,
     if(length(correlation_results[, correlation_type]) > 1){
       phyloCov_order <- correlation_results %>%
         dplyr::arrange(dplyr::desc(order)) %>%
-        dplyr::select(c(trait_1, trait_2, all_of(correlation_type), paste0("p_value_", correlation_type))) %>%
+        dplyr::select(c(trait_1, trait_2, all_of(correlation_type), paste0("CI_significance_", correlation_type))) %>%
         dplyr::filter(trait_1 %in% variables_to_impute, trait_2 %in% variables_to_impute)
 
       imputation.variables_2 <- character()
