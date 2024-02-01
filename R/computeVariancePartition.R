@@ -1,18 +1,87 @@
-#' Variance partition including (or not) environment
+#' Phylogenetic variance partition including (or not) one or more environmental variables
 #'
-#' @param traits (character) Name of the trait or list of traits. It  must be contained in the dataset.
-#' @param environmental.variables (character) Names of the environmental variables They must be contained in dataset.
-#' @param dataset (data frame) Dataset containing the trait of interest and a column named "animal" describing terminal taxa of phylogeny.
-#' @param phylogeny (phylo) Phylogeny with tip labels contained in dataset$animal
-#' @param model.specifications (list) Mcmcglmm models specifications. See defineModelsSpecification.
-#' @param force.run (logical) If false, models already run are not runned again.
-#' @param save (logical) If false, resulta re not saved.
+#'Compute total variance and separate it into its phylogenetic and non-phylogenetic components.
+#' If environmental variable is included, four variance is separated into four components: non-attributed phylogenetic variance, environmental
+#'phylogenetic variance, non-phylogenetic (labile) environmental variance and residual variance. Credible intervals for each estimate are reported,
+#'from which statistical significance can be assessed (significant when CI does not contain zero). Significance based on Credible Intervals is displayed for each estimate. P-value related
+#'to statistical significance are also provided as an alternative assessment.
+#'This is a version of the computeVariancevariancePartition function that allows to include more than one environmental factor at the same time.
+#'
+#'The function can automaticallys save results. For that, first run initializeTrEvol to create the folders and subfolders structure.
+#'
+#' @param traits (*character*). Name of the trait or list of traits to calculate variances. They must be in the dataset.
+#' @param environmental_variables (*character*). Names of the environmental variables They must be contained in dataset.
+#' @param dataset (*data frame*). Data frame containing the trait of interest and a column describing terminal appearing as tip labels of the phylogeny.
+#' @param terminal_taxa (*character*). Terminal taxon as named in the dataset (e.g., species).
+#' @param phylogeny (*phylo*) Phylogeny with tip labels contained in the terminal taxon column of the dataset.
+#' @param model_specifications (*list*). Mcmcglmm models specifications as specified by the defineModelsSpecification of this package. If not defined, the function internally uses the default in defineModelsSpecification function.
+#' @param force_run (*logical*) If false, models already run and saved in outputs folder are not run again.
+#' @param save (*logical*) If false, results are not saved in the outputs folder.
+#' @param verbose (*logical*) If false, function runs quietly. Otherwise, iterations and diagnostics are shown while running.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-computeVariancePartition <- function(traits, environmental.variables = NULL, dataset, phylogeny, model.specifications = NULL, force.run = T, save = T) {
+#' \dontrun{
+#' # Simulate example data
+#' simulated_traits.data <- simulateDataSet()
+#'
+#' # Compute variance structure for simulated traits using default parameters
+#' variance_results <- computeVariancePartition(
+#' traits = c("phylo_G1_trait1", "phylo_G1_trait2"),
+#' environmental_variable = c("phylo_G1_env", "phylo_G2_env")
+#' data = simulated_traits.data$data
+#' phylogeny = simulated_traits.data$phylogeny
+#' )
+#' }
+#'
+computeVariancePartition <- function(traits = NULL,
+                                     environmental_variables = NULL,
+                                     terminal_taxa = NULL,
+                                     dataset = NULL,
+                                     phylogeny = NULL,
+                                     model_specifications = NULL,
+                                     force_run = F,
+                                     save = F,
+                                     verbose = F) {
+
+
+
+  # Arguments
+  if(is.null(traits)){
+    stop("Specify traits argument")
+  }
+
+  if(is.null(dataset)){
+    stop("Specify dataset argument")
+  }
+
+  if(is.null(terminal_taxa)){
+    stop("Specify terminal_taxa argument")
+  }
+
+  if(is.null(phylogeny)){
+    stop("Specify phylogeny argument")
+  }
+
+
+  # Check whether initializeTrevol has been run if user wants to automatically save results
+  if(isTRUE(save)){
+    if(isFALSE(exists("outputs.dir"))){
+      stop("If you set save = T you first need to run initializeTrEvol to create the folder and subfolder structure where results are saved.")
+    }
+  }
+
+  # Make sure that tip nodes are deleted as they can give some problems
+  if(!is.null(phylogeny$tip.nodes)){
+    phylogeny$tip.nodes <- NULL
+  }
+
+
+  # Name a terminal taxon column as animal for MCMCglmm
+
+  dataset$animal <- dataset[, terminal_taxa]
 
   # results object
   traitsVariancePartitionResults <- list()
@@ -29,34 +98,34 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
 
   # lad previous results, if exist
 
-  if(!is.null(environmental.variables)){
-    results.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults_", paste0(environmental.variables, collapse = "_"), ".RData")
+  if(!is.null(environmental_variables)){
+    results.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults_", paste0(environmental_variables, collapse = "_"), ".RData")
   } else {
     results.file <- paste0(outputs.dir, "/models_outputs/traitsVariancePartitionResults.RData")
   }
 
-  if (file.exists(results.file) && isFALSE(force.run)) {
-    print("loanding previous results")
+  if (file.exists(results.file) && isFALSE(force_run)) {
+    message("loanding previous results")
     load(file = results.file)
   }
 
   # run models and extract results
   for (model in uni_mdls.str$type) {
 
-    if (!model %in% names(traitsVariancePartitionResults$individual.models.results) | force.run) {
+    if (!model %in% names(traitsVariancePartitionResults$individual.models.results) | force_run) {
 
-      print(paste0("Running variance calculation: ", model))
+      message(paste0("Running variance calculation: ", model))
 
       model.descr <- uni_mdls.str %>%
         dplyr::filter(type == model)
 
       trait <- model.descr$trait
 
-      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait, environmental.variables))
+      modellingData <- completePhyloData(phylogeny = phylogeny, dataset = dataset, traits = c(trait, environmental_variables))
 
-      if (is.null(model.specifications)) {
-        print("Using default model specificatios. Use defineModelsSpecifications() output on model.specifications argument to set them manually.")
-        model.specifications <- defineModelsSpecifications()
+      if (is.null(model_specifications)) {
+        message("Using default model specificatios. Use defineModelsSpecifications() output on model_specifications argument to set them manually.")
+        model_specifications <- defineModelsSpecifications()
       }
 
 
@@ -67,11 +136,13 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
       fix.frml <- paste0(trait, "~ 1",  collapse = " ")
 
       mdlPhylo <- MCMCglmm::MCMCglmm(stats::as.formula(fix.frml),
-                                     random = ~animal, family = "gaussian", prior = model.specifications$uniresponse_prior,
+                                     random = ~animal, family = "gaussian",
+                                     prior = model_specifications$uniresponse_prior,
                                      data = modellingData$dta, pedigree = modellingData$phylo,
-                                     nitt = model.specifications$number_interations, burnin = model.specifications$burning_iterations,
-                                     thin = model.specifications$thinning_iterations,
-                                     verbose = F)
+                                     nitt = model_specifications$number_iterations,
+                                     burnin = model_specifications$burning_iterations,
+                                     thin = model_specifications$thinning_iterations,
+                                     verbose = verbose)
 
       mdlPhylo$name <- fix.frml
 
@@ -93,24 +164,45 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
       ## results
 
       # total phylogenetic conservatism
-      totalPhylogeneticConservatism <-  totalPhyloVar / totalVar
+      total_phylogenetic_variance_t1 <-  totalPhyloVar / totalVar
 
-      totalNonPhylogenetic <- totalNonPhyloVar / totalVar
+      # Significance
+      total_phylogenetic_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(total_phylogenetic_variance_t1)[2])
+      total_phylogenetic_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(total_phylogenetic_variance_t1)[3])
+
+      total_phylogenetic_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_phylogenetic_variance_t1))) # Pvalue
+
+
+      total_non_phylogenetic_variance_t1 <- totalNonPhyloVar / totalVar
+
+      # Significance
+      total_non_phylogenetic_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(total_non_phylogenetic_variance_t1)[2])
+      total_non_phylogenetic_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(total_non_phylogenetic_variance_t1)[3])
+
+
+      total_non_phylogenetic_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(total_non_phylogenetic_variance_t1))) # Pvalue
 
       # results
       variancePartitionResults <- list()
-      variancePartitionResults$variancePartition <- data.frame("Trait" = trait,
-                                                               "N" = length(modellingData$dta$animal),
-                                                               "Total_phylogenetic_conservatism" = mean(totalPhylogeneticConservatism),
-                                                               "Total_non_phylogenetic" = mean(totalNonPhylogenetic)
+      variancePartitionResults$variancePartition <- data.frame("trait" = trait,
+                                                               "number_observations" = length(modellingData$dta$animal),
+
+                                                               "phylogenetic_variance" = mean(total_phylogenetic_variance_t1),
+                                                               "non_phylogenetic_variance" = mean(total_non_phylogenetic_variance_t1),
+
+                                                               "p_value_phylogenetic_variance" = total_phylogenetic_variance_t1_pvalue,
+                                                               "low_CI_phylogenetic_variance" = total_phylogenetic_variance_t1_lCI,
+                                                               "high_CI_phylogenetic_variance" = total_phylogenetic_variance_t1_hCI,
+                                                               "CI_significance_phylogenetic_variance" = ifelse(total_phylogenetic_variance_t1_lCI < 0 && total_phylogenetic_variance_t1_hCI > 0, "no", "yes")
       )
 
-      variancePartitionResults$variancePartitionDistributions <- list("totalPhylogeneticConservatism" = totalPhylogeneticConservatism,
-                                                                      "totalNonPhylogenetic" = totalNonPhylogenetic)
+      variancePartitionResults$variancePartitionDistributions[[paste0("phylogenetic_variance_", trait)]] <- total_phylogenetic_variance_t1
+      variancePartitionResults$variancePartitionDistributions[[paste0("non_phylogenetic_variance_", trait)]] <- total_non_phylogenetic_variance_t1
+
       variancePartitionResults$modelPhylo <- mdlPhylo
       variancePartitionResults$model.diagnostics <- model.diagnostics
 
-      if(is.null(environmental.variables)){
+      if(is.null(environmental_variables)){
 
 
       # add to all traits results
@@ -124,18 +216,20 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
 
       ### Variance partition including the environment ####
 
-      if(!is.null(environmental.variables)){
+      if(!is.null(environmental_variables)){
 
-        for(predictor in environmental.variables){
+        for(predictor in environmental_variables){
           fix.frml <- paste0(fix.frml, " + ", predictor, collapse = " ")
         }
 
         mdlPhyloEnv <- MCMCglmm::MCMCglmm(stats::as.formula(fix.frml),
-                                          random = ~animal, family = "gaussian", prior = model.specifications$uniresponse_prior,
+                                          random = ~animal, family = "gaussian",
+                                          prior = model_specifications$uniresponse_prior,
                                           data = modellingData$dta, pedigree = modellingData$phylo,
-                                          nitt = model.specifications$number_interations, burnin = model.specifications$burning_iterations,
-                                          thin = model.specifications$thinning_iterations,
-                                          verbose = F)
+                                          nitt = model_specifications$number_iterations,
+                                          burnin = model_specifications$burning_iterations,
+                                          thin = model_specifications$thinning_iterations,
+                                          verbose = verbose)
 
         mdlPhyloEnv$name <- fix.frml
 
@@ -160,44 +254,81 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
 
         ## results
 
-        # pure phylogenetic conservatism
-        purePhylogeneticConservatism <-  purePhyloVar / totalVar2
-        mean(purePhylogeneticConservatism)
+        # non-attributed phylogenetic conservatism
+
+        non_attributed_phylogenetic_variance_t1 <-  purePhyloVar / totalVar2
+
+        # Significance
+        non_attributed_phylogenetic_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(non_attributed_phylogenetic_variance_t1)[2])
+        non_attributed_phylogenetic_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(non_attributed_phylogenetic_variance_t1)[3])
+
+        non_attributed_phylogenetic_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(non_attributed_phylogenetic_variance_t1))) # Pvalue
+
+
 
         # phylogenetic niche conservatism (environment x phylogeny)
-        phylogeneticNicheConservatism <- (totalPhyloVar - purePhyloVar) / totalVar2
-        mean(phylogeneticNicheConservatism)
+        environmental_phylogenetic_variance_t1 <- (totalPhyloVar - purePhyloVar) / totalVar2
 
-        # pure environmental
-        pureEnvironmental <- (totalNonPhyloVar - pureResidualVar) / totalVar2
-        mean(pureEnvironmental)
+        # Significance
+        environmental_phylogenetic_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(environmental_phylogenetic_variance_t1)[2])
+        environmental_phylogenetic_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(environmental_phylogenetic_variance_t1)[3])
+
+        environmental_phylogenetic_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(environmental_phylogenetic_variance_t1))) # Pvalue
+
+
+        # labile environmental
+        labile_environmental_variance_t1 <- (totalNonPhyloVar - pureResidualVar) / totalVar2
+
+        # Significance
+        labile_environmental_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(labile_environmental_variance_t1)[2])
+        labile_environmental_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(labile_environmental_variance_t1)[3])
+
+        labile_environmental_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(labile_environmental_variance_t1))) # Pvalue
+
 
         # total environmental
-        totalEnvironmental <- pureEnvironmental + phylogeneticNicheConservatism
+        totalEnvironmental <- labile_environmental_variance_t1 + environmental_phylogenetic_variance_t1
 
         # residual
-        residual <- pureResidualVar / totalVar2
-        mean(residual)
+        residual_variance_t1 <- pureResidualVar / totalVar2
 
+        # Significance
+        residual_variance_t1_lCI <- as.numeric(RChronoModel::CredibleInterval(residual_variance_t1)[2])
+        residual_variance_t1_hCI <- as.numeric(RChronoModel::CredibleInterval(residual_variance_t1)[3])
 
-        # total
+        residual_variance_t1_pvalue <- 2*(1 - as.numeric(bayestestR::p_direction(residual_variance_t1))) # Pvalue
 
         # results
 
         variancePartitionResults$variancePartition <- cbind(variancePartitionResults$variancePartition,
-                                                            "Environmental_variables" = paste0(environmental.variables, collapse = ", "),
-                                                            "Pure_phylogenetic_conservatism" = mean(purePhylogeneticConservatism),
-                                                            "Phylogenetic_niche_conservatism" = mean(phylogeneticNicheConservatism),
-                                                            "Total_environmental" = mean(totalEnvironmental),
-                                                            "Pure_environmental" = mean(pureEnvironmental),
-                                                            "Residual" = mean(residual)
+                                                            "environmental_variable" = paste0(environmental_variables, collapse = ", "),
+                                                            "non_attributed_phylogenetic_variance" = mean(non_attributed_phylogenetic_variance_t1),
+                                                            "environmental_phylogenetic_variance" = mean(environmental_phylogenetic_variance_t1),
+                                                            # "Total_environmental" = mean(totalEnvironmental),
+                                                            "labile_environmental_variance" = mean(labile_environmental_variance_t1),
+                                                            "residual_variance" = mean(residual_variance_t1),
+
+                                                            "p_value_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_pvalue,
+                                                            "low_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_lCI,
+                                                            "high_CI_non_attributed_phylogenetic_variance" = non_attributed_phylogenetic_variance_t1_hCI,
+                                                            "CI_significance_non_attributed_phylogenetic_variance" = ifelse(non_attributed_phylogenetic_variance_t1_lCI < 0 && non_attributed_phylogenetic_variance_t1_hCI > 0, "no", "yes"),
+
+                                                            "p_value_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_pvalue,
+                                                            "low_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_lCI,
+                                                            "high_CI_environmental_phylogenetic_variance" = environmental_phylogenetic_variance_t1_hCI,
+                                                            "CI_significance_environmental_phylogenetic_variance" = ifelse(environmental_phylogenetic_variance_t1_lCI < 0 && environmental_phylogenetic_variance_t1_hCI > 0, "no", "yes"),
+
+                                                            "p_value_labile_environmental_variance" = labile_environmental_variance_t1_pvalue,
+                                                            "low_CI_labile_environmental_variance" = labile_environmental_variance_t1_lCI,
+                                                            "high_CI_labile_environmental_variance" = labile_environmental_variance_t1_hCI,
+                                                            "CI_significance_labile_environmental_variance" = ifelse(labile_environmental_variance_t1_lCI < 0 && labile_environmental_variance_t1_hCI > 0, "no", "yes")
         )
 
-        variancePartitionResults$variancePartitionDistributions[["Pure_phylogenetic_conservatism"]] <- purePhylogeneticConservatism
-        variancePartitionResults$variancePartitionDistributions[["Phylogenetic_niche_conservatism"]] <- phylogeneticNicheConservatism
-        variancePartitionResults$variancePartitionDistributions[["total_environmental"]] <- totalEnvironmental
-        variancePartitionResults$variancePartitionDistributions[["pure_environmental"]] <- pureEnvironmental
-        variancePartitionResults$variancePartitionDistributions[["residual"]] <- residual
+        variancePartitionResults$variancePartitionDistributions[[paste0("non_attributed_phylogenetic_variance", trait)]] <- non_attributed_phylogenetic_variance_t1
+        variancePartitionResults$variancePartitionDistributions[[paste0("environmental_phylogenetic_variance", trait)]] <- environmental_phylogenetic_variance_t1
+        variancePartitionResults$variancePartitionDistributions[[paste0("labile_environmental_variance", trait)]] <- labile_environmental_variance_t1
+        variancePartitionResults$variancePartitionDistributions[[paste0("residual_variance", trait)]] <- residual_variance_t1
+
 
         variancePartitionResults$modelPhyloEnv <- mdlPhyloEnv
         variancePartitionResults$model.diagnostics <- rbind(variancePartitionResults$model.diagnostics, model.diagnostics)
@@ -216,21 +347,21 @@ computeVariancePartition <- function(traits, environmental.variables = NULL, dat
 
   } # end bucle for all traits
 
-  print("Model structure used:")
-  print(uni_mdls.str)
-  print("Phylogenetic signal results:")
-  print(traitsVariancePartitionResults$varianceResults)
+  # message("Model structure used:")
+  # message(uni_mdls.str)
+  # message("Phylogenetic signal results:")
+  # message(traitsVariancePartitionResults$varianceResults)
 
   # save results
 
   if(save){
-    if(!is.null(environmental.variables)){
-      assign(paste0("traitsVariancePartitionResults_", environmental.variables, collapse = "_"), traitsVariancePartitionResults)
-      save(list = paste0("traitsVariancePartitionResults_", environmental.variables, collapse = "_"), file = results.file)
-      print(results.file)
+    if(!is.null(environmental_variables)){
+      assign(paste0("traitsVariancePartitionResults_", environmental_variables, collapse = "_"), traitsVariancePartitionResults)
+      save(list = paste0("traitsVariancePartitionResults_", environmental_variables, collapse = "_"), file = results.file)
+      message(results.file)
     } else{
       save(list = paste0("traitsVariancePartitionResults"), file = results.file)
-      print(results.file)
+      message(results.file)
     }
   }
   return(traitsVariancePartitionResults)
