@@ -59,7 +59,7 @@ defineModelsSpecifications <- function(number_iterations = 1000,
 ) {
 
   # Model specification list
-  models.specifications.list <- list("number_interations" = number_iterations,
+  models.specifications.list <- list("number_iterations" = number_iterations,
                                      "burning_iterations" = burning,
                                      "thinning_iterations" = thinning,
                                      "uniresponse_prior" = uniresponse_prior,

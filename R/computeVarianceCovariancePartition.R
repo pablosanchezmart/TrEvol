@@ -1,4 +1,4 @@
-#' Phylogenetic variance and covariance partition including (or not) environment
+#' Phylogenetic variance and covariance partition including (or not) an environmental variable
 #'
 #'Compute total variance and covariance and separate it into its phylogenetic and non-phylogenetic components.
 #' If environmental variable is included, four variance and covariance is separated into four components: non-attributed phylogenetic variance-covariance, environmental
@@ -12,7 +12,7 @@
 #' @param environmental_variable (*character*). Names of the environmental variables They must be contained in dataset.
 #' @param dataset (*data frame*). Data frame containing the trait of interest and a column describing terminal appearing as tip labels of the phylogeny.
 #' @param terminal_taxa (*character*). Terminal taxon as named in the dataset (e.g., species).
-#' @param phylogeny (*phylo*) Phylogeny with tip labels contained in dataset$animal
+#' @param phylogeny (*phylo*) Phylogeny with tip labels contained in the terminal taxon column of the dataset.
 #' @param model_specifications (*list*). Mcmcglmm models specifications as specified by the defineModelsSpecification of this package. If not defined, the function internally uses the default in defineModelsSpecification function.
 #' @param show_relative_variance (*logical*). If true, variance is shown relative to the total variance (recommended when using different variables). Otherwise, absolute variances are reported.
 #' @param force_run (*logical*) If false, models already run and saved in outputs folder are not run again.
@@ -118,7 +118,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
     dplyr::filter(!duplicated(traits)) %>%
     dplyr::select(type, traits, trait1, trait2, fix.frml, ran.frml)
 
-  ### RUN MODELS --------------------------------------------------------------- ####
+  ### RUN MODELS AND EXTRACT RESULTS ------------------------------------------- ####
 
   # if (file.exists(results.file) && isFALSE(force_run)) {
   #   print("loanding previous results")
@@ -157,7 +157,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                           data= modellingData$dta, pedigree = modellingData$phylo,
                                           family = c("gaussian", "gaussian", "gaussian"),
                                           prior = model_specifications$triresponse_prior,
-                                          nitt = model_specifications$number_interations,
+                                          nitt = model_specifications$number_iterations,
                                           burnin = model_specifications$burning_iterations,
                                           thin = model_specifications$thinning_iterations,
                                           verbose = F)
@@ -170,7 +170,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
                                           data= modellingData$dta, pedigree = modellingData$phylo,
                                           family = c("gaussian", "gaussian"),
                                           prior = model_specifications$biresponse_prior,
-                                          nitt = model_specifications$number_interations,
+                                          nitt = model_specifications$number_iterations,
                                           burnin = model_specifications$burning_iterations,
                                           thin = model_specifications$thinning_iterations,
                                           verbose = F)
@@ -437,7 +437,7 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
       if(length(traits) >= 2){
 
-        #### COVARIANCE CALCULATIONS --------------------------------------------- ####
+        #### COVARIANCE CALCULATIONS ------------------------------------------- ####
         ### Total covariance ####
 
         total_covariance <- mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait2, ".animal")] +                 # COV(u1, u2)
@@ -676,10 +676,9 @@ computeVarianceCovariancePartition <- function(traits = NULL,
 
       }
 
+      ### Covariance results ####
 
       if(length(traits) >= 2){
-
-        ### Covariance results ####
 
         VCVPartitionResults$covariancePartition <-  data.frame("trait_1" = trait1,
                                                                "trait_2" = trait2,

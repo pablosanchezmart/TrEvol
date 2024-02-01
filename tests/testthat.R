@@ -16,17 +16,21 @@
 #
 # tr <- phytools::pbtree(n = nObs)
 #
-# df <- simulateDataSet(nObs = nObs, phylogeny = tr, vcvMatrix = matrix(c(1, 0.9, 0.8, 0, 0.1, 0.2,
-#                                                                         0.9, 1, 0.8, 0, 0.1, 0.2,
-#                                                                         0.8, 0.8, 1, 0, 0.1, 0.2,
-#                                                                         0, 0, 0, 1, -0.9, -0.8,
-#                                                                         0.1, 0.1, 0.1, -0.9, 1, 0.8,
-#                                                                         0.2, 0.2, 0.2, -0.8, 0.8, 1), ncol = 6))
+# df <- simulateDataSet(number_observations = nObs,
+#                       vcv_matrix = matrix(c(1, 0.9, 0.8, 0, 0.1, 0.2,
+#                                             0.9, 1, 0.8, 0, 0.1, 0.2,
+#                                             0.8, 0.8, 1, 0, 0.1, 0.2,
+#                                             0, 0, 0, 1, -0.9, -0.8,
+#                                             0.1, 0.1, 0.1, -0.9, 1, 0.8,
+#                                             0.2, 0.2, 0.2, -0.8, 0.8, 1),
+#                                           ncol = 6))
 #
 # # specifications <- defineModelsSpecifications(number.iterations = 1000000, burning = 1000, thinning = 10)
-# specifications <- defineModelsSpecifications(number.iterations = 100, burning = 10, thinning = 2)
+# specifications <- defineModelsSpecifications(number_iterations = 100,
+#                                              burning = 10,
+#                                              thinning = 2)
 #
-# specifications <- defineModelsSpecifications()
+# # specifications <- defineModelsSpecifications()
 #
 # initializeTrEvo()
 #
@@ -37,32 +41,65 @@
 # ENVIRONMENTALVARIABLES <- ENVIRONMENTALVARIABLES[1]
 #
 # ### compute variance partition ####
-# #
-# # varianceResults_BM_HC_predictor <- computeVariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_env", dataset = df$data,
-# #                                             phylogeny = tr, model.specifications = specifications, force.run = T, save = F)
-# #
-# # varianceResults_BM_HC_predictor$varianceResults
-# #
-# #
-# # ### compute covariance partition ####
-# #
-# # covarianceResults <- computeCovariancePartition(traits = c(TRAITS, ENVIRONMENTALVARIABLES), dataset = df$data,
-# #                  phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
-# #
-# # covarianceResults_BM_HC_predictor <- computeCovariancePartition(traits = TRAITS, environmental.variables = "phylo_G1_env", dataset = df$data,
-# #                                                                 phylogeny = tr, model.specifications = specifications, force.run = F, save = F)
-# #
-# #
-# # covarianceResults_BM_HC_predictor$covarianceResults
-# #
-# # covarianceResults_BM_HC_predictor$covarianceResults$Total_coordination
-# #
-# # covarianceResults_BM_HC_predictor$covarianceResults$Pure_coordinated_phylogenetic_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Coordinated_phylogenetic_niche_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Pure_environmental_coordination + covarianceResults_BM_HC_predictor$covarianceResults$Residual_coordination
+#
+#
+# varianceResults <- computeVariancePartition(traits = TRAITS,
+#                                             dataset = df$data,
+#                                             phylogeny = df$phylogeny,
+#                                             terminal_taxa =  "animal",
+#                                             model_specifications = specifications,
+#                                             force_run = T,
+#                                             save = T)
+#
+#
+# varianceResults_BM_HC_predictor <- computeVariancePartition(traits = TRAITS,
+#                                                             environmental_variables = "phylo_G1_env",
+#                                                             dataset = df$data,
+#                                                             phylogeny = df$phylogeny,
+#                                                             terminal_taxa =  "animal",
+#                                                             model_specifications = specifications,
+#                                                             force_run = T,
+#                                                             save = T)
+# varianceResults_BM_HC_predictor
+#
+#
+# ### compute covariance partition ####
+#
+# covarianceResults <- computeCovariancePartition(traits = c(TRAITS),
+#                                                 dataset = df$data,
+#                                                 phylogeny = df$phylogeny,
+#                                                 model_specifications = specifications,
+#                                                 terminal_taxa = "animal",
+#                                                 force_run = F,
+#                                                 save = F)
+#
+#
+# covarianceResults_BM_HC_predictor <- computeCovariancePartition(traits = TRAITS,
+#                                                                 environmental_variables = "phylo_G1_env",
+#                                                                 dataset = df$data,
+#                                                                 phylogeny = df$phylogeny,
+#                                                                 model_specifications = specifications,
+#                                                                 terminal_taxa = "animal",
+#                                                                 force_run = F,
+#                                                                 save = F)
+#
+#
+# covarianceResults_BM_HC_predictor$covarianceResults
+#
+# covarianceResults_BM_HC_predictor$covarianceResults$Total_coordination
+#
+# covarianceResults_BM_HC_predictor$covarianceResults$Pure_coordinated_phylogenetic_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Coordinated_phylogenetic_niche_conservatism + covarianceResults_BM_HC_predictor$covarianceResults$Pure_environmental_coordination + covarianceResults_BM_HC_predictor$covarianceResults$Residual_coordination
 #
 # ### compute variance covariance partition ####
 #
-# varcovResults <- computeVarianceCovariancePartition(traits = TRAITS, dataset = df$data,
-#                                                     phylogeny = tr, model.specifications = specifications, force.run = T, save = T, showRelativeResults = T)
+# varcovResults <- computeVarianceCovariancePartition(traits = TRAITS,
+#                                                     dataset = df$data,
+#                                                     phylogeny = df$phylogeny,
+#                                                     model_specifications = specifications,
+#                                                     terminal_taxa = "animal",
+#                                                     force_run = T,
+#                                                     save = T,
+#                                                     show_relative_variance  = T)
 #
 # varcovResults$covarianceResults
 #
@@ -80,15 +117,36 @@
 # #             variance.type = "Total_phylogenetic_conservatism", covariance.type =  "Total_coordinated_phylogenetic_conservatism",
 # #             only.significant = T, threshold = 0.1, layout = "circular")
 #
-# ## One model approach
+# ## two models approach
 #
-# plotNetwork(covariance.results = varcovResults$covarianceResults, variance.results = varcovResults$varianceResults,
-#             variance.type = "Total_phylogenetic_conservatism", covariance.type =  "Total_coordinated_phylogenetic_conservatism",
-#             only.significant = T, threshold = 0.1, layout = "circular", displayDegreeAsNodeSize = T)
+# plotNetwork(correlation_results = covarianceResults$covariancePartition,
+#             variance_results = varianceResults$varianceResults,
+#             variance_type = "phylogenetic_variance",
+#             correlation_type = "total_correlation",
+#             only_significant = T,
+#             correlation_threshold = 0.1,
+#             layout = "circular",
+#             degree_as_node_size = T)
 #
 # varcovResults$covarianceResults %>% dplyr::select(Trait_1, Trait_2, Total_coordinated_phylogenetic_conservatism) %>% head()
 #
 # head(varcovResults$covarianceResults)
+#
+# # one model approach
+#
+# plotNetwork(correlation_results = varcovResults$covarianceResults,
+#             variance_results = varcovResults$varianceResults,
+#             variance_type = "phylogenetic_variance",
+#             correlation_type = "total_correlation",
+#             only_significant = T,
+#             correlation_threshold = 0.1,
+#             layout = "circular",
+#             degree_as_node_size = T)
+#
+# varcovResults$covarianceResults %>% dplyr::select(Trait_1, Trait_2, Total_coordinated_phylogenetic_conservatism) %>% head()
+#
+# head(varcovResults$covarianceResults)
+#
 #
 # ## Compared posterior distributions
 #
