@@ -82,10 +82,10 @@ computeCovariancePartition <- function(traits = NULL,
   dataset$animal <- dataset[, terminal_taxa]
 
   # results object
-  traitsVPartitionResults <- list()
-  traitsVPartitionResults$covariancePartition <- data.frame()
-  traitsVPartitionResults$model.diagnostics <- data.frame()
-  traitsVPartitionResults$individual.models.results <- list()
+  traitsCVPartitionResults <- list()
+  traitsCVPartitionResults$covariancePartition <- data.frame()
+  traitsCVPartitionResults$model.diagnostics <- data.frame()
+  traitsCVPartitionResults$individual.models.results <- list()
 
 
   ### MODELS STRUCTURE --------------------------------------------------------- ####
@@ -132,7 +132,7 @@ computeCovariancePartition <- function(traits = NULL,
   for (model in multi_mdls.str$type) {
 
     # avoid running models already present in results
-    if (!model %in% names(traitsVPartitionResults$individual.models.results) | force_run) {
+    if (!model %in% names(traitsCVPartitionResults$individual.models.results) | force_run) {
 
       message(paste0("Running covariance calculation: ", model))
       model.descr <- multi_mdls.str %>%
@@ -257,12 +257,12 @@ computeCovariancePartition <- function(traits = NULL,
 
       if(is.null(environmental_variables)){
         # add to all traits results
-        traitsVPartitionResults$covariancePartition <- rbind(traitsVPartitionResults$covariancePartition,
+        traitsCVPartitionResults$covariancePartition <- rbind(traitsCVPartitionResults$covariancePartition,
                                                                     CVPartitionResults$covariancePartition)
 
-        traitsVPartitionResults$model.diagnostics <- rbind(traitsVPartitionResults$model.diagnostics,
+        traitsCVPartitionResults$model.diagnostics <- rbind(traitsCVPartitionResults$model.diagnostics,
                                                                      CVPartitionResults$model.diagnostics)
-        traitsVPartitionResults$individual.models.results[[model]] <- CVPartitionResults
+        traitsCVPartitionResults$individual.models.results[[model]] <- CVPartitionResults
       }
 
 
@@ -398,12 +398,12 @@ computeCovariancePartition <- function(traits = NULL,
         CVPartitionResults$model.diagnostics <- model.diagnostics
 
         # add to all traits results
-        CVPartitionResults$covariancePartition <- rbind(CVPartitionResults$covariancePartition,
+        traitsCVPartitionResults$covariancePartition <- rbind(traitsCVPartitionResults$covariancePartition,
                                                                     CVPartitionResults$covariancePartition)
 
-        CVPartitionResults$model.diagnostics <- rbind(CVPartitionResults$model.diagnostics,
+        traitsCVPartitionResults$model.diagnostics <- rbind(traitsCVPartitionResults$model.diagnostics,
                                                                      CVPartitionResults$model.diagnostics)
-        CVPartitionResults$individual.models.results[[model]] <- CVPartitionResults
+        traitsCVPartitionResults$individual.models.results[[model]] <- CVPartitionResults
 
       } # end evaluation if model already exists in results
 
@@ -427,5 +427,5 @@ computeCovariancePartition <- function(traits = NULL,
       message(results.file)
     }
   }
-  return(CVPartitionResults)
+  return(traitsCVPartitionResults)
 }
