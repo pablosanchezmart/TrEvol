@@ -241,7 +241,7 @@ computeVariancePartition <- function(traits = NULL,
 
         totalVar2 <- mdlPhyloEnv$VCV[, "animal"] + mdlPhyloEnv$VCV[, "units"]
 
-        # non-environmental phylogenetic variance (pure phylogenetic variance)
+        # non-attributed phylogenetic variance
         purePhyloVar <- mdlPhyloEnv$VCV[, "animal"]
 
         # avoid negative variances when purePhylo variance is a little bit higher than totalPhylo variance

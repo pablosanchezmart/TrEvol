@@ -241,7 +241,7 @@ computeCovariancePartition <- function(traits = NULL,
                                                                     "high_CI_phylogenetic_correlation" = total_phylogenetic_covariance_hCI,
                                                                     "CI_significance_phylogenetic_correlation" = ifelse(total_phylogenetic_covariance_lCI < 0 && total_phylogenetic_covariance_hCI > 0, "no", "yes"),
 
-                                                                    "Pvalue_Total_coordinated_radiation" = total_non_phylogenetic_covariance_pvalue,
+                                                                    "p_value_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_pvalue,
                                                                     "low_CI_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_lCI,
                                                                     "high_CI_non_phylogenetic_correlation" = total_non_phylogenetic_covariance_hCI,
                                                                     "CI_significance_non_phylogenetic_correlation" = ifelse(total_non_phylogenetic_covariance_lCI < 0 && total_non_phylogenetic_covariance_hCI > 0, "no", "yes")
@@ -291,7 +291,7 @@ computeCovariancePartition <- function(traits = NULL,
 
         ### Covariance partition calculation
 
-        # pure phylogenetic covariance
+        # non-attributed phylogenetic covariance
         purePhyloCV <-  mdlPhyloEnv$VCV[, paste0("trait", trait1, ":trait", trait2, ".animal")]
 
         # avoid negative variances when purePhylo covariance is a little bit higher than totalPhylo variance
@@ -365,7 +365,7 @@ computeCovariancePartition <- function(traits = NULL,
                                                                  "labile_environmental_correlation" = mean(labile_environmental_covariance_pvalue),
                                                                  "residual_correlation" = mean(residual_covariance),
 
-                                                                 "p_value_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance,
+                                                                 "p_value_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_pvalue,
                                                                  "low_CI_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_lCI,
                                                                  "high_CI_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_hCI,
                                                                  "CI_significance_non_attributed_phylogenetic_correlation" = ifelse(non_attributed_phylogenetic_covariance_lCI < 0 && non_attributed_phylogenetic_covariance_hCI > 0, "no", "yes"),
