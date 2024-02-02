@@ -347,7 +347,7 @@ computeCovariancePartition <- function(traits = NULL,
 
         # residual coordination
 
-        residual_covariance <- 1 - (non_attributed_phylogenetic_covariance + environmental_phylogenetic_covariance + labile_environmental_covariance)
+        residual_covariance <- total_covariance - (non_attributed_phylogenetic_covariance + environmental_phylogenetic_covariance + labile_environmental_covariance)
 
         # Significance
         residual_covariance_lCI <- as.numeric(RChronoModel::CredibleInterval(residual_covariance)[2])
