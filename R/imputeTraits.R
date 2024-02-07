@@ -6,7 +6,7 @@
 #' @param variables_to_impute (*character*). Names of the variables with NAs where imputations will be implemented.
 #' If more than one, covariation among imputation variables is considered to decide whether to use them as predictors or not.
 #' @param dataset (*data frame*). Data frame containing the variable of interest with missing values and a column describing terminal taxa of phylogeny (e.g., species).
-#' @param terminal_taxon (*character*). Terminal taxon as named in the dataset (e.g., species).
+#' @param terminal_taxa (*character*). Terminal taxon as named in the dataset (e.g., species).
 #' @param phylogeny (*phylo*). Phylogeny with tip labels contained in dataset.
 #' @param correlation_results (*list*). Correlation results from computeVarianceCovariance() function or NULL to compute it internally for the variables to be imputed using the data and phylogeny provided (default).
 #' @param variance_results (*list*). Variance results from computeVarianceCovariance() function.
@@ -39,7 +39,7 @@
 #' }
 imputeTraits <- function(variables_to_impute = NULL,
                          dataset = NULL,
-                         terminal_taxon = NULL,
+                         terminal_taxa = NULL,
                          phylogeny = NULL,
                          correlation_results = NULL,
                          variance_results = NULL,
@@ -66,8 +66,8 @@ imputeTraits <- function(variables_to_impute = NULL,
     stop("Specify phylogeny argument")
   }
 
-  if(is.null(terminal_taxon)){
-    stop("Specify terminal_taxon argument")
+  if(is.null(terminal_taxa)){
+    stop("Specify terminal_taxa argument")
   }
 
   # Check whether initializeTrevol has been run if user wants to automatically save results
@@ -79,7 +79,7 @@ imputeTraits <- function(variables_to_impute = NULL,
 
 
   # Create taxon column
-  dataset$taxon <- dataset[, terminal_taxon]
+  dataset$taxon <- dataset[, terminal_taxa]
 
   # Set correlation type to total correlation
   correlation_type <- "total_correlation"
@@ -199,7 +199,7 @@ imputeTraits <- function(variables_to_impute = NULL,
                                                      dataset = dataset,
                                                      phylogeny = phylogeny,
                                                      model_specifications = model_specifications,
-                                                     terminal_taxa = terminal_taxon)
+                                                     terminal_taxa = terminal_taxa)
 
     if(is.null(variance_results)){
       variance_results <- vcvResults$varianceResults
@@ -551,9 +551,9 @@ imputeTraits <- function(variables_to_impute = NULL,
 
   # Rename terminal taxon
 
-  names(imputationResults[["round1"]]$ximp)[1] <- terminal_taxon
-  names(imputationResults[["round2"]]$ximp)[1] <- terminal_taxon
-  names(imputationResults[["round3"]]$ximp)[1] <- terminal_taxon
+  names(imputationResults[["round1"]]$ximp)[1] <- terminal_taxa
+  names(imputationResults[["round2"]]$ximp)[1] <- terminal_taxa
+  names(imputationResults[["round3"]]$ximp)[1] <- terminal_taxa
 
   return(imputationResults)
 }
