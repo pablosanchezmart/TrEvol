@@ -391,7 +391,7 @@ computeCovariancePartition <- function(traits = NULL,
         CVPartitionResults$covariancePartitionDistributions[["non_attributed_phylogenetic_correlation"]] <- non_attributed_phylogenetic_covariance
         CVPartitionResults$covariancePartitionDistributions[["environmental_phylogenetic_correlation"]] <- environmental_phylogenetic_covariance
         # CVPartitionResults$covariancePartitionDistributions[["totalEnvironmentalCoordination"]] <- totalEnvironmentalCoordination
-        CVPartitionResults$covariancePartitionDistributions[["labile_environmental_correlation"]] <- labile_environmental_covariance_pvalue
+        CVPartitionResults$covariancePartitionDistributions[["labile_environmental_correlation"]] <- labile_environmental_covariance
         CVPartitionResults$covariancePartitionDistributions[["residual_correlation"]] <- residual_covariance
 
         CVPartitionResults$modelPhyloEnv <- mdlPhyloEnv
