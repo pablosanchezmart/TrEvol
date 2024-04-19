@@ -362,7 +362,7 @@ computeCovariancePartition <- function(traits = NULL,
                                                                  "non_attributed_phylogenetic_correlation" = mean(non_attributed_phylogenetic_covariance),
                                                                  "environmental_phylogenetic_correlation" = mean(environmental_phylogenetic_covariance),
                                                                  # "Total_environmental_coordination" = mean(totalEnvironmentalCoordination),
-                                                                 "labile_environmental_correlation" = mean(labile_environmental_covariance_pvalue),
+                                                                 "labile_environmental_correlation" = mean(labile_environmental_covariance),
                                                                  "residual_correlation" = mean(residual_covariance),
 
                                                                  "p_value_non_attributed_phylogenetic_correlation" = non_attributed_phylogenetic_covariance_pvalue,
